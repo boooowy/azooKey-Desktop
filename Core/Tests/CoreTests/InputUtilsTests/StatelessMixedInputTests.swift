@@ -84,6 +84,66 @@ struct StatelessMixedInputTests {
         #expect(try Self.type("kyouhaiitenkidesu").convertTarget == "きょうはいいてんきです")
     }
 
+    /// 部分確定 (prefixComplete) や再アクティブ化で composingText だけが短くなると、
+    /// 生入力に前の入力の残りカスが残る。そのまま打つと文頭に英字が1文字残る。
+    ///
+    /// 例: 生入力に n が残った状態で notoori と打つと nnotoori を区間判定してしまい、
+    /// [n] notoori となって「nの通り」になる。
+    @Test("生入力がずれても文頭に英字が残らない")
+    func resyncAfterDesync() throws {
+        var mixed = StatelessMixedInput()
+        try #require(mixed.isAvailable)
+
+        // n を打ってから、確定で composingText だけが空になった状況を作る
+        let planned = mixed.plan(appending: "n", partial: true)
+        _ = try #require(planned)
+        var composing = ComposingText()
+        composing.stopComposition()
+        #expect(!mixed.isInSync(with: composing), "ずれた状態を作れていない")
+
+        // ずれを検知して合わせ直す (SegmentsManager.tryMixedInsert と同じ手順)
+        mixed.resync(with: composing, partial: true)
+        #expect(mixed.isInSync(with: composing))
+
+        for character in "notoori" {
+            let step = mixed.plan(appending: String(character), partial: true)
+            let plan = try #require(step)
+            switch plan {
+            case .rebuild(let rebuilt):
+                composing = rebuilt
+            case .append(let pieces):
+                for piece in pieces {
+                    composing.insertAtCursorPosition(piece.text, inputStyle: piece.style)
+                }
+            }
+        }
+        // ずれが残っていると "nのとおり" になる
+        #expect(composing.convertTarget == "のとおり")
+    }
+
+    @Test("ずれたまま打つと文頭に英字が残ることの確認 (修正前の症状)")
+    func desyncSymptom() throws {
+        // resync を挟まないと再現する。resync が要る根拠として固定しておく
+        var mixed = StatelessMixedInput()
+        try #require(mixed.isAvailable)
+        let first = mixed.plan(appending: "n", partial: true)
+        _ = try #require(first)
+        var composing = ComposingText()   // 確定で空になった composingText
+        for character in "notoori" {
+            let step = mixed.plan(appending: String(character), partial: true)
+            let plan = try #require(step)
+            switch plan {
+            case .rebuild(let rebuilt):
+                composing = rebuilt
+            case .append(let pieces):
+                for piece in pieces {
+                    composing.insertAtCursorPosition(piece.text, inputStyle: piece.style)
+                }
+            }
+        }
+        #expect(composing.convertTarget == "nのとおり", "この症状が出なくなったらテストの前提を見直す")
+    }
+
     @Test("打ちかけの子音が残る")
     func partialConsonant() throws {
         #expect(try Self.type("kyouhaiitenkides").convertTarget == "きょうはいいてんきでs")

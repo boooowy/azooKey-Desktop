@@ -265,6 +265,7 @@ public final class SegmentsManager {
         self.rawCandidates = nil
         self.didExperienceSegmentEdition = false
         self.lastOperation = .other
+        self.mixedInput.reset()
         self.composingText.stopComposition()
         self.shouldShowCandidateWindow = false
         self.selectionIndex = nil
@@ -340,6 +341,10 @@ public final class SegmentsManager {
         guard isRoman, self.composingText.isAtEndIndex, !string.isEmpty else {
             self.mixedInput.reset()
             return false
+        }
+        if !self.mixedInput.isInSync(with: self.composingText) {
+            // 想定外の経路で composingText が書き換えられていた場合の保険
+            self.mixedInput.resync(with: self.composingText, partial: true)
         }
         guard let plan = self.mixedInput.plan(appending: string, partial: true) else {
             self.mixedInput.reset()
@@ -657,6 +662,8 @@ public final class SegmentsManager {
         self.kanaKanjiConverter.setCompletedData(candidate)
         self.kanaKanjiConverter.updateLearningData(candidate)
         self.composingText.prefixComplete(composingCount: candidate.composingCount)
+        // 確定した分だけ composingText が短くなるので、生入力を合わせ直す
+        self.mixedInput.resync(with: self.composingText, partial: true)
 
         if !self.composingText.isEmpty {
             // カーソルを右端に移動する

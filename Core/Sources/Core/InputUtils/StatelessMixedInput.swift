@@ -33,6 +33,27 @@ struct StatelessMixedInput {
     var isAvailable: Bool { segmenter != nil }
     var isEmpty: Bool { raw.isEmpty }
 
+    /// `composingText` が外から書き換えられたときに、生入力を実態に合わせ直す。
+    ///
+    /// 部分確定 (prefixComplete) や再アクティブ化で composingText だけが短くなると、
+    /// 生入力に前の入力の残りカスが残る。そのまま打ち続けると、残りカスを含めた
+    /// 文字列を区間判定してしまい、文頭に英字が1文字残るなどの崩れ方をする。
+    mutating func resync(with composingText: ComposingText, partial: Bool) {
+        raw = String(composingText.input.compactMap { element in
+            if case .character(let character) = element.piece { character } else { nil }
+        })
+        lastSpans = raw.isEmpty ? [] : ((try? segmenter?.segmentInput(raw, partial: partial)) ?? nil) ?? []
+        if lastSpans.isEmpty && !raw.isEmpty {
+            // 区間判定できないなら、この入力は諦めて通常の経路に任せる
+            raw = ""
+        }
+    }
+
+    /// 生入力と composingText の長さが食い違っていないか。
+    func isInSync(with composingText: ComposingText) -> Bool {
+        raw.count == composingText.input.count
+    }
+
     mutating func reset() {
         raw = ""
         lastSpans = []
