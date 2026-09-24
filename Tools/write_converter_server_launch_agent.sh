@@ -3,7 +3,7 @@ set -eu
 
 agent_path="$1"
 server_path="$2"
-service_name="${3:-dev.ensan.inputmethod.azooKeyMac.ConverterServer}"
+service_name="${3:-dev.boooowy.inputmethod.azooKeyMac.ConverterServer}"
 
 agent_dir="$(dirname "${agent_path}")"
 mkdir -p "${agent_dir}"

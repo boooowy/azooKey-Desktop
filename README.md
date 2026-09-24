@@ -100,7 +100,7 @@ ls -lh azooKeyMac/Resources/zenz-v3.1-small-gguf/ggml-model-Q5_K_M.gguf
 
 * `azooKeyMac.xcodeproj` を Xcode で開く
 * azooKeyMac ターゲット → Signing & Capabilities で Team を自身の Personal Team に変更
-* リポジトリ内のバンドルID（`dev.ensan.inputmethod.azooKeyMac` など）を、自身の所有するプレフィックスに一括置換（例: `dev.yourname.inputmethod.azooKeyMac`）
+* リポジトリ内のバンドルID（`dev.boooowy.inputmethod.azooKeyMac` など）を、自身の所有するプレフィックスに一括置換（例: `dev.yourname.inputmethod.azooKeyMac`）
 
 #### 3. ビルド＆インストール
 

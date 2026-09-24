@@ -88,7 +88,7 @@ extension ConverterServer {
                 value: .string(Config.Learning().value.rawValue)
             ),
             descriptor(
-                key: "dev.ensan.inputmethod.azooKeyMac.setting.action.resetLearningData",
+                key: "dev.boooowy.inputmethod.azooKeyMac.setting.action.resetLearningData",
                 title: "履歴学習データをリセット",
                 section: "履歴学習",
                 kind: .button(action: "resetLearningData")
@@ -154,7 +154,7 @@ extension ConverterServer {
                 value: .bool(Config.DebugTypoCorrection().value)
             ),
             descriptor(
-                key: "dev.ensan.inputmethod.azooKeyMac.setting.action.downloadDebugTypoCorrectionWeights",
+                key: "dev.boooowy.inputmethod.azooKeyMac.setting.action.downloadDebugTypoCorrectionWeights",
                 title: "入力訂正の重みをダウンロード",
                 section: "開発者向け設定",
                 kind: .button(action: "downloadDebugTypoCorrectionWeights")
@@ -172,7 +172,7 @@ extension ConverterServer {
                 kind: .custom(surface: "systemUserDictionary")
             ),
             descriptor(
-                key: "dev.ensan.inputmethod.azooKeyMac.setting.surface.foundationModelsAvailability",
+                key: "dev.boooowy.inputmethod.azooKeyMac.setting.surface.foundationModelsAvailability",
                 title: "Foundation Models availability",
                 section: "基本",
                 kind: .custom(surface: "foundationModelsAvailability")
@@ -192,7 +192,7 @@ extension ConverterServer {
                 value: .string(Config.OpenAiApiEndpoint().value)
             ),
             descriptor(
-                key: "dev.ensan.inputmethod.azooKeyMac.preference.OpenAiApiKey",
+                key: "dev.boooowy.inputmethod.azooKeyMac.preference.OpenAiApiKey",
                 title: "OpenAI APIキー",
                 section: "OpenAI API",
                 kind: .textField(secure: true)

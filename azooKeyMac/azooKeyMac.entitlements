@@ -6,7 +6,7 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.dev.ensan.inputmethod.azooKeyMac</string>
+		<string>group.dev.boooowy.inputmethod.azooKeyMac</string>
 	</array>
 	<key>com.apple.security.network.client</key>
 	<true/>
@@ -14,7 +14,7 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)_Connection</string>
 	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
 	<array>
-		<string>dev.ensan.inputmethod.azooKeyMac.ConverterServer</string>
+		<string>dev.boooowy.inputmethod.azooKeyMac.ConverterServer</string>
 	</array>
 </dict>
 </plist>

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-service_name="dev.ensan.inputmethod.azooKeyMac.ConverterServer"
+service_name="dev.boooowy.inputmethod.azooKeyMac.ConverterServer"
 app_path="/Library/Input Methods/azooKeyMac.app"
 server_path="${app_path}/Contents/MacOS/ConverterServer"
 agent_dir="/Library/LaunchAgents"

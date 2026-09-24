@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key>
-    <string>dev.ensan.inputmethod.azooKeyMac.ConverterServer.Resource</string>
+    <string>dev.boooowy.inputmethod.azooKeyMac.ConverterServer.Resource</string>
     <key>CFBundleName</key>
     <string>ConverterServerResource</string>
     <key>CFBundlePackageType</key>

@@ -2,7 +2,7 @@ import Core
 import Foundation
 
 private enum ConverterServerXPC {
-    static let machServiceName = "dev.ensan.inputmethod.azooKeyMac.ConverterServer"
+    static let machServiceName = "dev.boooowy.inputmethod.azooKeyMac.ConverterServer"
 }
 
 @objc private protocol ConverterServerXPCProtocol {
