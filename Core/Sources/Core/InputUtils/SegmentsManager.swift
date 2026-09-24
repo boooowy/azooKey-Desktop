@@ -35,6 +35,13 @@ public final class SegmentsManager {
     private var composingText: ComposingText = ComposingText()
     private var lastInputStyle: InputStyle = .direct
 
+    /// 日英混在入力 (Config.StatelessMixedInput) の状態。
+    /// OFF のときは一切触らないので、upstream と同じ経路を通る。
+    private var mixedInput = StatelessMixedInput()
+    private var mixedInputEnabled: Bool {
+        Config.StatelessMixedInput().value && mixedInput.isAvailable
+    }
+
     private var liveConversionEnabled: Bool {
         Config.LiveConversion().value
     }
@@ -268,6 +275,7 @@ public final class SegmentsManager {
     @MainActor
     /// この入力を打ち切る
     public func stopComposition() {
+        self.mixedInput.reset()
         self.composingText.stopComposition()
         self.kanaKanjiConverter.stopComposition()
         self.rawCandidates = nil
@@ -311,9 +319,53 @@ public final class SegmentsManager {
         }
     }
 
+    /// 日英混在入力として文字を取り込めたら true。
+    ///
+    /// 扱える条件を満たさない入力 (ローマ字入力でない / カーソルが末尾にない /
+    /// ASCII でない) では false を返し、呼び出し側は upstream と同じ経路に倒す。
+    /// このとき生入力は捨てるので、そのあとの打鍵も通常どおりになる。
+    @MainActor
+    private func tryMixedInsert(_ string: String, inputStyle: InputStyle) -> Bool {
+        guard self.mixedInputEnabled else {
+            return false
+        }
+        // かな入力や独自テーブルのときは対象外 (モデルはローマ字前提)
+        let isRoman: Bool = switch inputStyle {
+        case .roman2kana: true
+        case .mapped(id: .defaultRomanToKana): true
+        default: false
+        }
+        guard isRoman, self.composingText.isAtEndIndex, !string.isEmpty else {
+            self.mixedInput.reset()
+            return false
+        }
+        guard let plan = self.mixedInput.plan(appending: string, partial: true) else {
+            self.mixedInput.reset()
+            return false
+        }
+        switch plan {
+        case .rebuild(let composingText):
+            self.composingText = composingText
+        case .append(let pieces):
+            // ラベルが変わっていないので追記で済ませる (azooKey の速い経路を潰さない)。
+            // style は打った文字自身のラベルから決める。呼び出し元の inputStyle を
+            // そのまま使うと、英語区間の 2 文字目以降がローマ字変換されてしまう。
+            for piece in pieces {
+                self.composingText.insertAtCursorPosition(piece.text, inputStyle: piece.style)
+            }
+        }
+        return true
+    }
+
     @MainActor
     public func insertAtCursorPosition(_ string: String, inputStyle: InputStyle) {
         self.lastInputStyle = inputStyle
+        if self.tryMixedInsert(string, inputStyle: inputStyle) {
+            self.lastOperation = .insert
+            self.shouldShowCandidateWindow = !self.liveConversionEnabled
+            self.updateRawCandidate()
+            return
+        }
         self.composingText.insertAtCursorPosition(string, inputStyle: inputStyle)
         self.lastOperation = .insert
         // ライブ変換がオフの場合は変換候補ウィンドウを出したい
@@ -324,6 +376,14 @@ public final class SegmentsManager {
     @MainActor
     public func insertAtCursorPosition(pieces: [InputPiece], inputStyle: InputStyle) {
         self.lastInputStyle = inputStyle
+        // 打鍵はこちらを通る。intention を優先すると shift 込みの大文字が取れる
+        // (大文字はこのモデルで英語を決定づける唯一の手がかりなので落とせない)
+        if self.tryMixedInsert(pieces.inputString(preferIntention: true), inputStyle: inputStyle) {
+            self.lastOperation = .insert
+            self.shouldShowCandidateWindow = !self.liveConversionEnabled
+            self.updateRawCandidate()
+            return
+        }
         self.composingText.insertAtCursorPosition(pieces.map { .init(piece: $0, inputStyle: inputStyle) })
         self.lastOperation = .insert
         // ライブ変換がオフの場合は変換候補ウィンドウを出したい
@@ -371,6 +431,18 @@ public final class SegmentsManager {
             // 一度segmentの編集状態もリセットにする
             self.didExperienceSegmentEdition = false
             previousComposingText = self.composingText.prefixToCursorPosition()
+        }
+        if self.mixedInputEnabled, !self.mixedInput.isEmpty, self.composingText.isAtEndIndex {
+            // 削除は常に組み直す (短くなると前方の区間のラベルも変わりうる)
+            _ = self.mixedInput.deleteBackward(count: count)
+            self.composingText = self.mixedInput.rebuild(partial: true)
+            if self.mixedInput.isEmpty {
+                self.mixedInput.reset()
+            }
+            self.lastOperation = .delete
+            self.shouldShowCandidateWindow = !self.liveConversionEnabled
+            self.updateRawCandidate()
+            return
         }
         self.composingText.deleteBackwardFromCursorPosition(count: count)
         self.lastOperation = .delete

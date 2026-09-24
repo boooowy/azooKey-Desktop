@@ -33,7 +33,8 @@ var targets: [Target] = [
             .product(name: "SwiftUtils", package: "AzooKeyKanaKanjiConverter"),
             .product(name: "KanaKanjiConverterModuleWithDefaultDictionary", package: "AzooKeyKanaKanjiConverter"),
             .product(name: "Crypto", package: "swift-crypto"),
-            .product(name: "ZIPFoundation", package: "ZIPFoundation")
+            .product(name: "ZIPFoundation", package: "ZIPFoundation"),
+            .product(name: "RomajiSegmenter", package: "RomajiSegmenter")
         ],
         swiftSettings: [.interoperabilityMode(.Cxx)],
         plugins: [
@@ -70,7 +71,9 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/azooKey/AzooKeyKanaKanjiConverter", revision: "ad714fea8cb2fe113aea86ba5c42563cdaf77cfb", traits: kanaKanjiConverterTraits),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
-        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0")
+        .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0"),
+        // 日英混在入力の区間判定 (jev-test)
+        .package(path: "../../jev-test/RomajiSegmenter")
     ],
     targets: targets
 )
