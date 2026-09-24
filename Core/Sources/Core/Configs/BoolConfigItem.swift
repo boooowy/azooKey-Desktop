@@ -38,15 +38,6 @@ extension Config {
         static let `default` = false
         public static let key: String = "dev.boooowy.inputmethod.azooKeyMac.preference.debug.typoCorrection"
     }
-    /// 日英混在入力 (モード切り替えなしで打つ) を有効化する設定
-    ///
-    /// ONにすると、打った英字の並びを区間判定モデルにかけ、英語と判定した区間は
-    /// ローマ字変換せずそのまま通す。OFFのときは upstream と完全に同じ挙動になる。
-    public struct StatelessMixedInput: BoolConfigItem {
-        public init() {}
-        static let `default` = false
-        public static let key: String = "dev.boooowy.inputmethod.azooKeyMac.preference.statelessMixedInput"
-    }
     /// ライブ変換を有効化する設定
     public struct LiveConversion: BoolConfigItem {
         public init() {}

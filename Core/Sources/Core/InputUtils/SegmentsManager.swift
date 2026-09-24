@@ -35,11 +35,13 @@ public final class SegmentsManager {
     private var composingText: ComposingText = ComposingText()
     private var lastInputStyle: InputStyle = .direct
 
-    /// 日英混在入力 (Config.StatelessMixedInput) の状態。
-    /// OFF のときは一切触らないので、upstream と同じ経路を通る。
+    /// 日英混在入力 (モード切り替えなしで打つ) の状態。
+    ///
+    /// 常に有効。ただし区間判定の重みを読み込めなかったときだけは無効になり、
+    /// upstream と同じ経路に倒れる。
     private var mixedInput = StatelessMixedInput()
     private var mixedInputEnabled: Bool {
-        Config.StatelessMixedInput().value && mixedInput.isAvailable
+        mixedInput.isAvailable
     }
 
     private var liveConversionEnabled: Bool {
