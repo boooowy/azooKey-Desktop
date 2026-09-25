@@ -68,6 +68,7 @@ struct StatelessMixedInput {
             // japanesePunctuation で置き換えたぶんを打った文字に戻す
             case "。": restored.append(".")
             case "、": restored.append(",")
+            case "・": restored.append("/")
             case "ー": restored.append("-")
             default:
                 guard character.isASCII else { return nil }
@@ -255,16 +256,23 @@ struct StatelessMixedInput {
         text.contains("-") ? String(text.map { $0 == "-" ? "ー" : $0 }) : text
     }
 
-    /// 日本語区間の直後の `.` `,` を `。` `、` にする。
+    /// 日本語区間の直後の `.` `,` `/` を `。` `、` `・` にする。
     ///
-    /// azooKey の roman2kana は ASCII の `.` `,` をそのまま通す (実測) ので、
-    /// ここで自前で置き換える。ime_core.compose (ime_core.py:57-58) と同じ規則で、
+    /// azooKey の既定ローマ字テーブルは記号を一切扱わない (`defaultRoman2Kana` に
+    /// `。` `、` `・` `ー` のいずれも無い、実測) ので、ここで自前で置き換える。
+    /// ime_core.compose (ime_core.py:57-58) と同じ規則で、
     /// **チャンクの先頭 1 文字だけ**が対象。
+    ///
+    /// `/` は Google 日本語入力に合わせて `・` にする。ただし Google は文脈に
+    /// 関係なく `・` にするのに対し、ここでは**日本語区間の直後だけ**に効かせる。
+    /// モード切り替えなしで英語を打つのがこの IME の趣旨なので、
+    /// `src/main` や `and/or` が `src・main` になっては困るため。
     static func japanesePunctuation(_ text: String, previousLabel: InputLabel?) -> String {
         guard previousLabel == .japanese, let first = text.first else { return text }
         switch first {
         case ".": return "。" + text.dropFirst()
         case ",": return "、" + text.dropFirst()
+        case "/": return "・" + text.dropFirst()
         default: return text
         }
     }
