@@ -14,7 +14,8 @@ struct SymbolCandidateProbe {
     @Test("全角記号から半角や別の記号を選べる", arguments: [
         ("。", [".", "．", "、", "・"]),
         ("、", [",", "，", "。", "・"]),
-        ("・", ["･", "…", "、", "。"]),
+        // `/` を `・` にしている代わりに、打ったキーで出せる記号を候補に足している
+        ("・", ["／", "/", "？", "?", "･", "…"]),
     ])
     func candidatesForSymbols(_ symbol: String, _ expected: [String]) {
         let converter = KanaKanjiConverter.withDefaultDictionary()
@@ -33,14 +34,16 @@ struct SymbolCandidateProbe {
                     memoryDirectoryURL: tmp,
                     sharedContainerURL: tmp,
                     textReplacer: .withDefaultEmojiDictionary(),
-                    specialCandidateProviders: KanaKanjiConverter.defaultSpecialCandidateProviders,
+                    specialCandidateProviders: SegmentsManager.specialCandidateProviders,
                     metadata: .init(appVersionString: "test")
                 )
             )
             let texts = result.mainResults.map { $0.text }
             #expect(texts.first == symbol, "第1候補は打った記号そのもの")
             for candidate in expected {
-                #expect(texts.contains(candidate), "\(symbol) の候補に \(candidate) が無い: \(texts.prefix(12))")
+                // 候補ウィンドウをスクロールせずに届く位置にあること
+                #expect(texts.prefix(10).contains(candidate),
+                        "\(symbol) の候補10件に \(candidate) が無い: \(texts.prefix(12))")
             }
         }
     }

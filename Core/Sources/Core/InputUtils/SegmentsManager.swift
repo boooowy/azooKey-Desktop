@@ -192,6 +192,10 @@ public final class SegmentsManager {
         }
     }
 
+    /// `/` を `・` にしている代わりに、`/` `／` `?` `？` を候補から選べるようにする
+    static let specialCandidateProviders: [any SpecialCandidateProvider] =
+        KanaKanjiConverter.defaultSpecialCandidateProviders + [TypedSymbolCandidateProvider()]
+
     private func options(
         leftSideContext: String?,
         rightSideContext: String?,
@@ -209,7 +213,7 @@ public final class SegmentsManager {
             memoryDirectoryURL: self.azooKeyMemoryDir,
             sharedContainerURL: CompiledUserDictionaryStore.directoryURL(memoryDirectoryURL: self.azooKeyMemoryDir),
             textReplacer: .withDefaultEmojiDictionary(),
-            specialCandidateProviders: KanaKanjiConverter.defaultSpecialCandidateProviders,
+            specialCandidateProviders: Self.specialCandidateProviders,
             zenzaiMode: self.zenzaiMode(
                 leftSideContext: leftSideContext,
                 rightSideContext: rightSideContext,
