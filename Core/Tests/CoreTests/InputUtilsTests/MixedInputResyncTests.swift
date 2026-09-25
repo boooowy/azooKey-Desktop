@@ -130,22 +130,28 @@ struct MixedInputResyncTests {
     // MARK: 記号
 
     /// azooKey の既定ローマ字テーブルは記号を扱わないので、こちらで置き換えている。
-    /// `/` は Google 日本語入力に合わせて `・` にするが、英語の文脈では `/` のまま。
-    @Test("スラッシュは日本語の文脈でだけ ・ になる", arguments: [
+    /// `/` は Google 日本語入力に合わせて、**文脈に関係なく** `・` にする
+    /// (行頭の `・` で箇条書きを書きたいため)。
+    @Test("スラッシュはどこでも ・ になる", arguments: [
         ("kore/are", "これ・あれ"),
-        ("kore/", "これ・"),
-        ("Slack/Teams", "Slack/Teams"),
-        ("AWS/GCP", "AWS/GCP"),
         ("kore/are/sore", "これ・あれ・それ"),
-        // main は「まいん」と読めるので仮名になる (既知の限界)。
-        // ここで見たいのは、英語の直後の `/` が `・` にならないこと
-        ("src/main", "src/まいn"),
+        // 箇条書き: 直前に何も無くても ・ になること
+        ("/kajougaki", "・かじょうがき"),
+        ("Slack/Teams", "Slack・Teams"),
+        ("AWS/GCP", "AWS・GCP"),
     ])
-    func slashBecomesNakaguroOnlyInJapanese(_ input: String, _ expected: String) {
+    func slashBecomesNakaguro(_ input: String, _ expected: String) {
         var harness = Harness()
         harness.type(input)
         #expect(harness.composing.convertTarget == expected)
         #expect(harness.fellThrough == 0)
+    }
+
+    @Test("チャンクの中の / はすべて ・ になる")
+    func allSlashesInChunk() {
+        var harness = Harness()
+        harness.type("kore//are")
+        #expect(harness.composing.convertTarget == "これ・・あれ")
     }
 
     @Test("・ から打った文字を復元できる")

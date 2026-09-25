@@ -263,16 +263,17 @@ struct StatelessMixedInput {
     /// ime_core.compose (ime_core.py:57-58) と同じ規則で、
     /// **チャンクの先頭 1 文字だけ**が対象。
     ///
-    /// `/` は Google 日本語入力に合わせて `・` にする。ただし Google は文脈に
-    /// 関係なく `・` にするのに対し、ここでは**日本語区間の直後だけ**に効かせる。
-    /// モード切り替えなしで英語を打つのがこの IME の趣旨なので、
-    /// `src/main` や `and/or` が `src・main` になっては困るため。
+    /// `/` だけは **文脈に関係なく** `・` にする。行頭の `・` で箇条書きを書くのに
+    /// 直前の文脈を要求されると使えないため (Google 日本語入力も文脈を見ない)。
+    /// チャンク内のすべての `/` が対象。
+    ///
+    /// 代償として `/` そのものが打てなくなる (`src/main` → `src・main`)。
     static func japanesePunctuation(_ text: String, previousLabel: InputLabel?) -> String {
+        let text = text.contains("/") ? String(text.map { $0 == "/" ? "・" : $0 }) : text
         guard previousLabel == .japanese, let first = text.first else { return text }
         switch first {
         case ".": return "。" + text.dropFirst()
         case ",": return "、" + text.dropFirst()
-        case "/": return "・" + text.dropFirst()
         default: return text
         }
     }
