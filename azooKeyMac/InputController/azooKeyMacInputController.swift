@@ -931,6 +931,7 @@ extension azooKeyMacInputController {
         self.syncConverterServerSessionConfig()
         self.converterServerClient.sendIfSessionOpen(
             { _ in .replaceSuggestion(.request(context: self.currentConverterTextContext())) },
+            timeout: ConverterServerClient.replaceSuggestionTimeout,
             completion: { [weak self] response in
                 Task { @MainActor in
                     guard let self else {

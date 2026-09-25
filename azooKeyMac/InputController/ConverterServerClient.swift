@@ -14,7 +14,10 @@ private enum ConverterServerXPC {
 
 @MainActor
 final class ConverterServerClient {
-    private static let commandTimeout: TimeInterval = 1
+    static let commandTimeout: TimeInterval = 1
+    /// いい感じ変換はServer内でLLMの応答を待つため、通常のコマンドより長く待つ。
+    /// Foundation Modelsでは安全性チェックを含めて1秒を超えることがある。
+    static let replaceSuggestionTimeout: TimeInterval = 10
 
     private var connection: NSXPCConnection?
     private var sessionID: String?
@@ -130,23 +133,25 @@ final class ConverterServerClient {
 
     func sendIfSessionOpen(
         _ commandBuilder: @escaping (String) -> ConverterSessionCommand,
+        timeout: TimeInterval = ConverterServerClient.commandTimeout,
         completion: @escaping (ConverterServerResponse?) -> Void
     ) {
         guard sessionID != nil else {
             completion(nil)
             return
         }
-        enqueue(commandBuilder, retriesOnFailure: false, completion: completion)
+        enqueue(commandBuilder, retriesOnFailure: false, timeout: timeout, completion: completion)
     }
 
     private func enqueue(
         _ commandBuilder: @escaping (String) -> ConverterSessionCommand,
         retriesOnFailure: Bool,
+        timeout: TimeInterval = ConverterServerClient.commandTimeout,
         completion: @escaping (ConverterServerResponse?) -> Void
     ) {
         var proposedSessionID: String?
         commandQueue.enqueue(
-            timeout: Self.commandTimeout,
+            timeout: timeout,
             timeoutOutcome: retriesOnFailure ? .retry : .finish(nil),
             onTimeout: { [weak self] in
                 self?.handleCommandTimeout()
