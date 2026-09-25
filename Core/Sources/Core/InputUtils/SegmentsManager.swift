@@ -649,24 +649,12 @@ public final class SegmentsManager {
     ///
     /// - Note:
     ///   This function is executed on the `@MainActor` to ensure UI consistency.
-    @MainActor private func updateRawCandidate(
-        requestRichCandidates: Bool = false,
-        forcedLeftSideContext: String? = nil,
-        forcedRightSideContext: String? = nil
-    ) {
-        if self.lastOperation != .delete {
-            self.backspaceAdjustedPredictionCandidate = nil
-            self.backspaceTypoCorrectionLock = nil
-        }
-        self.resetAdditionalCandidates()
-        // 不要
-        if composingText.isEmpty {
-            self.rawCandidates = nil
-            self.kanaKanjiConverter.stopComposition()
-            return
-        }
-        /// 日付・時刻変換を事前に入れておく
-        let dynamicShortcuts: [DicdataElement] =
+    /// 日付・時刻変換のショートカット。
+    ///
+    /// `DateTemplateLiteral.export()` は「いつ評価するか」を書いたテンプレート文字列を
+    /// 返すだけで、現在時刻を含まない。つまりこの配列は定数なので、打鍵ごとに
+    /// 作り直す必要はない (元は `updateRawCandidate` の中で毎回組み立てていた)。
+    nonisolated(unsafe) static let dynamicDateShortcuts: [DicdataElement] =
             [
                 ("M/d", -18, DateTemplateLiteral.CalendarType.western),
                 ("yyyy/MM/dd", -18.1, .western),
@@ -695,10 +683,34 @@ public final class SegmentsManager {
                 .init(word: DateTemplateLiteral(format: "aK時mm分", type: .western, language: .japanese, delta: "0", deltaUnit: 1).export(), ruby: "イマ", cid: CIDData.固有名詞.cid, mid: MIDData.一般.mid, value: -18.2)
             ]
 
+    @MainActor private func updateRawCandidate(
+        requestRichCandidates: Bool = false,
+        forcedLeftSideContext: String? = nil,
+        forcedRightSideContext: String? = nil
+    ) {
+        if self.lastOperation != .delete {
+            self.backspaceAdjustedPredictionCandidate = nil
+            self.backspaceTypoCorrectionLock = nil
+        }
+        self.resetAdditionalCandidates()
+        // 不要
+        if composingText.isEmpty {
+            self.rawCandidates = nil
+            self.kanaKanjiConverter.stopComposition()
+            return
+        }
+        let dynamicShortcuts = Self.dynamicDateShortcuts
+
+        // 打鍵ごとに走る3つの処理を別々に測る。遅いときにどれが効いているか分かるように
+        let dictStart = ContinuousClock.now
         self.kanaKanjiConverter.importDynamicUserDictionary([], shortcuts: dynamicShortcuts)
 
+        // アプリから前後の文脈を取りに行く (アプリ側への問い合わせなので、相手次第で遅い)
+        let contextStart = ContinuousClock.now
         let leftSideContext = forcedLeftSideContext ?? self.getCleanLeftSideContext(maxCount: ContextLength.conversion)
         let rightSideContext = forcedRightSideContext ?? self.getCleanRightSideContext(maxCount: ContextLength.conversion)
+
+        let convertStart = ContinuousClock.now
         let result = self.kanaKanjiConverter.requestCandidates(
             self.composingText,
             options: options(
@@ -709,7 +721,15 @@ public final class SegmentsManager {
                 requireEnglishPrediction: Config.DebugPredictiveTyping().value ? .manualMix : .disabled
             )
         )
+        let end = ContinuousClock.now
         self.rawCandidates = result
+        Self.mixedInputLogger.info("""
+            convert n=\(self.composingText.input.count, privacy: .public) \
+            rich=\(requestRichCandidates, privacy: .public) \
+            dict=\(Self.milliseconds(from: dictStart, to: contextStart), privacy: .public)ms \
+            context=\(Self.milliseconds(from: contextStart, to: convertStart), privacy: .public)ms \
+            zenzai=\(Self.milliseconds(from: convertStart, to: end), privacy: .public)ms
+            """)
     }
 
     @MainActor public func update(requestRichCandidates: Bool) {
@@ -719,8 +739,18 @@ public final class SegmentsManager {
 
     /// - note: 画面更新との整合性を保つため、この関数の実行前に左文脈を取得し、これを引数として与える
     @MainActor public func prefixCandidateCommited(_ candidate: Candidate, leftSideContext: String) {
+        let commitStart = ContinuousClock.now
+        defer {
+            Self.mixedInputLogger.info(
+                "commit total=\(Self.milliseconds(from: commitStart, to: .now), privacy: .public)ms"
+            )
+        }
+        let learnStart = ContinuousClock.now
         self.kanaKanjiConverter.setCompletedData(candidate)
         self.kanaKanjiConverter.updateLearningData(candidate)
+        Self.mixedInputLogger.info(
+            "learn=\(Self.milliseconds(from: learnStart, to: .now), privacy: .public)ms"
+        )
         self.composingText.prefixComplete(composingCount: candidate.composingCount)
         // 確定した分だけ composingText が短くなるので、生入力を合わせ直す
         if !self.mixedInput.resync(with: self.composingText, partial: true) {
