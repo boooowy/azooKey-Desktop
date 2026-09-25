@@ -22,6 +22,12 @@ struct StatelessMixedInput {
     private var lastSpans: [InputSpan] = []
     /// 組み直した回数 (ちらつきの指標)
     private(set) var rebuildCount: Int = 0
+    /// 次の打鍵で必ず組み直すか。
+    ///
+    /// `resync` のあとは、生入力は合っていても **composingText の各要素の
+    /// inputStyle が区間判定と一致している保証がない**。追記だけで済ませると、
+    /// 既に入っている要素の style を直せず、英字が1文字残ったままになる。
+    private var mustRebuild = false
 
     private let segmenter: Segmenter?
 
@@ -33,31 +39,66 @@ struct StatelessMixedInput {
     var isAvailable: Bool { segmenter != nil }
     var isEmpty: Bool { raw.isEmpty }
 
+    /// `composingText` の入力要素から、打った ASCII を復元する。
+    ///
+    /// 復元できない要素 (文節区切り、こちらが入れた覚えのない非 ASCII) が
+    /// 混じっていたら nil を返す。中途半端に復元すると、それを足がかりに
+    /// 区間判定が崩れて英字が残るので、**諦めるほうが安全**。
+    static func rawInput(of composingText: ComposingText) -> String? {
+        var restored = ""
+        for element in composingText.input {
+            guard case .character(let character) = element.piece else {
+                // .compositionSeparator など。生入力に対応する文字がない
+                return nil
+            }
+            switch character {
+            // japanesePunctuation で置き換えたぶんを打った文字に戻す
+            case "。": restored.append(".")
+            case "、": restored.append(",")
+            default:
+                guard character.isASCII else { return nil }
+                restored.append(character)
+            }
+        }
+        return restored
+    }
+
     /// `composingText` が外から書き換えられたときに、生入力を実態に合わせ直す。
     ///
     /// 部分確定 (prefixComplete) や再アクティブ化で composingText だけが短くなると、
     /// 生入力に前の入力の残りカスが残る。そのまま打ち続けると、残りカスを含めた
     /// 文字列を区間判定してしまい、文頭に英字が1文字残るなどの崩れ方をする。
-    mutating func resync(with composingText: ComposingText, partial: Bool) {
-        raw = String(composingText.input.compactMap { element in
-            if case .character(let character) = element.piece { character } else { nil }
-        })
-        lastSpans = raw.isEmpty ? [] : ((try? segmenter?.segmentInput(raw, partial: partial)) ?? nil) ?? []
-        if lastSpans.isEmpty && !raw.isEmpty {
-            // 区間判定できないなら、この入力は諦めて通常の経路に任せる
-            raw = ""
+    ///
+    /// 合わせ直せなかったら false。呼び出し側はこの入力を諦めること。
+    mutating func resync(with composingText: ComposingText, partial: Bool) -> Bool {
+        guard let restored = Self.rawInput(of: composingText) else { return false }
+        guard !restored.isEmpty else {
+            reset()
+            return true
         }
+        guard let spans = try? segmenter?.segmentInput(restored, partial: partial), !spans.isEmpty else {
+            return false
+        }
+        raw = restored
+        lastSpans = spans
+        // 既に入っている要素の style は信用できないので、次の打鍵で組み直す
+        mustRebuild = true
+        return true
     }
 
-    /// 生入力と composingText の長さが食い違っていないか。
+    /// 生入力と composingText が食い違っていないか。
+    ///
+    /// 長さだけでなく中身まで見る。長さが合っていても中身がずれていれば、
+    /// その差分がそのまま変な英字として出てくる。
     func isInSync(with composingText: ComposingText) -> Bool {
-        raw.count == composingText.input.count
+        Self.rawInput(of: composingText) == raw
     }
 
     mutating func reset() {
         raw = ""
         lastSpans = []
         rebuildCount = 0
+        mustRebuild = false
     }
 
     /// 打鍵を取り込んだ結果、ComposingText をどうすべきか。
@@ -69,6 +110,14 @@ struct StatelessMixedInput {
         /// ComposingText は入力要素ごとに style を持つので、区間の切れ目は関係なく
         /// 1文字ずつの style さえ合っていれば同じ結果になる。
         case append([(text: String, style: InputStyle)])
+
+        /// ログ用のラベル
+        var kindDescription: String {
+            switch self {
+            case .rebuild: "rebuild"
+            case .append: "append"
+            }
+        }
     }
 
     /// 文字を追加して、ComposingText の更新方法を決める。
@@ -84,8 +133,10 @@ struct StatelessMixedInput {
         lastSpans = spans
         let newMask = Self.mask(spans)
 
-        guard newMask.count > oldMask.count, newMask.starts(with: oldMask) else {
-            // 既に打ってあった文字のラベルが変わった (Slac → Slack など)
+        guard !mustRebuild, newMask.count > oldMask.count, newMask.starts(with: oldMask) else {
+            // 既に打ってあった文字のラベルが変わった (Slac → Slack など)、
+            // あるいは resync 直後で既存要素の style を信用できない
+            mustRebuild = false
             rebuildCount += 1
             return .rebuild(Self.composingText(from: spans))
         }
@@ -129,6 +180,7 @@ struct StatelessMixedInput {
         }
         let spans = (try? segmenter.segmentInput(raw, partial: partial)) ?? []
         lastSpans = spans
+        mustRebuild = false
         rebuildCount += 1
         return Self.composingText(from: spans)
     }

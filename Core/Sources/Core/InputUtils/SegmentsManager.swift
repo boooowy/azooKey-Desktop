@@ -1,4 +1,5 @@
 import Foundation
+import os
 import KanaKanjiConverterModuleWithDefaultDictionary
 
 public final class SegmentsManager {
@@ -343,8 +344,12 @@ public final class SegmentsManager {
             return false
         }
         if !self.mixedInput.isInSync(with: self.composingText) {
-            // 想定外の経路で composingText が書き換えられていた場合の保険
-            self.mixedInput.resync(with: self.composingText, partial: true)
+            // 想定外の経路で composingText が書き換えられていた場合の保険。
+            // 合わせ直せないなら諦める。中途半端な状態で続けると英字が残る
+            guard self.mixedInput.resync(with: self.composingText, partial: true) else {
+                self.mixedInput.reset()
+                return false
+            }
         }
         guard let plan = self.mixedInput.plan(appending: string, partial: true) else {
             self.mixedInput.reset()
@@ -361,8 +366,20 @@ public final class SegmentsManager {
                 self.composingText.insertAtCursorPosition(piece.text, inputStyle: piece.style)
             }
         }
+        // 崩れたときに「どの打鍵で」「生入力が何だったか」を後から追えるようにする。
+        // log show --predicate 'subsystem == "azooKeyMac.mixedInput"' --info
+        Self.mixedInputLogger.info("""
+            key=\(string, privacy: .public) \
+            raw=\(self.mixedInput.raw, privacy: .public) \
+            plan=\(plan.kindDescription, privacy: .public) \
+            target=\(self.composingText.convertTarget, privacy: .public)
+            """)
         return true
     }
+
+    nonisolated(unsafe) static let mixedInputLogger = os.Logger(
+        subsystem: "azooKeyMac.mixedInput", category: "mixedInput"
+    )
 
     @MainActor
     public func insertAtCursorPosition(_ string: String, inputStyle: InputStyle) {
@@ -439,7 +456,8 @@ public final class SegmentsManager {
             self.didExperienceSegmentEdition = false
             previousComposingText = self.composingText.prefixToCursorPosition()
         }
-        if self.mixedInputEnabled, !self.mixedInput.isEmpty, self.composingText.isAtEndIndex {
+        if self.mixedInputEnabled, !self.mixedInput.isEmpty, self.composingText.isAtEndIndex,
+           self.mixedInput.isInSync(with: self.composingText) {
             // 削除は常に組み直す (短くなると前方の区間のラベルも変わりうる)
             _ = self.mixedInput.deleteBackward(count: count)
             self.composingText = self.mixedInput.rebuild(partial: true)
@@ -663,7 +681,9 @@ public final class SegmentsManager {
         self.kanaKanjiConverter.updateLearningData(candidate)
         self.composingText.prefixComplete(composingCount: candidate.composingCount)
         // 確定した分だけ composingText が短くなるので、生入力を合わせ直す
-        self.mixedInput.resync(with: self.composingText, partial: true)
+        if !self.mixedInput.resync(with: self.composingText, partial: true) {
+            self.mixedInput.reset()
+        }
 
         if !self.composingText.isEmpty {
             // カーソルを右端に移動する

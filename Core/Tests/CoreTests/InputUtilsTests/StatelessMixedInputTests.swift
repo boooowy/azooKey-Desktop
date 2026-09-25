@@ -102,7 +102,8 @@ struct StatelessMixedInputTests {
         #expect(!mixed.isInSync(with: composing), "ずれた状態を作れていない")
 
         // ずれを検知して合わせ直す (SegmentsManager.tryMixedInsert と同じ手順)
-        mixed.resync(with: composing, partial: true)
+        let resynced = mixed.resync(with: composing, partial: true)
+        #expect(resynced)
         #expect(mixed.isInSync(with: composing))
 
         for character in "notoori" {
