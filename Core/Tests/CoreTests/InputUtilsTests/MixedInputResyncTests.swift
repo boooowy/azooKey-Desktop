@@ -130,28 +130,35 @@ struct MixedInputResyncTests {
     // MARK: 記号
 
     /// azooKey の既定ローマ字テーブルは記号を扱わないので、こちらで置き換えている。
-    /// `/` は Google 日本語入力に合わせて、**文脈に関係なく** `・` にする
-    /// (行頭の `・` で箇条書きを書きたいため)。
-    @Test("スラッシュはどこでも ・ になる", arguments: [
+    /// **文脈は見ない**: 行頭の `・` で箇条書きを書いたり `。` を単体で打ったりしたいため。
+    @Test("記号はどこでも全角になる", arguments: [
+        // 箇条書き: 直前に何も無くても ・ になる
+        ("/kajougaki", "・かじょうがき"),
+        // 単体の 。 、
+        (".", "。"),
+        (",", "、"),
         ("kore/are", "これ・あれ"),
         ("kore/are/sore", "これ・あれ・それ"),
-        // 箇条書き: 直前に何も無くても ・ になること
-        ("/kajougaki", "・かじょうがき"),
+        ("korehaiitenkidesu.", "これはいいてんきです。"),
         ("Slack/Teams", "Slack・Teams"),
-        ("AWS/GCP", "AWS・GCP"),
+        // 代償: 半角で打てなくなる。半角が要るときは変換候補から選ぶ
+        ("example.com", "example。com"),
     ])
-    func slashBecomesNakaguro(_ input: String, _ expected: String) {
+    func symbolsBecomeFullWidth(_ input: String, _ expected: String) {
         var harness = Harness()
         harness.type(input)
         #expect(harness.composing.convertTarget == expected)
         #expect(harness.fellThrough == 0)
     }
 
-    @Test("チャンクの中の / はすべて ・ になる")
-    func allSlashesInChunk() {
+    @Test("チャンクの中の記号はすべて置き換わる")
+    func allSymbolsInChunk() {
         var harness = Harness()
         harness.type("kore//are")
         #expect(harness.composing.convertTarget == "これ・・あれ")
+        var other = Harness()
+        other.type("kore...")
+        #expect(other.composing.convertTarget == "これ。。。")
     }
 
     @Test("・ から打った文字を復元できる")

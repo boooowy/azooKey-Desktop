@@ -160,7 +160,6 @@ struct StatelessMixedInput {
         // 追加分だけを、ラベルが連続する塊にまとめて追記する
         let rawBytes = Array(raw.utf8)
         var pieces: [(text: String, style: InputStyle)] = []
-        var previousLabel: InputLabel? = oldMask.last
         var i = oldMask.count
         while i < newMask.count {
             let label = newMask[i]
@@ -173,9 +172,8 @@ struct StatelessMixedInput {
             case .english:
                 pieces.append((text, .direct))
             case .symbol:
-                pieces.append((Self.japanesePunctuation(text, previousLabel: previousLabel), .direct))
+                pieces.append((Self.japaneseSymbols(text), .direct))
             }
-            previousLabel = label
             i = j
         }
         return .append(pieces)
@@ -230,7 +228,6 @@ struct StatelessMixedInput {
     /// 区間の並びから ComposingText を作る。
     static func composingText(from spans: [InputSpan], japaneseStyle: InputStyle = .roman2kana) -> ComposingText {
         var composing = ComposingText()
-        var previousLabel: InputLabel?
         for span in spans {
             switch span.label {
             case .japanese:
@@ -238,10 +235,8 @@ struct StatelessMixedInput {
             case .english:
                 composing.insertAtCursorPosition(span.text, inputStyle: .direct)
             case .symbol:
-                composing.insertAtCursorPosition(
-                    japanesePunctuation(span.text, previousLabel: previousLabel), inputStyle: .direct)
+                composing.insertAtCursorPosition(japaneseSymbols(span.text), inputStyle: .direct)
             }
-            previousLabel = span.label
         }
         return composing
     }
@@ -256,25 +251,27 @@ struct StatelessMixedInput {
         text.contains("-") ? String(text.map { $0 == "-" ? "ー" : $0 }) : text
     }
 
-    /// 日本語区間の直後の `.` `,` `/` を `。` `、` `・` にする。
+    /// 記号区間の `.` `,` `/` を `。` `、` `・` にする。
     ///
-    /// azooKey の既定ローマ字テーブルは記号を一切扱わない (`defaultRoman2Kana` に
-    /// `。` `、` `・` `ー` のいずれも無い、実測) ので、ここで自前で置き換える。
-    /// ime_core.compose (ime_core.py:57-58) と同じ規則で、
-    /// **チャンクの先頭 1 文字だけ**が対象。
+    /// azooKey の既定ローマ字テーブルは記号を一切扱わない
+    /// (`defaultRoman2Kana` に `。` `、` `・` `ー` のいずれも無い、実測) ので、
+    /// ここで自前で置き換える。
     ///
-    /// `/` だけは **文脈に関係なく** `・` にする。行頭の `・` で箇条書きを書くのに
-    /// 直前の文脈を要求されると使えないため (Google 日本語入力も文脈を見ない)。
-    /// チャンク内のすべての `/` が対象。
+    /// **文脈は見ない。** 行頭の `・` で箇条書きを書いたり、`。` を単体で打ったり
+    /// したいのに直前の文脈を要求されると使えないため (Google 日本語入力も見ない)。
+    /// チャンク内のすべての文字が対象。
     ///
-    /// 代償として `/` そのものが打てなくなる (`src/main` → `src・main`)。
-    static func japanesePunctuation(_ text: String, previousLabel: InputLabel?) -> String {
-        let text = text.contains("/") ? String(text.map { $0 == "/" ? "・" : $0 }) : text
-        guard previousLabel == .japanese, let first = text.first else { return text }
-        switch first {
-        case ".": return "。" + text.dropFirst()
-        case ",": return "、" + text.dropFirst()
-        default: return text
-        }
+    /// 代償として `.` `,` `/` そのものが打てなくなる (`example.com` → `example。com`)。
+    /// 半角で打ちたいときは変換候補から選ぶか、英数入力に切り替える。
+    static func japaneseSymbols(_ text: String) -> String {
+        guard text.contains(where: { $0 == "." || $0 == "," || $0 == "/" }) else { return text }
+        return String(text.map { character in
+            switch character {
+            case ".": "。"
+            case ",": "、"
+            case "/": "・"
+            default: character
+            }
+        })
     }
 }
