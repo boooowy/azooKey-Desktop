@@ -23,10 +23,15 @@ for resource_bundle in "${server_build_directory}"/*.bundle; do
     if [ -d "${resource_bundle}" ]; then
         resource_bundle_name="$(basename "${resource_bundle}")"
         embedded_resource_bundle="${server_directory}/${resource_bundle_name}"
+        rm -rf "${embedded_resource_bundle}"
         ditto "${resource_bundle}" "${embedded_resource_bundle}"
-        # command-line SwiftPM buildが生成するbundleはInfo.plistを持たないため、
+        # 古いcommand-line SwiftPM buildが生成するflatなbundleはInfo.plistを持たないため、
         # archiveのcodesignが正規のresource bundleとして検証できるよう補う。
-        cp "${SRCROOT}/Tools/ConverterServerResourceBundleInfo.plist" "${embedded_resource_bundle}/Info.plist"
+        # Swift 6.4以降はContents/Info.plistを持つbundleを生成するので、そこに足すと
+        # bundle rootにsealされないファイルが残りcodesign --verifyが失敗する。
+        if [ ! -f "${embedded_resource_bundle}/Info.plist" ] && [ ! -f "${embedded_resource_bundle}/Contents/Info.plist" ]; then
+            cp "${SRCROOT}/Tools/ConverterServerResourceBundleInfo.plist" "${embedded_resource_bundle}/Info.plist"
+        fi
     fi
 done
 
