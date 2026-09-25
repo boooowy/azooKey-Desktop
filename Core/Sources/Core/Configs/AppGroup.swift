@@ -1,7 +1,10 @@
 import Foundation
 
 public enum AppGroup {
-    public static let azooKeyMacIdentifier = "group.dev.boooowy.inputmethod.azooKeyMac"
+    /// `group.`で始まるIDはprovisioning profileでの許可が必要だが、Personal Teamのprofileには
+    /// 含まれない。macOS 27ではcontainermanagerdが許可のないアクセスを拒否するため、
+    /// profileなしで使えるTeam ID prefixのIDにする。entitlementsのIDと一致させること。
+    public static let azooKeyMacIdentifier = "36PUR9WGLZ.dev.boooowy.inputmethod.azooKeyMac"
 
     #if os(macOS)
     public static func containerURL(fileManager: FileManager = .default) -> URL? {
