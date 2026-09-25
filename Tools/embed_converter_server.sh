@@ -6,7 +6,13 @@ if [ "${CONFIGURATION}" = "Release" ]; then
     swift_configuration=release
 fi
 
-swift build --package-path "${SRCROOT}/Core" --product ConverterServer -c "${swift_configuration}"
+# Swift 6.4 以降の既定の build system (swiftbuild) は、実行ファイルの
+# LC_BUILD_VERSION に SDK version として deployment target (13.0) を記録する。
+# macOS はこの SDK version を見て Metal の既定言語バージョンを 3.0 にするため、
+# llama.cpp が実行時にコンパイルする shader から bf16 kernel が消え、
+# ggml_metal_init が存在しない kernel を読み込もうとして abort する。
+# native build system は実際の SDK version を記録するので、こちらを明示する。
+swift build --package-path "${SRCROOT}/Core" --product ConverterServer -c "${swift_configuration}" --build-system native
 
 server_source="${SRCROOT}/Core/.build/${swift_configuration}/ConverterServer"
 server_directory="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Helpers/ConverterServer"
