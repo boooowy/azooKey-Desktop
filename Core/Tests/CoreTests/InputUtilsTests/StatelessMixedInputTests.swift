@@ -7,6 +7,9 @@ import Testing
 #if os(macOS)
 @Suite("日英混在入力")
 struct StatelessMixedInputTests {
+    /// 実機と同じローマ字テーブル
+    static let japaneseStyle: InputStyle = .mapped(id: .defaultRomanToKana)
+
     /// 1 文字ずつ打った結果の ComposingText を組み立てる (SegmentsManager.tryMixedInsert と同じ手順)。
     static func type(_ text: String) throws -> ComposingText {
         var mixed = StatelessMixedInput()
@@ -14,7 +17,7 @@ struct StatelessMixedInputTests {
         var composing = ComposingText()
         for character in text {
             // #require の中では mutating メソッドを呼べないので、先に受ける
-            let planned = mixed.plan(appending: String(character), partial: true)
+            let planned = mixed.plan(appending: String(character), partial: true, japaneseStyle: Self.japaneseStyle)
             let plan = try #require(planned, "\(character) を取り込めなかった")
             switch plan {
             case .rebuild(let rebuilt):
@@ -95,7 +98,7 @@ struct StatelessMixedInputTests {
         try #require(mixed.isAvailable)
 
         // n を打ってから、確定で composingText だけが空になった状況を作る
-        let planned = mixed.plan(appending: "n", partial: true)
+        let planned = mixed.plan(appending: "n", partial: true, japaneseStyle: Self.japaneseStyle)
         _ = try #require(planned)
         var composing = ComposingText()
         composing.stopComposition()
@@ -107,7 +110,7 @@ struct StatelessMixedInputTests {
         #expect(mixed.isInSync(with: composing))
 
         for character in "notoori" {
-            let step = mixed.plan(appending: String(character), partial: true)
+            let step = mixed.plan(appending: String(character), partial: true, japaneseStyle: Self.japaneseStyle)
             let plan = try #require(step)
             switch plan {
             case .rebuild(let rebuilt):
@@ -127,11 +130,11 @@ struct StatelessMixedInputTests {
         // resync を挟まないと再現する。resync が要る根拠として固定しておく
         var mixed = StatelessMixedInput()
         try #require(mixed.isAvailable)
-        let first = mixed.plan(appending: "n", partial: true)
+        let first = mixed.plan(appending: "n", partial: true, japaneseStyle: Self.japaneseStyle)
         _ = try #require(first)
         var composing = ComposingText()   // 確定で空になった composingText
         for character in "notoori" {
-            let step = mixed.plan(appending: String(character), partial: true)
+            let step = mixed.plan(appending: String(character), partial: true, japaneseStyle: Self.japaneseStyle)
             let plan = try #require(step)
             switch plan {
             case .rebuild(let rebuilt):

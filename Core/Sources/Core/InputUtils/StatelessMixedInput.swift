@@ -30,6 +30,12 @@ struct StatelessMixedInput {
     private var mustRebuild = false
 
     private let segmenter: Segmenter?
+    /// 日本語区間に使う inputStyle。
+    ///
+    /// `.roman2kana` を決め打ちにすると、アプリが使っているローマ字テーブルと食い違う。
+    /// 実際 azooKey-Desktop の既定テーブルは `-` を `ー` にするが、ライブラリ既定の
+    /// `.roman2kana` はしない。呼び出し元から渡されたものを覚えて使う。
+    private var japaneseStyle: InputStyle = .roman2kana
 
     init() {
         // 重みの読み込みに失敗してもIME全体は動かす。この機能だけ無効になる
@@ -47,14 +53,22 @@ struct StatelessMixedInput {
     static func rawInput(of composingText: ComposingText) -> String? {
         var restored = ""
         for element in composingText.input {
-            guard case .character(let character) = element.piece else {
-                // .compositionSeparator など。生入力に対応する文字がない
+            let character: Character
+            switch element.piece {
+            case .character(let c):
+                character = c
+            case .key(let intention, let input, _):
+                // 通常経路で入った打鍵。ー のように意図が非 ASCII なら打った文字を使う
+                character = if let intention, intention.isASCII { intention } else { input }
+            case .compositionSeparator:
+                // 生入力に対応する文字がない
                 return nil
             }
             switch character {
             // japanesePunctuation で置き換えたぶんを打った文字に戻す
             case "。": restored.append(".")
             case "、": restored.append(",")
+            case "ー": restored.append("-")
             default:
                 guard character.isASCII else { return nil }
                 restored.append(character)
@@ -122,8 +136,9 @@ struct StatelessMixedInput {
 
     /// 文字を追加して、ComposingText の更新方法を決める。
     /// 扱えない入力なら nil を返す (呼び出し側は通常の経路に倒す)。
-    mutating func plan(appending string: String, partial: Bool) -> Plan? {
+    mutating func plan(appending string: String, partial: Bool, japaneseStyle: InputStyle = .roman2kana) -> Plan? {
         guard let segmenter, string.allSatisfy(\.isASCII), !string.isEmpty else { return nil }
+        self.japaneseStyle = japaneseStyle
         let oldMask = Self.mask(lastSpans)
         raw += string
         guard let spans = try? segmenter.segmentInput(raw, partial: partial) else {
@@ -138,7 +153,7 @@ struct StatelessMixedInput {
             // あるいは resync 直後で既存要素の style を信用できない
             mustRebuild = false
             rebuildCount += 1
-            return .rebuild(Self.composingText(from: spans))
+            return .rebuild(Self.composingText(from: spans, japaneseStyle: japaneseStyle))
         }
 
         // 追加分だけを、ラベルが連続する塊にまとめて追記する
@@ -153,7 +168,7 @@ struct StatelessMixedInput {
             let text = String(decoding: rawBytes[i ..< j], as: UTF8.self)
             switch label {
             case .japanese:
-                pieces.append((text, .roman2kana))
+                pieces.append((Self.longVowelMarks(text), japaneseStyle))
             case .english:
                 pieces.append((text, .direct))
             case .symbol:
@@ -165,11 +180,33 @@ struct StatelessMixedInput {
         return .append(pieces)
     }
 
-    /// 末尾から1文字削る。空になったら false を返す。
-    mutating func deleteBackward(count: Int = 1) -> Bool {
-        guard !raw.isEmpty else { return false }
+    /// 削除を取り込んだ結果、ComposingText をどうすべきか。
+    enum DeletePlan {
+        /// ラベルが変わっていない → composingText を末尾から削るだけでよい。
+        /// 組み直すと azooKey 側が変換をやり直すことがあるので、避けられるなら避ける
+        case deleteInPlace
+        /// 短くなったことで前方のラベルが変わった → 組み直す
+        case rebuild(ComposingText)
+    }
+
+    /// 末尾から削って、ComposingText の更新方法を決める。
+    mutating func deleteBackward(count: Int = 1, partial: Bool) -> DeletePlan {
+        let oldMask = Self.mask(lastSpans).dropLast(min(count, raw.utf8.count))
         raw.removeLast(min(count, raw.count))
-        return true
+        guard let segmenter, !raw.isEmpty else {
+            lastSpans = []
+            mustRebuild = false
+            return .rebuild(ComposingText())
+        }
+        let spans = (try? segmenter.segmentInput(raw, partial: partial)) ?? []
+        lastSpans = spans
+        let newMask = Self.mask(spans)
+        if !mustRebuild, newMask.elementsEqual(oldMask) {
+            return .deleteInPlace
+        }
+        mustRebuild = false
+        rebuildCount += 1
+        return .rebuild(Self.composingText(from: spans, japaneseStyle: japaneseStyle))
     }
 
     /// 今の生入力から必ず組み直す (削除のとき。短くなると前方のラベルも変わりうる)。
@@ -182,7 +219,7 @@ struct StatelessMixedInput {
         lastSpans = spans
         mustRebuild = false
         rebuildCount += 1
-        return Self.composingText(from: spans)
+        return Self.composingText(from: spans, japaneseStyle: japaneseStyle)
     }
 
     static func mask(_ spans: [InputSpan]) -> [InputLabel] {
@@ -190,13 +227,13 @@ struct StatelessMixedInput {
     }
 
     /// 区間の並びから ComposingText を作る。
-    static func composingText(from spans: [InputSpan]) -> ComposingText {
+    static func composingText(from spans: [InputSpan], japaneseStyle: InputStyle = .roman2kana) -> ComposingText {
         var composing = ComposingText()
         var previousLabel: InputLabel?
         for span in spans {
             switch span.label {
             case .japanese:
-                composing.insertAtCursorPosition(span.text, inputStyle: .roman2kana)
+                composing.insertAtCursorPosition(Self.longVowelMarks(span.text), inputStyle: japaneseStyle)
             case .english:
                 composing.insertAtCursorPosition(span.text, inputStyle: .direct)
             case .symbol:
@@ -206,6 +243,16 @@ struct StatelessMixedInput {
             previousLabel = span.label
         }
         return composing
+    }
+
+    /// 日本語区間の `-` を長音記号 `ー` にする。
+    ///
+    /// azooKey のローマ字テーブルは `-` をそのまま通す (`.roman2kana` も
+    /// `.mapped(id: .defaultRomanToKana)` も実測で変換しない) ので、
+    /// jev_classify の `_KANA["-"] == "ー"` と同じことを自前でやる。
+    /// 英語区間の `-` はハイフンのままにしたいので、日本語区間にだけ効かせる。
+    static func longVowelMarks(_ text: String) -> String {
+        text.contains("-") ? String(text.map { $0 == "-" ? "ー" : $0 }) : text
     }
 
     /// 日本語区間の直後の `.` `,` を `。` `、` にする。

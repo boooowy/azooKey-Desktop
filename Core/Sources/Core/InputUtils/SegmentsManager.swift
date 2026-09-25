@@ -351,7 +351,7 @@ public final class SegmentsManager {
                 return false
             }
         }
-        guard let plan = self.mixedInput.plan(appending: string, partial: true) else {
+        guard let plan = self.mixedInput.plan(appending: string, partial: true, japaneseStyle: inputStyle) else {
             self.mixedInput.reset()
             return false
         }
@@ -377,6 +377,12 @@ public final class SegmentsManager {
         return true
     }
 
+    static func milliseconds(from start: ContinuousClock.Instant, to end: ContinuousClock.Instant) -> String {
+        let components = (end - start).components
+        // attoseconds は 1 秒未満の端数しか持たないので、秒のぶんを足す
+        return String(format: "%.1f", Double(components.seconds) * 1000 + Double(components.attoseconds) / 1e15)
+    }
+
     nonisolated(unsafe) static let mixedInputLogger = os.Logger(
         subsystem: "azooKeyMac.mixedInput", category: "mixedInput"
     )
@@ -397,12 +403,31 @@ public final class SegmentsManager {
         self.updateRawCandidate()
     }
 
+    /// 混在入力に渡す文字列。
+    ///
+    /// 大文字は shift の意図を尊重したい (大文字はこのモデルで英語を決定づける
+    /// 唯一の手がかり) が、`-` のように **意図が非 ASCII になるキー** (日本語入力では `ー`)
+    /// をそのまま渡すと区間判定できず、混在入力がそこで止まってしまう。
+    /// 意図が ASCII のときだけ意図を使い、そうでなければ打ったキーの文字を使う。
+    static func mixedInputString(_ pieces: [InputPiece]) -> String {
+        String(pieces.compactMap { piece -> Character? in
+            switch piece {
+            case .character(let character):
+                character
+            case .key(let intention, let input, _):
+                if let intention, intention.isASCII { intention } else { input }
+            case .compositionSeparator:
+                nil
+            }
+        })
+    }
+
     @MainActor
     public func insertAtCursorPosition(pieces: [InputPiece], inputStyle: InputStyle) {
         self.lastInputStyle = inputStyle
         // 打鍵はこちらを通る。intention を優先すると shift 込みの大文字が取れる
         // (大文字はこのモデルで英語を決定づける唯一の手がかりなので落とせない)
-        if self.tryMixedInsert(pieces.inputString(preferIntention: true), inputStyle: inputStyle) {
+        if self.tryMixedInsert(Self.mixedInputString(pieces), inputStyle: inputStyle) {
             self.lastOperation = .insert
             self.shouldShowCandidateWindow = !self.liveConversionEnabled
             self.updateRawCandidate()
@@ -458,15 +483,32 @@ public final class SegmentsManager {
         }
         if self.mixedInputEnabled, !self.mixedInput.isEmpty, self.composingText.isAtEndIndex,
            self.mixedInput.isInSync(with: self.composingText) {
-            // 削除は常に組み直す (短くなると前方の区間のラベルも変わりうる)
-            _ = self.mixedInput.deleteBackward(count: count)
-            self.composingText = self.mixedInput.rebuild(partial: true)
+            // 短くなると前方の区間のラベルも変わりうるので、変わったときだけ組み直す。
+            // 毎回組み直すと azooKey 側が変換をやり直して、削除が重くなる
+            let deleteStart = ContinuousClock.now
+            let planKind: String
+            switch self.mixedInput.deleteBackward(count: count, partial: true) {
+            case .deleteInPlace:
+                self.composingText.deleteBackwardFromCursorPosition(count: count)
+                planKind = "inPlace"
+            case .rebuild(let rebuilt):
+                self.composingText = rebuilt
+                planKind = "rebuild"
+            }
             if self.mixedInput.isEmpty {
                 self.mixedInput.reset()
             }
             self.lastOperation = .delete
             self.shouldShowCandidateWindow = !self.liveConversionEnabled
+            let convertStart = ContinuousClock.now
             self.updateRawCandidate()
+            // 削除が重いときに、区間判定と変換のどちらが効いているかを切り分ける
+            Self.mixedInputLogger.info("""
+                delete raw=\(self.mixedInput.raw, privacy: .public) \
+                plan=\(planKind, privacy: .public) \
+                segment=\(Self.milliseconds(from: deleteStart, to: convertStart), privacy: .public)ms \
+                convert=\(Self.milliseconds(from: convertStart, to: .now), privacy: .public)ms
+                """)
             return
         }
         self.composingText.deleteBackwardFromCursorPosition(count: count)
