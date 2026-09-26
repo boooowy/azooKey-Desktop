@@ -81,7 +81,8 @@ extension ConverterServer {
             },
             replaceSuggestionSelectionIndex: session.replaceSuggestionSelectionIndex,
             isEmpty: manager.isEmpty,
-            convertTarget: manager.convertTarget
+            convertTarget: manager.convertTarget,
+            segmentReading: manager.getCurrentSegmentReading(inputState: inputState).map(ConverterSegmentReading.init)
         )
     }
 

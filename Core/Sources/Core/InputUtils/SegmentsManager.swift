@@ -1353,6 +1353,35 @@ public final class SegmentsManager {
         return (appendText, deleteCount)
     }
 
+    /// 候補選択中に、変換している文節の読みと、そのあとに残っている読み。
+    public struct SegmentReading: Sendable, Equatable {
+        public var target: String
+        public var rest: String
+    }
+
+    /// 候補選択中の文節の読み。候補選択中でないか、候補がなければ nil。
+    ///
+    /// `getCurrentMarkedText(inputState: .selecting)` と同じく、選んでいる候補の
+    /// `composingCount` で区切る。Shift+←/→ で区切りを動かしたとき、読みのどこまでが
+    /// 変換の対象かを候補ウィンドウに出すのに使う (マークテキストは変換後の漢字になっていて、
+    /// 読みのどこまでかが分からない)。
+    public func getCurrentSegmentReading(inputState: InputState) -> SegmentReading? {
+        guard case .selecting = inputState, let candidates, !candidates.isEmpty else {
+            return nil
+        }
+        let index = min(self.selectionIndex ?? 0, candidates.count - 1)
+        return Self.segmentReading(of: self.composingText, composingCount: candidates[index].composingCount)
+    }
+
+    /// `composingText` を `composingCount` のところで区切った読み。
+    static func segmentReading(of composingText: ComposingText, composingCount: ComposingCount) -> SegmentReading {
+        var afterComposingText = composingText
+        afterComposingText.prefixComplete(composingCount: composingCount)
+        let whole = composingText.convertTarget
+        let rest = afterComposingText.convertTarget
+        return SegmentReading(target: String(whole.dropLast(rest.count)), rest: rest)
+    }
+
     // swiftlint:disable:next cyclomatic_complexity
     public func getCurrentMarkedText(inputState: InputState) -> MarkedText {
         switch inputState {

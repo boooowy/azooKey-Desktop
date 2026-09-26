@@ -548,6 +548,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             var rect: NSRect = .zero
             self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
             self.candidatesViewController.showCandidateIndex = true
+            self.candidatesViewController.segmentReading = self.currentConverterView?.segmentReading
             self.candidatesViewController.updateCandidatePresentations(
                 candidates,
                 selectionIndex: selectionIndex,
@@ -558,6 +559,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             var rect: NSRect = .zero
             self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
             self.candidatesViewController.showCandidateIndex = false
+            self.candidatesViewController.segmentReading = nil
             self.candidatesViewController.updateCandidatePresentations(
                 candidates,
                 selectionIndex: selectionIndex,
@@ -567,6 +569,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         case .hidden:
             self.candidatesWindow.setIsVisible(false)
             self.candidatesWindow.orderOut(nil)
+            self.candidatesViewController.segmentReading = nil
             self.candidatesViewController.hide()
         }
     }
@@ -741,10 +744,15 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     }
 
     func refreshMarkedText() {
-        let highlight = self.mark(
+        // 変換している文節は、標準の強調に背景色と太い下線を足してはっきりさせる。
+        // 標準の強調だけだと、多くのアプリで残りとの違いが下線の太さしか出ない。
+        // 背景色は候補ウィンドウの見出しのカプセルと揃える (描くかどうかはアプリ次第)
+        var highlight = self.mark(
             forStyle: kTSMHiliteSelectedConvertedText,
             at: NSRange(location: NSNotFound, length: 0)
-        ) as? [NSAttributedString.Key: Any]
+        ) as? [NSAttributedString.Key: Any] ?? [:]
+        highlight[.backgroundColor] = SegmentHighlight.backgroundColor
+        highlight[.underlineStyle] = NSUnderlineStyle.thick.rawValue
         let underline = self.mark(
             forStyle: kTSMHiliteConvertedText,
             at: NSRange(location: NSNotFound, length: 0)

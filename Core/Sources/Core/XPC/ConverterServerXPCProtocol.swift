@@ -449,6 +449,9 @@ public struct ConverterSessionSnapshot: Codable, Sendable {
     public var replaceSuggestionSelectionIndex: Int?
     public var isEmpty: Bool
     public var convertTarget: String
+    /// 候補選択中の文節の読み。候補ウィンドウの見出しに使う。
+    /// Optional なので、これを持たない古い Server からの応答でも decode できる
+    public var segmentReading: ConverterSegmentReading?
 
     public init(
         markedText: ConverterMarkedText,
@@ -457,7 +460,8 @@ public struct ConverterSessionSnapshot: Codable, Sendable {
         replaceSuggestionCandidates: [ConverterCandidatePresentation] = [],
         replaceSuggestionSelectionIndex: Int? = nil,
         isEmpty: Bool,
-        convertTarget: String
+        convertTarget: String,
+        segmentReading: ConverterSegmentReading? = nil
     ) {
         self.markedText = markedText
         self.candidateWindow = candidateWindow
@@ -466,6 +470,27 @@ public struct ConverterSessionSnapshot: Codable, Sendable {
         self.replaceSuggestionSelectionIndex = replaceSuggestionSelectionIndex
         self.isEmpty = isEmpty
         self.convertTarget = convertTarget
+        self.segmentReading = segmentReading
+    }
+}
+
+/// 候補選択中に、変換している文節の読みと、そのあとに残っている読み。
+public struct ConverterSegmentReading: Codable, Sendable, Equatable {
+    public var target: String
+    public var rest: String
+
+    public init(target: String, rest: String) {
+        self.target = target
+        self.rest = rest
+    }
+
+    public init(_ reading: SegmentsManager.SegmentReading) {
+        self.init(target: reading.target, rest: reading.rest)
+    }
+
+    /// 区切りを動かして、あとに読みが残っているか。残っていなければ見出しは出さない
+    public var isSplit: Bool {
+        !target.isEmpty && !rest.isEmpty
     }
 }
 

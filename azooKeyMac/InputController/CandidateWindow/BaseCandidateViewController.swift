@@ -94,6 +94,31 @@ class BaseCandidateViewController: NSViewController {
     internal var tableView: NSTableView!
     internal var currentSelectedRow: Int = -1
 
+    /// 候補の上に出す見出し (文節を区切っているときの読み)
+    private let segmentReadingHeader = SegmentReadingHeaderView()
+    private var segmentReadingHeaderHeight: NSLayoutConstraint?
+
+    /// 候補選択中の文節の読み。区切りがあるときだけ見出しを出す
+    var segmentReading: ConverterSegmentReading? {
+        didSet {
+            guard segmentReading != oldValue else {
+                return
+            }
+            if let segmentReading, segmentReading.isSplit {
+                self.segmentReadingHeader.update(segmentReading)
+                self.segmentReadingHeader.isHidden = false
+                self.segmentReadingHeaderHeight?.constant = SegmentReadingHeaderView.height
+            } else {
+                self.segmentReadingHeader.isHidden = true
+                self.segmentReadingHeaderHeight?.constant = 0
+            }
+        }
+    }
+
+    private var visibleHeaderHeight: CGFloat {
+        self.segmentReadingHeader.isHidden ? 0 : SegmentReadingHeaderView.height
+    }
+
     override func loadView() {
         // 親ビュー（ZStackのような役割）
         let containerView = NSView()
@@ -119,7 +144,10 @@ class BaseCandidateViewController: NSViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
 
         // 重ね順に応じて subviews を構成（背面 → 前面）
-        containerView.subviews = [materialView, scrollView]
+        self.segmentReadingHeader.isHidden = true
+        containerView.subviews = [materialView, self.segmentReadingHeader, scrollView]
+        let segmentReadingHeaderHeight = self.segmentReadingHeader.heightAnchor.constraint(equalToConstant: 0)
+        self.segmentReadingHeaderHeight = segmentReadingHeaderHeight
 
         // 制約
         NSLayoutConstraint.activate([
@@ -128,9 +156,14 @@ class BaseCandidateViewController: NSViewController {
             materialView.topAnchor.constraint(equalTo: containerView.topAnchor),
             materialView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
 
+            self.segmentReadingHeader.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            self.segmentReadingHeader.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            self.segmentReadingHeader.topAnchor.constraint(equalTo: containerView.topAnchor),
+            segmentReadingHeaderHeight,
+
             scrollView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            scrollView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: self.segmentReadingHeader.bottomAnchor),
             scrollView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
         ])
 
@@ -253,12 +286,14 @@ class BaseCandidateViewController: NSViewController {
         let tableViewHeight = CGFloat(self.numberOfVisibleRows) * rowHeight
 
         let maxWidth = self.getMaxTextWidth(candidates: self.candidates.lazy.map(\.text))
-        let windowWidth = self.getWindowWidth(maxContentWidth: maxWidth)
+        // 見出しがあれば、その幅と高さも含める
+        let headerWidth = self.segmentReadingHeader.isHidden ? 0 : self.segmentReadingHeader.preferredWidth
+        let windowWidth = max(self.getWindowWidth(maxContentWidth: maxWidth), headerWidth)
         let newWindowFrame = WindowPositioning.frameNearCursor(
             currentFrame: .init(window.frame),
             screenRect: .init(screen.visibleFrame),
             cursorLocation: .init(cursorLocation),
-            desiredSize: .init(width: windowWidth, height: tableViewHeight)
+            desiredSize: .init(width: windowWidth, height: tableViewHeight + self.visibleHeaderHeight)
         ).cgRect
         if newWindowFrame != window.frame {
             window.setFrame(newWindowFrame, display: true, animate: false)

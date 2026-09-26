@@ -292,3 +292,25 @@ import Testing
     #expect(decoded.inputLanguage == .english)
     #expect(decoded.settings == [setting])
 }
+
+@Test func converterServerSnapshotCarriesSegmentReading() throws {
+    let snapshot = ConverterSessionSnapshot(
+        markedText: ConverterSessionSnapshot.empty.markedText,
+        candidateWindow: .selecting([], selectionIndex: 0),
+        isEmpty: false,
+        convertTarget: "きょうのてんきははれです",
+        segmentReading: .init(target: "きょうのてんきは", rest: "はれです")
+    )
+    let decoded = try ConverterServerCodec.decodeResponse(
+        from: ConverterServerCodec.encode(ConverterServerResponse(snapshot: snapshot))
+    )
+    #expect(decoded.snapshot.segmentReading == .init(target: "きょうのてんきは", rest: "はれです"))
+}
+
+/// 文節の読みを持たない古い Server の応答でも decode できる
+@Test func converterServerSnapshotWithoutSegmentReadingDecodes() throws {
+    let data = try ConverterServerCodec.encode(ConverterServerResponse(snapshot: .empty))
+    #expect(!(String(bytes: data, encoding: .utf8) ?? "").contains("segmentReading"))
+    let decoded = try ConverterServerCodec.decodeResponse(from: data)
+    #expect(decoded.snapshot.segmentReading == nil)
+}

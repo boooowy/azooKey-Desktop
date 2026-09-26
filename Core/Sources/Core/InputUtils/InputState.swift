@@ -271,7 +271,9 @@ public enum InputState: Sendable, Hashable {
                 // FIXME: ここの動作はmacOSの標準と異なる。具体的には、macOSの標準ではselectingをcomposingに戻して入力を継続する動きになる。
                 return (.commitMarkedTextAndAppendPieceToMarkedText(string), .transition(.composing))
             case .enter:
-                return (.submitSelectedCandidate, .basedOnSubmitCandidate(ifIsEmpty: .none, ifIsNotEmpty: .previewing))
+                // 文節を区切って最初の文節だけ確定したときは、残りを次の変換対象にする (→ と同じ)。
+                // previewing に戻すと、次に Shift+→ を押したとき区切りが先頭の1文字からやり直しになる
+                return (.submitSelectedCandidate, .basedOnSubmitCandidate(ifIsEmpty: .none, ifIsNotEmpty: .selecting))
             case .backspace:
                 if event.modifierFlags.contains(.option) {
                     return (.consume, .fallthrough)
@@ -323,7 +325,7 @@ public enum InputState: Sendable, Hashable {
             case .number(let num):
                 switch num {
                 case .one, .two, .three, .four, .five, .six, .seven, .eight, .nine:
-                    return (.selectNumberCandidate(num.intValue), .basedOnSubmitCandidate(ifIsEmpty: .none, ifIsNotEmpty: .previewing))
+                    return (.selectNumberCandidate(num.intValue), .basedOnSubmitCandidate(ifIsEmpty: .none, ifIsNotEmpty: .selecting))
                 case .zero, .shiftZero:
                     return (.commitMarkedTextAndAppendPieceToMarkedText([num.inputPiece]), .transition(.composing))
                 }
