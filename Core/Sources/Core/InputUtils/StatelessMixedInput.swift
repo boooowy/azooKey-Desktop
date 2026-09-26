@@ -91,7 +91,7 @@ struct StatelessMixedInput {
             reset()
             return true
         }
-        guard let spans = try? segmenter?.segmentInput(restored, partial: partial), !spans.isEmpty else {
+        guard let segmenter, let spans = try? Self.segment(restored, with: segmenter, partial: partial), !spans.isEmpty else {
             return false
         }
         raw = restored
@@ -142,7 +142,7 @@ struct StatelessMixedInput {
         self.japaneseStyle = japaneseStyle
         let oldMask = Self.mask(lastSpans)
         raw += string
-        guard let spans = try? segmenter.segmentInput(raw, partial: partial) else {
+        guard let spans = try? Self.segment(raw, with: segmenter, partial: partial) else {
             raw.removeLast(string.count)
             return nil
         }
@@ -197,7 +197,7 @@ struct StatelessMixedInput {
             mustRebuild = false
             return .rebuild(ComposingText())
         }
-        let spans = (try? segmenter.segmentInput(raw, partial: partial)) ?? []
+        let spans = (try? Self.segment(raw, with: segmenter, partial: partial)) ?? []
         lastSpans = spans
         let newMask = Self.mask(spans)
         if !mustRebuild, newMask.elementsEqual(oldMask) {
@@ -214,11 +214,98 @@ struct StatelessMixedInput {
             lastSpans = []
             return ComposingText()
         }
-        let spans = (try? segmenter.segmentInput(raw, partial: partial)) ?? []
+        let spans = (try? Self.segment(raw, with: segmenter, partial: partial)) ?? []
         lastSpans = spans
         mustRebuild = false
         rebuildCount += 1
         return Self.composingText(from: spans, japaneseStyle: japaneseStyle)
+    }
+
+    /// 区間判定。`nn` の間で英語と日本語を区切った判定だけを補正する。
+    ///
+    /// ローマ字入力では「ん」を `nn` で打つことが多いが、区間判定のモデルは
+    /// `innsuto-ru` を `[in] nsuto-ru` と判定し、「ｉｎんすとーる」になる。
+    /// `nn` + 子音はローマ字の「ん」とみなせるので、`nn` を英語区間と日本語区間に
+    /// またがらせた判定 (`splitsDoubleN`) は、その英字の並びを k-best で判定し直し、
+    /// この形を含まない最上位の案を使う。
+    /// どの案もこの形なら元の判定のままにする。
+    ///
+    /// jev-test の RomajiSegmenter は Python 版と同じ答えを返すことを
+    /// golden テストで保証しているので、補正はこちら側で行う。
+    static func segment(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+        let spans = try segmenter.segmentInput(raw, partial: partial)
+        guard spans.indices.dropLast().contains(where: { splitsDoubleN(spans[$0], spans[$0 + 1]) }) else {
+            return spans
+        }
+        var result: [InputSpan] = []
+        var i = 0
+        while i < spans.count {
+            guard spans[i].label != .symbol else {
+                result.append(spans[i])
+                i += 1
+                continue
+            }
+            // 記号を挟まずに続く英語・日本語の区間は、segmentInput では1つの英字の並び
+            var j = i
+            while j < spans.count, spans[j].label != .symbol { j += 1 }
+            let run = Array(spans[i ..< j])
+            result += try Self.resegmentIfSplitsDoubleN(
+                run,
+                with: segmenter,
+                partial: partial && j == spans.count
+            )
+            i = j
+        }
+        return result
+    }
+
+    static let doubleNCandidateCount = 8
+
+    private static func resegmentIfSplitsDoubleN(_ run: [InputSpan], with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+        guard run.indices.dropLast().contains(where: { splitsDoubleN(run[$0], run[$0 + 1]) }) else {
+            return run
+        }
+        let text = run.map(\.text).joined()
+        let candidates = try segmenter.segmentKBest(text, k: doubleNCandidateCount, partial: partial)
+        for candidate in candidates {
+            let spans = candidate.segments.map {
+                InputSpan(label: $0.label == .english ? .english : .japanese, text: $0.text)
+            }
+            if !spans.indices.dropLast().contains(where: { splitsDoubleN(spans[$0], spans[$0 + 1]) }) {
+                return spans
+            }
+        }
+        return run
+    }
+
+    /// `nn` (「ん」) を英語区間と日本語区間にまたがらせる判定か。
+    ///
+    /// - `[in] nsuto`: `nn` の間で区切り、日本語区間が `n` + 子音 (「ん」) で始まる
+    /// - `[inn] suto`: 英語区間が `nn` で終わり、日本語区間が子音で始まる
+    ///
+    /// `n` の直後が母音・`y` (な行・にゃ行) や、打ちかけで `n` だけのときは対象外。
+    /// `Amazonno` (Amazonの) や、`Amazon` のあとに `na` を打ちかけた `Amazonn` を崩さないため。
+    ///
+    /// 大文字を含む英語区間も対象外。`Glennsan` (Glennさん) や `Annsan` のように、
+    /// 大文字で打った名前は英語として意図したものとみなす。
+    static func splitsDoubleN(_ left: InputSpan, _ right: InputSpan) -> Bool {
+        guard left.label == .english, right.label == .japanese,
+              !left.text.contains(where: \.isUppercase) else {
+            return false
+        }
+        let tail = Array(left.text.lowercased().suffix(2))
+        let head = Array(right.text.lowercased().prefix(2))
+        guard tail.last == "n", let first = head.first else {
+            return false
+        }
+        if first == "n" {
+            return head.count == 2 && isConsonant(head[1])
+        }
+        return tail == ["n", "n"] && isConsonant(first)
+    }
+
+    private static func isConsonant(_ character: Character) -> Bool {
+        character.isLetter && !"aiueoy".contains(character)
     }
 
     static func mask(_ spans: [InputSpan]) -> [InputLabel] {

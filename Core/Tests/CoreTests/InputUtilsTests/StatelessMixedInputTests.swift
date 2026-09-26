@@ -1,5 +1,6 @@
 import Foundation
 import KanaKanjiConverterModuleWithDefaultDictionary
+import RomajiSegmenter
 import Testing
 
 @testable import Core
@@ -42,6 +43,42 @@ struct StatelessMixedInputTests {
     func punctuation() throws {
         #expect(try Self.type("kononaiyoudeSlacknisousinsiteoite.").convertTarget
                 == "このないようでSlackにそうしんしておいて。")
+    }
+
+    @Test("「ん」を nn で打っても先頭の英単語に吸われない", arguments: [
+        // 区間判定のモデルは innsuto-ru を [in] nsuto-ru と判定する
+        ("innsuto-ru", "いんすとーる"),
+        ("innsuto-ruwosuru", "いんすとーるをする"),
+    ])
+    func doubleNStaysJapanese(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
+    @Test("nn の補正は英単語のあとの な行や、大文字で打った名前を崩さない", arguments: [
+        ("Openninaru", "Openになる"),
+        ("Annsanhakitayo", "Annさんはきたよ"),
+    ])
+    func doubleNCorrectionKeepsEnglish(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
+    @Test("nn を英語区間と日本語区間にまたがらせた判定だけを補正対象にする")
+    func splitsDoubleN() {
+        func split(_ english: String, _ japanese: String) -> Bool {
+            StatelessMixedInput.splitsDoubleN(
+                InputSpan(label: .english, text: english),
+                InputSpan(label: .japanese, text: japanese)
+            )
+        }
+        #expect(split("in", "nsuto"))
+        #expect(split("inn", "suto"))
+        // な行・にゃ行、打ちかけの n は英単語のあとに普通に来る
+        #expect(!split("amazon", "no"))
+        #expect(!split("java", "nyuumon"))
+        #expect(!split("amazon", "n"))
+        // 大文字を含む英語区間は意図して英語で打ったものとみなす
+        #expect(!split("Glenn", "san"))
+        #expect(!split("Pen", "ndaigaku"))
     }
 
     @Test("英単語が複数あっても崩れない", arguments: [
