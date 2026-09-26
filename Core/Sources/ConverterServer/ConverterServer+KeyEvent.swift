@@ -29,8 +29,13 @@ extension ConverterServer {
             session.manager.activate()
         }
         session.setContext(request.context)
-        Config.DebugPredictiveTyping().value = request.enablePredictiveTyping
-        Config.DebugTypoCorrection().value = request.enableTypoCorrection
+        // 毎打鍵 UserDefaults に書くと cfprefsd への書き込みが走るので、変わったときだけ書く
+        if Config.DebugPredictiveTyping().value != request.enablePredictiveTyping {
+            Config.DebugPredictiveTyping().value = request.enablePredictiveTyping
+        }
+        if Config.DebugTypoCorrection().value != request.enableTypoCorrection {
+            Config.DebugTypoCorrection().value = request.enableTypoCorrection
+        }
 
         if request.enableOptionDirectFullWidthInput,
            let text = OptionDirectInputResolver.resolve(

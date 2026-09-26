@@ -196,6 +196,10 @@ public final class SegmentsManager {
     static let specialCandidateProviders: [any SpecialCandidateProvider] =
         KanaKanjiConverter.defaultSpecialCandidateProviders + [TypedSymbolCandidateProvider()]
 
+    /// 絵文字辞書。`withDefaultEmojiDictionary()` は呼ぶたびに 234KB のテキストを読んで
+    /// 辞書を組み立てるので、打鍵ごとに作らない (内容は起動中変わらない)
+    static let emojiTextReplacer: TextReplacer = .withDefaultEmojiDictionary()
+
     private func options(
         leftSideContext: String?,
         rightSideContext: String?,
@@ -212,7 +216,7 @@ public final class SegmentsManager {
             learningType: Config.Learning().value.learningType,
             memoryDirectoryURL: self.azooKeyMemoryDir,
             sharedContainerURL: CompiledUserDictionaryStore.directoryURL(memoryDirectoryURL: self.azooKeyMemoryDir),
-            textReplacer: .withDefaultEmojiDictionary(),
+            textReplacer: Self.emojiTextReplacer,
             specialCandidateProviders: Self.specialCandidateProviders,
             zenzaiMode: self.zenzaiMode(
                 leftSideContext: leftSideContext,
