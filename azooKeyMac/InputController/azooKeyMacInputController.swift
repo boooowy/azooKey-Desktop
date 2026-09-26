@@ -11,7 +11,8 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     private var pendingKeyEventCount = 0
     private var nextKeyEventID: UInt64 = 0
     /// 応答が返る前に同期的に出しておくマークテキスト (Ghostty 対策)
-    private var provisionalMarkedText: String = ""
+    /// 変換サーバーの応答を待たずに、マークテキストの末尾に出している打鍵
+    private var provisionalInputEcho = ProvisionalInputEcho()
     private var activationGeneration: UInt64 = 0
     private var pendingConverterServerActivation: ConverterSessionActivation?
     var liveConversionEnabled: Bool {
@@ -149,6 +150,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     override func activateServer(_ sender: Any!) {
         super.activateServer(sender)
         self.activationGeneration &+= 1
+        self.provisionalInputEcho.reset()
         self.updateLiveConversionToggleMenuItem(newValue: self.liveConversionEnabled)
         self.updateTransformSelectedTextMenuItemEnabledState()
         // ピン留めプロンプトのキャッシュを更新
@@ -177,6 +179,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     @MainActor
     override func deactivateServer(_ sender: Any!) {
         self.activationGeneration &+= 1
+        self.provisionalInputEcho.reset()
         self.pendingConverterServerActivation = nil
         self.converterServerClient.sendIfSessionOpen({ _ in .lifecycle(.deactivate) }, completion: { _ in })
         self.currentConverterView = nil
@@ -353,9 +356,22 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             return false
         }
 
-        self.markCompositionStartSynchronously(event: event)
-
         self.nextKeyEventID &+= 1
+        // 変換サーバーは別プロセスで、変換 (と Zenzai による予測) を終えてから応答する。
+        // その往復を待たずに、打った文字をマークテキストの末尾に出しておく。
+        //
+        // Ghostty のように「キーを押した瞬間に IME が処理したかを見て、していなければ生の
+        // キーを端末へ流す」アプリでは、最初のマークテキストが届くまでの1〜2打鍵が
+        // 端末に漏れる (ghostty-org/ghostty discussions/12278) ので、その対策も兼ねる。
+        if self.provisionalInputEcho.record(
+            eventID: self.nextKeyEventID,
+            event: event,
+            inputLanguage: self.inputLanguage,
+            acknowledgedInputState: self.inputState,
+            pendingKeyEventCount: self.pendingKeyEventCount
+        ) {
+            self.refreshMarkedText()
+        }
         let request = ConverterKeyEventRequest(
             eventID: self.nextKeyEventID,
             event: event,
@@ -383,8 +399,11 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                 guard self.activationGeneration == activationGeneration else {
                     return
                 }
+                // この打鍵のぶんは応答の内容で置き換わる
+                self.provisionalInputEcho.acknowledge(eventID: request.eventID)
                 guard let response else {
                     self.appendDebugMessage("ConverterServer dropped key event \(request.eventID)")
+                    self.refreshMarkedText()
                     return
                 }
                 if !response.handled {
@@ -408,47 +427,6 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                 keyCode: 1
             ),
             enableSuggestion: Config.AIBackendPreference().value != .off
-        )
-    }
-
-    /// 変換が始まったことを、Server の応答を待たずに client へ伝える。
-    ///
-    /// ConverterServer は別プロセスなので、マークテキストが出るのは XPC の往復ぶん遅れる。
-    /// Ghostty のように「キーを押した瞬間に IME が処理したかを見て、していなければ生の
-    /// キーを端末へ流す」実装だと、最初のマークテキストが届くまでの1〜2打鍵が端末に漏れる
-    /// (ghostty-org/ghostty discussions/12278 と同じ現象)。
-    ///
-    /// ここで出すのは「変換中である」という合図で、内容は暫定。応答が返れば
-    /// `refreshMarkedText()` が正しい内容で上書きする。
-    @MainActor
-    private func markCompositionStartSynchronously(event: KeyEventCore) {
-        // 既にマークテキストが出ていれば、client は変換中だと知っている
-        guard self.currentMarkedText().elements.allSatisfy({ $0.content.isEmpty }) else {
-            return
-        }
-        guard !event.modifierFlags.contains(.command), !event.modifierFlags.contains(.control) else {
-            return
-        }
-        // 文字を打ち込む操作のときだけ。Enter や矢印で暫定表示を出さない
-        switch UserAction.getUserAction(eventCore: event, inputLanguage: self.inputLanguage) {
-        case .input, .number:
-            break
-        default:
-            return
-        }
-        guard let characters = event.characters, !characters.isEmpty else {
-            return
-        }
-        // 応答が返る前に続けて打たれたぶんも足しておく (速く打つと2文字以上漏れる)
-        self.provisionalMarkedText += characters
-        let underline = self.mark(
-            forStyle: kTSMHiliteConvertedText,
-            at: NSRange(location: NSNotFound, length: 0)
-        ) as? [NSAttributedString.Key: Any]
-        self.client()?.setMarkedText(
-            NSAttributedString(string: self.provisionalMarkedText, attributes: underline),
-            selectionRange: NSRange(location: self.provisionalMarkedText.count, length: 0),
-            replacementRange: NSRange(location: NSNotFound, length: 0)
         )
     }
 
@@ -763,8 +741,6 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     }
 
     func refreshMarkedText() {
-        // 実際の内容で上書きするので、暫定表示の役目はここで終わり
-        self.provisionalMarkedText = ""
         let highlight = self.mark(
             forStyle: kTSMHiliteSelectedConvertedText,
             at: NSRange(location: NSNotFound, length: 0)
@@ -788,9 +764,19 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                 )
             )
         }
+        // 応答待ちの打鍵を末尾に足す。カーソルはその後ろ
+        let provisionalSuffix = self.provisionalInputEcho.suffix
+        let selectionRange = if provisionalSuffix.isEmpty {
+            currentMarkedText.selectionRange.nsRange
+        } else {
+            NSRange(location: text.length + (provisionalSuffix as NSString).length, length: 0)
+        }
+        if !provisionalSuffix.isEmpty {
+            text.append(NSAttributedString(string: provisionalSuffix, attributes: [:]))
+        }
         self.client()?.setMarkedText(
             text,
-            selectionRange: currentMarkedText.selectionRange.nsRange,
+            selectionRange: selectionRange,
             replacementRange: NSRange(location: NSNotFound, length: 0)
         )
     }
