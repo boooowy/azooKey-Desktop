@@ -1,0 +1,814 @@
+{
+ "cases": [
+  {
+   "final": "[XAI] <_> [API] <_> [KEY] wosetteishite <3> jini [meeting] suru <.>",
+   "partial": "[XAI] <_> [API] <_> [KEY] wosetteishite <3> jini [meeting] suru <.>",
+   "text": "XAI_API_KEYwosetteishite3jinimeetingsuru."
+  },
+  {
+   "final": "kononaiyoude [Slack] nisousinsiteoite <.>",
+   "partial": "kononaiyoude [Slack] nisousinsiteoite <.>",
+   "text": "kononaiyoudeSlacknisousinsiteoite."
+  },
+  {
+   "final": "messe-jiwookutta",
+   "partial": "messe-jiwookutta",
+   "text": "messe-jiwookutta"
+  },
+  {
+   "final": "messe-ji",
+   "partial": "messe-ji",
+   "text": "messe-ji"
+  },
+  {
+   "final": "a- [b] - [c]",
+   "partial": "a- [b] -c",
+   "text": "a-b-c"
+  },
+  {
+   "final": "<--->",
+   "partial": "<--->",
+   "text": "---"
+  },
+  {
+   "final": "<-> a-",
+   "partial": "<-> a-",
+   "text": "-a-"
+  },
+  {
+   "final": "a--",
+   "partial": "a--",
+   "text": "a--"
+  },
+  {
+   "final": "<3> jini",
+   "partial": "<3> jini",
+   "text": "3jini"
+  },
+  {
+   "final": "[v] <2.1> nokakunin",
+   "partial": "[v] <2.1> nokakunin",
+   "text": "v2.1nokakunin"
+  },
+  {
+   "final": "[test] <_> [case] <_1>",
+   "partial": "[test] <_> [case] <_1>",
+   "text": "test_case_1"
+  },
+  {
+   "final": "[https] <://> [example] <.> [com] </> aa",
+   "partial": "[https] <://> [example] <.> [com] </> aa",
+   "text": "https://example.com/aa"
+  },
+  {
+   "final": "[AWSto] < > [GCP]",
+   "partial": "[AWSto] < > [GCP]",
+   "text": "AWSto GCP"
+  },
+  {
+   "final": "kyouha <,> asitaha <.>",
+   "partial": "kyouha <,> asitaha <.>",
+   "text": "kyouha,asitaha."
+  },
+  {
+   "final": "<.>",
+   "partial": "<.>",
+   "text": "."
+  },
+  {
+   "final": "<,>",
+   "partial": "<,>",
+   "text": ","
+  },
+  {
+   "final": "<...>",
+   "partial": "<...>",
+   "text": "..."
+  },
+  {
+   "final": "[abc] <.> [def]",
+   "partial": "[abc] <.> [def]",
+   "text": "abc.def"
+  },
+  {
+   "final": "<1234>",
+   "partial": "<1234>",
+   "text": "1234"
+  },
+  {
+   "final": "[Slack]",
+   "partial": "[Slack]",
+   "text": "Slack"
+  },
+  {
+   "final": "[s]",
+   "partial": "s",
+   "text": "s"
+  },
+  {
+   "final": "[S]",
+   "partial": "[S]",
+   "text": "S"
+  },
+  {
+   "final": "n",
+   "partial": "n",
+   "text": "n"
+  },
+  {
+   "final": "nn",
+   "partial": "nn",
+   "text": "nn"
+  },
+  {
+   "final": "[Slack] no [screenshot] wookuttekudasai",
+   "partial": "[Slack] no [screenshot] wookuttekudasai",
+   "text": "Slacknoscreenshotwookuttekudasai"
+  },
+  {
+   "final": "[GitHub] no [branch] wokaetekudasai",
+   "partial": "[GitHub] no [branch] wokaetekudasai",
+   "text": "GitHubnobranchwokaetekudasai"
+  },
+  {
+   "final": "ashitano [meeting] no [link] wooshietekudasai",
+   "partial": "ashitano [meeting] no [link] wooshietekudasai",
+   "text": "ashitanomeetingnolinkwooshietekudasai"
+  },
+  {
+   "final": "kono [file] wo [Slack] dekyouyuushitekudasai",
+   "partial": "kono [file] wo [Slack] dekyouyuushitekudasai",
+   "text": "konofilewoSlackdekyouyuushitekudasai"
+  },
+  {
+   "final": "[Docker] to [Kubernetes] wobenkyouchuu",
+   "partial": "[Docker] to [Kubernetes] wobenkyouchuu",
+   "text": "DockertoKuberneteswobenkyouchuu"
+  },
+  {
+   "final": "[PR] no [review] woonegaishimasu",
+   "partial": "[PR] no [review] woonegaishimasu",
+   "text": "PRnoreviewwoonegaishimasu"
+  },
+  {
+   "final": "[AWS] to [GCP] nochigaiwoshiraberu",
+   "partial": "[AWS] to [GCP] nochigaiwoshiraberu",
+   "text": "AWStoGCPnochigaiwoshiraberu"
+  },
+  {
+   "final": "[Fig] made [prototype] wotsukutta",
+   "partial": "[Fig] made [prototype] wotsukutta",
+   "text": "Figmadeprototypewotsukutta"
+  },
+  {
+   "final": "[API] noen [dpoint] gakawatta",
+   "partial": "[API] noen [dpoint] gakawatta",
+   "text": "APInoendpointgakawatta"
+  },
+  {
+   "final": "mainni [merge] shimashita",
+   "partial": "mainni [merge] shimashita",
+   "text": "mainnimergeshimashita"
+  },
+  {
+   "final": "[Notion] ni [meeting] nomemowonokosu",
+   "partial": "[Notion] ni [meeting] nomemowonokosu",
+   "text": "Notionnimeetingnomemowonokosu"
+  },
+  {
+   "final": "[VSCod] ede [TypeScript] wokaku",
+   "partial": "[VSCod] ede [TypeScript] wokaku",
+   "text": "VSCodedeTypeScriptwokaku"
+  },
+  {
+   "final": "[Zoom] no [URL] wookurimasu",
+   "partial": "[Zoom] no [URL] wookurimasu",
+   "text": "ZoomnoURLwookurimasu"
+  },
+  {
+   "final": "[bug] wo [fix] shitekara [deploy] suru",
+   "partial": "[bug] wo [fix] shitekara [deploy] suru",
+   "text": "bugwofixshitekaradeploysuru"
+  },
+  {
+   "final": "[iPhon] eto [Mac] de [AirDrop] suru",
+   "partial": "[iPhon] eto [Mac] de [AirDrop] suru",
+   "text": "iPhonetoMacdeAirDropsuru"
+  },
+  {
+   "final": "[SlackdeDM] shimasu",
+   "partial": "[SlackdeDM] shimasu",
+   "text": "SlackdeDMshimasu"
+  },
+  {
+   "final": "[AWS] benkyoumaeha",
+   "partial": "[AWS] benkyoumaeha",
+   "text": "AWSbenkyoumaeha"
+  },
+  {
+   "final": "[AI] gasugoi",
+   "partial": "[AI] gasugoi",
+   "text": "AIgasugoi"
+  },
+  {
+   "final": "kinouha [GitHub] noissuewomiteta",
+   "partial": "kinouha [GitHub] noissuewomiteta",
+   "text": "kinouhaGitHubnoissuewomiteta"
+  },
+  {
+   "final": "kyounoshinchoku",
+   "partial": "kyounoshinchoku",
+   "text": "kyounoshinchoku"
+  },
+  {
+   "final": "messe-jiuindounotsuikato",
+   "partial": "messe-jiuindounotsuikato",
+   "text": "messe-jiuindounotsuikato"
+  },
+  {
+   "final": "gazouhyoujiwoseirisurutamenomoju-rukaihatsu",
+   "partial": "gazouhyoujiwoseirisurutamenomoju-rukaihatsu",
+   "text": "gazouhyoujiwoseirisurutamenomoju-rukaihatsu"
+  },
+  {
+   "final": "uiyounoirasutowoegaita",
+   "partial": "uiyounoirasutowoegaita",
+   "text": "uiyounoirasutowoegaita"
+  },
+  {
+   "final": "[UI] younoirasutowoegaita",
+   "partial": "[UI] younoirasutowoegaita",
+   "text": "UIyounoirasutowoegaita"
+  },
+  {
+   "final": "shikkurikozu",
+   "partial": "shikkurikozu",
+   "text": "shikkurikozu"
+  },
+  {
+   "final": "kakinaosoukanayamu",
+   "partial": "kakinaosoukanayamu",
+   "text": "kakinaosoukanayamu"
+  },
+  {
+   "final": "imanoshirabemononoshinchoku",
+   "partial": "imanoshirabemononoshinchoku",
+   "text": "imanoshirabemononoshinchoku"
+  },
+  {
+   "final": "saisho",
+   "partial": "saisho",
+   "text": "saisho"
+  },
+  {
+   "final": "[agent] gaapiwotadashikutsukautamenihitsuyounanoha",
+   "partial": "[agent] gaapiwotadashikutsukautamenihitsuyounanoha",
+   "text": "agentgaapiwotadashikutsukautamenihitsuyounanoha"
+  },
+  {
+   "final": "[Agent] ga [API] wotadashikutsukautamenihitsuyounanoha",
+   "partial": "[Agent] ga [API] wotadashikutsukautamenihitsuyounanoha",
+   "text": "AgentgaAPIwotadashikutsukautamenihitsuyounanoha"
+  },
+  {
+   "final": "juubunnna [description] dehanaika",
+   "partial": "juubunnna [description] dehanaika",
+   "text": "juubunnnadescriptiondehanaika"
+  },
+  {
+   "final": "handannnihitsuyounaimigameijisare",
+   "partial": "handannnihitsuyounaimigameijisare",
+   "text": "handannnihitsuyounaimigameijisare"
+  },
+  {
+   "final": "toutatsu",
+   "partial": "toutatsu",
+   "text": "toutatsu"
+  },
+  {
+   "final": "kaishakudeki",
+   "partial": "kaishakudeki",
+   "text": "kaishakudeki"
+  },
+  {
+   "final": "[runtime] nofurumaitomoicchishiteirukotodehanaika",
+   "partial": "[runtime] nofurumaitomoicchishiteirukotodehanaika",
+   "text": "runtimenofurumaitomoicchishiteirukotodehanaika"
+  },
+  {
+   "final": "chottokaizoudogaagattakigasuru",
+   "partial": "chottokaizoudogaagattakigasuru",
+   "text": "chottokaizoudogaagattakigasuru"
+  },
+  {
+   "final": "honnnokkushinchoku",
+   "partial": "honnnokkushinchoku",
+   "text": "honnnokkushinchoku"
+  },
+  {
+   "final": "ouyoujouhoukyounoshinchoku",
+   "partial": "ouyoujouhoukyounoshinchoku",
+   "text": "ouyoujouhoukyounoshinchoku"
+  },
+  {
+   "final": "kitamishikiwosaikai",
+   "partial": "kitamishikiwosaikai",
+   "text": "kitamishikiwosaikai"
+  },
+  {
+   "final": "[awsb] enkyoumaeha",
+   "partial": "[awsb] enkyoumaeha",
+   "text": "awsbenkyoumaeha"
+  },
+  {
+   "final": "pe-jiyondetakedo",
+   "partial": "pe-jiyondetakedo",
+   "text": "pe-jiyondetakedo"
+  },
+  {
+   "final": "wasuretesounanode",
+   "partial": "wasuretesounanode",
+   "text": "wasuretesounanode"
+  },
+  {
+   "final": "karayarinaoshi",
+   "partial": "karayarinaoshi",
+   "text": "karayarinaoshi"
+  },
+  {
+   "final": "kyoude",
+   "partial": "kyoude",
+   "text": "kyoude"
+  },
+  {
+   "final": "pe-jikuraiyonda",
+   "partial": "pe-jikuraiyonda",
+   "text": "pe-jikuraiyonda"
+  },
+  {
+   "final": "nokori",
+   "partial": "nokori",
+   "text": "nokori"
+  },
+  {
+   "final": "fuseidekinaishi",
+   "partial": "fuseidekinaishi",
+   "text": "fuseidekinaishi"
+  },
+  {
+   "final": "shinchoku",
+   "partial": "shinchoku",
+   "text": "shinchoku"
+  },
+  {
+   "final": "funnno",
+   "partial": "funnno",
+   "text": "funnno"
+  },
+  {
+   "final": "jikanpochipochishinaitoikenaippoidesu-",
+   "partial": "jikanpochipochishinaitoikenaippoidesu-",
+   "text": "jikanpochipochishinaitoikenaippoidesu-"
+  },
+  {
+   "final": "douiushoriwoshitaraiinokawakarimashitanode",
+   "partial": "douiushoriwoshitaraiinokawakarimashitanode",
+   "text": "douiushoriwoshitaraiinokawakarimashitanode"
+  },
+  {
+   "final": "shudouhaakiramete",
+   "partial": "shudouhaakiramete",
+   "text": "shudouhaakiramete"
+  },
+  {
+   "final": "jidoukako-dokakimasu",
+   "partial": "jidoukako-dokakimasu",
+   "text": "jidoukako-dokakimasu"
+  },
+  {
+   "final": "arigatouwatashinomigite",
+   "partial": "arigatouwatashinomigite",
+   "text": "arigatouwatashinomigite"
+  },
+  {
+   "final": "to-tokigisei",
+   "partial": "to-tokigisei",
+   "text": "to-tokigisei"
+  },
+  {
+   "final": "noukaha [replace]",
+   "partial": "noukaha [replace]",
+   "text": "noukahareplace"
+  },
+  {
+   "final": "noukaha [Replace]",
+   "partial": "noukaha [Replace]",
+   "text": "noukahaReplace"
+  },
+  {
+   "final": "saremashita",
+   "partial": "saremashita",
+   "text": "saremashita"
+  },
+  {
+   "final": "torimatoushidezenmontoiteseitouritsu",
+   "partial": "torimatoushidezenmontoiteseitouritsu",
+   "text": "torimatoushidezenmontoiteseitouritsu"
+  },
+  {
+   "final": "hayakuowaraseteta [lelynx] asobitaoshitai",
+   "partial": "hayakuowaraseteta [lelynx] asobitaoshitai",
+   "text": "hayakuowarasetetalelynxasobitaoshitai"
+  },
+  {
+   "final": "[aws] kuraudopurakuthishona-",
+   "partial": "[aws] kuraudopurakuthishona-",
+   "text": "awskuraudopurakuthishona-"
+  },
+  {
+   "final": "[AWS] kuraudopurakuthishona-",
+   "partial": "[AWS] kuraudopurakuthishona-",
+   "text": "AWSkuraudopurakuthishona-"
+  },
+  {
+   "final": "mondaishuu",
+   "partial": "mondaishuu",
+   "text": "mondaishuu"
+  },
+  {
+   "final": "shikakushoukai",
+   "partial": "shikakushoukai",
+   "text": "shikakushoukai"
+  },
+  {
+   "final": "tsukana",
+   "partial": "tsukana",
+   "text": "tsukana"
+  },
+  {
+   "final": "mokuhyou",
+   "partial": "mokuhyou",
+   "text": "mokuhyou"
+  },
+  {
+   "final": "junchou",
+   "partial": "junchou",
+   "text": "junchou"
+  },
+  {
+   "final": "dokkadeukerukamo",
+   "partial": "dokkadeukerukamo",
+   "text": "dokkadeukerukamo"
+  },
+  {
+   "final": "hakaseshingaku",
+   "partial": "hakaseshingaku",
+   "text": "hakaseshingaku"
+  },
+  {
+   "final": "senryakutekihoryuu",
+   "partial": "senryakutekihoryuu",
+   "text": "senryakutekihoryuu"
+  },
+  {
+   "final": "gijutsushiniji",
+   "partial": "gijutsushiniji",
+   "text": "gijutsushiniji"
+  },
+  {
+   "final": "eshikaku",
+   "partial": "eshikaku",
+   "text": "eshikaku"
+  },
+  {
+   "final": "[E] shikaku",
+   "partial": "[E] shikaku",
+   "text": "Eshikaku"
+  },
+  {
+   "final": "rainensaitorai",
+   "partial": "rainensaitorai",
+   "text": "rainensaitorai"
+  },
+  {
+   "final": "gijutsushiichiji",
+   "partial": "gijutsushiichiji",
+   "text": "gijutsushiichiji"
+  },
+  {
+   "final": "[it] pasu",
+   "partial": "[it] pasu",
+   "text": "itpasu"
+  },
+  {
+   "final": "[ITpa] su",
+   "partial": "[ITpa] su",
+   "text": "ITpasu"
+  },
+  {
+   "final": "toukei",
+   "partial": "toukei",
+   "text": "toukei"
+  },
+  {
+   "final": "ko-hi-somurie",
+   "partial": "ko-hi-somurie",
+   "text": "ko-hi-somurie"
+  },
+  {
+   "final": "inukentei",
+   "partial": "inukentei",
+   "text": "inukentei"
+  },
+  {
+   "final": "[awss] oryu-shonna-kitekuto",
+   "partial": "[awss] oryu-shonna-kitekuto",
+   "text": "awssoryu-shonna-kitekuto"
+  },
+  {
+   "final": "[AWSso] ryu-shonna-kitekuto",
+   "partial": "[AWSso] ryu-shonna-kitekuto",
+   "text": "AWSsoryu-shonna-kitekuto"
+  },
+  {
+   "final": "asoshieito",
+   "partial": "asoshieito",
+   "text": "asoshieito"
+  },
+  {
+   "final": "gaa [ws] nitoujou",
+   "partial": "gaa [ws] nitoujou",
+   "text": "gaawsnitoujou"
+  },
+  {
+   "final": "ga [AWS] nitoujou",
+   "partial": "ga [AWS] nitoujou",
+   "text": "gaAWSnitoujou"
+  },
+  {
+   "final": "choujikannnokaihatsu",
+   "partial": "choujikannnokaihatsu",
+   "text": "choujikannnokaihatsu"
+  },
+  {
+   "final": "chishikigyoumunitaioushi",
+   "partial": "chishikigyoumunitaioushi",
+   "text": "chishikigyoumunitaioushi"
+  },
+  {
+   "final": "tokuchouto [bedrock] denodaiippowoyaku",
+   "partial": "tokuchouto [bedrock] denodaiippowoyaku",
+   "text": "tokuchoutobedrockdenodaiippowoyaku"
+  },
+  {
+   "final": "tokuchouto [Bedrock] denodaiippowoyaku",
+   "partial": "tokuchouto [Bedrock] denodaiippowoyaku",
+   "text": "tokuchoutoBedrockdenodaiippowoyaku"
+  },
+  {
+   "final": "byounodougadekaisetsushimasu",
+   "partial": "byounodougadekaisetsushimasu",
+   "text": "byounodougadekaisetsushimasu"
+  },
+  {
+   "final": "happyou",
+   "partial": "happyou",
+   "text": "happyou"
+  },
+  {
+   "final": "kanrenburogu",
+   "partial": "kanrenburogu",
+   "text": "kanrenburogu"
+  },
+  {
+   "final": "koukai",
+   "partial": "koukai",
+   "text": "koukai"
+  },
+  {
+   "final": "[preview] wohazushimashita",
+   "partial": "[preview] wohazushimashita",
+   "text": "previewwohazushimashita"
+  },
+  {
+   "final": "sa-ba-hamotazu",
+   "partial": "sa-ba-hamotazu",
+   "text": "sa-ba-hamotazu"
+  },
+  {
+   "final": "karanosabunha",
+   "partial": "karanosabunha",
+   "text": "karanosabunha"
+  },
+  {
+   "final": "yunitto",
+   "partial": "yunitto",
+   "text": "yunitto"
+  },
+  {
+   "final": "[preview] wootteitaninmukenosabunha",
+   "partial": "[preview] wootteitaninmukenosabunha",
+   "text": "previewwootteitaninmukenosabunha"
+  },
+  {
+   "final": "yunittodesu",
+   "partial": "yunittodesu",
+   "text": "yunittodesu"
+  },
+  {
+   "final": "[writ] etokirokusuruto",
+   "partial": "[writ] etokirokusuruto",
+   "text": "writetokirokusuruto"
+  },
+  {
+   "final": "[conductor] ga",
+   "partial": "[conductor] ga",
+   "text": "conductorga"
+  },
+  {
+   "final": "yunittoatari",
+   "partial": "yunittoatari",
+   "text": "yunittoatari"
+  },
+  {
+   "final": "tejunnnosusumekatato",
+   "partial": "tejunnnosusumekatato",
+   "text": "tejunnnosusumekatato"
+  },
+  {
+   "final": "rebyu-nodokuritsuseinitsuitenokimariwodashimasu",
+   "partial": "rebyu-nodokuritsuseinitsuitenokimariwodashimasu",
+   "text": "rebyu-nodokuritsuseinitsuitenokimariwodashimasu"
+  },
+  {
+   "final": "kojinnnochiisanaripojitorideha",
+   "partial": "kojinnnochiisanaripojitorideha",
+   "text": "kojinnnochiisanaripojitorideha"
+  },
+  {
+   "final": "sekiwoyotsuyouisuruhougafushizendeshita",
+   "partial": "sekiwoyotsuyouisuruhougafushizendeshita",
+   "text": "sekiwoyotsuyouisuruhougafushizendeshita"
+  },
+  {
+   "final": "zenpougokannnochuui",
+   "partial": "zenpougokannnochuui",
+   "text": "zenpougokannnochuui"
+  },
+  {
+   "final": "yorimaeno [intent]",
+   "partial": "yorimaeno [intent]",
+   "text": "yorimaenointent"
+  },
+  {
+   "final": "[cli] ha [solo]",
+   "partial": "[cli] ha [solo]",
+   "text": "clihasolo"
+  },
+  {
+   "final": "[conductor] noittta",
+   "partial": "[conductor] noittta",
+   "text": "conductornoittta"
+  },
+  {
+   "final": "[j] sonwoyomezu",
+   "partial": "[j] sonwoyomezu",
+   "text": "jsonwoyomezu"
+  },
+  {
+   "final": "sonohosutonozenchi-mugamakizoedeochiru",
+   "partial": "sonohosutonozenchi-mugamakizoedeochiru",
+   "text": "sonohosutonozenchi-mugamakizoedeochiru"
+  },
+  {
+   "final": "kirokusurumaeni",
+   "partial": "kirokusurumaeni",
+   "text": "kirokusurumaeni"
+  },
+  {
+   "final": "sonohosutowoyomu [intent]",
+   "partial": "sonohosutowoyomu [intent]",
+   "text": "sonohosutowoyomuintent"
+  },
+  {
+   "final": "[cli] wozenbuagetekudasai",
+   "partial": "[cli] wozenbuagetekudasai",
+   "text": "cliwozenbuagetekudasai"
+  },
+  {
+   "final": "betsurantaimunorebyu-wosengenshite",
+   "partial": "betsurantaimunorebyu-wosengenshite",
+   "text": "betsurantaimunorebyu-wosengenshite"
+  },
+  {
+   "final": "hanteiwokirokusuru",
+   "partial": "hanteiwokirokusuru",
+   "text": "hanteiwokirokusuru"
+  },
+  {
+   "final": "to [ml] ni",
+   "partial": "to [ml] ni",
+   "text": "tomlni"
+  },
+  {
+   "final": "wokaitachi-mudakegataishoudesu",
+   "partial": "wokaitachi-mudakegataishoudesu",
+   "text": "wokaitachi-mudakegataishoudesu"
+  },
+  {
+   "final": "sengensuruto",
+   "partial": "sengensuruto",
+   "text": "sengensuruto"
+  },
+  {
+   "final": "[pr] noshouninnniha [headi] cchinohanteiga",
+   "partial": "[pr] noshouninnniha [headi] cchinohanteiga",
+   "text": "prnoshouninnnihaheadicchinohanteiga"
+  },
+  {
+   "final": "[PR] noshouninnniha [headi] cchinohanteiga",
+   "partial": "[PR] noshouninnniha [headi] cchinohanteiga",
+   "text": "PRnoshouninnnihaheadicchinohanteiga"
+  },
+  {
+   "final": "pakettonokoukainiha [packet]",
+   "partial": "pakettonokoukainiha [packet]",
+   "text": "pakettonokoukainihapacket"
+  },
+  {
+   "final": "[digest] deki-saretasekkeihanteigairu",
+   "partial": "[digest] deki-saretasekkeihanteigairu",
+   "text": "digestdeki-saretasekkeihanteigairu"
+  },
+  {
+   "final": "sengenshiteinaichi-muha",
+   "partial": "sengenshiteinaichi-muha",
+   "text": "sengenshiteinaichi-muha"
+  },
+  {
+   "final": "sengennnonaihosutotobaitotannideonajikyodounomama",
+   "partial": "sengennnonaihosutotobaitotannideonajikyodounomama",
+   "text": "sengennnonaihosutotobaitotannideonajikyodounomama"
+  },
+  {
+   "final": "aitenishiteidekirurantaimuha",
+   "partial": "aitenishiteidekirurantaimuha",
+   "text": "aitenishiteidekirurantaimuha"
+  },
+  {
+   "final": "[githubcopilotclitoopencode] gakuwawatte",
+   "partial": "[githubcopilotclitoopencode] gakuwawatte",
+   "text": "githubcopilotclitoopencodegakuwawatte"
+  },
+  {
+   "final": "[GitHubCopilotCLItoOpenCode] gakuwawatte",
+   "partial": "[GitHubCopilotCLItoOpenCode] gakuwawatte",
+   "text": "GitHubCopilotCLItoOpenCodegakuwawatte"
+  },
+  {
+   "final": "tsuninarimashita",
+   "partial": "tsuninarimashita",
+   "text": "tsuninarimashita"
+  },
+  {
+   "final": "iraibunha [intent]",
+   "partial": "iraibunha [intent]",
+   "text": "iraibunhaintent"
+  },
+  {
+   "final": "[cli] gakumitatetehyoujisurutokoromadede",
+   "partial": "[cli] gakumitatetehyoujisurutokoromadede",
+   "text": "cligakumitatetehyoujisurutokoromadede"
+  },
+  {
+   "final": "moderuyarebyuawokidousurukotohanai",
+   "partial": "moderuyarebyuawokidousurukotohanai",
+   "text": "moderuyarebyuawokidousurukotohanai"
+  },
+  {
+   "final": "issuehonbunwogi [thub] niokurumaenikensasuru",
+   "partial": "issuehonbunwogi [thub] niokurumaenikensasuru",
+   "text": "issuehonbunwogithubniokurumaenikensasuru"
+  },
+  {
+   "final": "issuehonbunwo [GitHub] niokurumaenikensasuru",
+   "partial": "issuehonbunwo [GitHub] niokurumaenikensasuru",
+   "text": "issuehonbunwoGitHubniokurumaenikensasuru"
+  },
+  {
+   "final": "[file] wotsukau",
+   "partial": "[file] wotsukau",
+   "text": "filewotsukau"
+  },
+  {
+   "final": "keiroto [g] hapi",
+   "partial": "keiroto [g] hapi",
+   "text": "keirotoghapi"
+  },
+  {
+   "final": "[input] wotsukau",
+   "partial": "[input] wotsukau",
+   "text": "inputwotsukau"
+  }
+ ]
+}

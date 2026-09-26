@@ -72,8 +72,8 @@ let package = Package(
         .package(url: "https://github.com/azooKey/AzooKeyKanaKanjiConverter", revision: "ad714fea8cb2fe113aea86ba5c42563cdaf77cfb", traits: kanaKanjiConverterTraits),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
         .package(url: "https://github.com/weichsel/ZIPFoundation.git", from: "0.9.0"),
-        // 日英混在入力の区間判定 (jev-test)
-        .package(path: "../../jev-test/RomajiSegmenter")
+        // 日英混在入力の区間判定。jev-test (private) から同梱している。更新方法は Vendor/README.md
+        .package(path: "Vendor/RomajiSegmenter")
     ],
     targets: targets
 )

@@ -142,7 +142,7 @@ struct MixedInputResyncTests {
         ("korehaiitenkidesu.", "これはいいてんきです。"),
         ("Slack/Teams", "Slack・Teams"),
         // 代償: 半角で打てなくなる。半角が要るときは変換候補から選ぶ
-        ("example.com", "example。com"),
+        ("example.com", "example。com")
     ])
     func symbolsBecomeFullWidth(_ input: String, _ expected: String) {
         var harness = Harness()
@@ -244,7 +244,7 @@ struct MixedInputResyncTests {
         ("kyounotenkihaharedesu.", "きょうのてんきははれです。"),
         ("daibukitaidoorinokekkaninarimasita", "だいぶきたいどおりのけっかになりました"),
         ("joukinoyounikaishichokugonieijiganyuuryokusaremasu.",
-         "じょうきのようにかいしちょくごにえいじがにゅうりょくされます。"),
+         "じょうきのようにかいしちょくごにえいじがにゅうりょくされます。")
     ])
     func straightThrough(_ input: String, _ expected: String) {
         var harness = Harness()

@@ -1,0 +1,363 @@
+{
+ "cased": true,
+ "cases": [
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:^a",
+    "g2@0:a$",
+    "g3@-2:^^a",
+    "g3@-1:^a$",
+    "g3@0:a$$",
+    "g4@-3:^^^a",
+    "g4@-2:^^a$",
+    "g4@-1:^a$$",
+    "g4@0:a$$$",
+    "s:l",
+    "s3:_l_",
+    "s5:__l__",
+    "sl:_l",
+    "sr:l_"
+   ],
+   "i": 0,
+   "text": "a"
+  },
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:^a",
+    "g2@0:a$",
+    "g3@-2:^^a",
+    "g3@-1:^a$",
+    "g3@0:a$$",
+    "g4@-3:^^^a",
+    "g4@-2:^^a$",
+    "g4@-1:^a$$",
+    "g4@0:a$$$",
+    "s:U",
+    "s3:_U_",
+    "s5:__U__",
+    "sl:_U",
+    "sr:U_"
+   ],
+   "i": 0,
+   "text": "A"
+  },
+  {
+   "feats": [
+    "c:s",
+    "g2@-1:^s",
+    "g2@0:sl",
+    "g3@-2:^^s",
+    "g3@-1:^sl",
+    "g3@0:sla",
+    "g4@-3:^^^s",
+    "g4@-2:^^sl",
+    "g4@-1:^sla",
+    "g4@0:slac",
+    "s:U",
+    "s3:_Ul",
+    "s5:__Ull",
+    "sl:_U",
+    "sr:Ul"
+   ],
+   "i": 0,
+   "text": "Slack"
+  },
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:la",
+    "g2@0:ac",
+    "g3@-2:sla",
+    "g3@-1:lac",
+    "g3@0:ack",
+    "g4@-3:^sla",
+    "g4@-2:slac",
+    "g4@-1:lack",
+    "g4@0:ack$",
+    "s:l",
+    "s3:lll",
+    "s5:Ullll",
+    "sl:ll",
+    "sr:ll"
+   ],
+   "i": 2,
+   "text": "Slack"
+  },
+  {
+   "feats": [
+    "c:k",
+    "g2@-1:ck",
+    "g2@0:k$",
+    "g3@-2:ack",
+    "g3@-1:ck$",
+    "g3@0:k$$",
+    "g4@-3:lack",
+    "g4@-2:ack$",
+    "g4@-1:ck$$",
+    "g4@0:k$$$",
+    "s:l",
+    "s3:ll_",
+    "s5:lll__",
+    "sl:ll",
+    "sr:l_"
+   ],
+   "i": 4,
+   "text": "Slack"
+  },
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:la",
+    "g2@0:ac",
+    "g3@-2:sla",
+    "g3@-1:lac",
+    "g3@0:ack",
+    "g4@-3:^sla",
+    "g4@-2:slac",
+    "g4@-1:lack",
+    "g4@0:ack$",
+    "s:U",
+    "s3:UUU",
+    "s5:UUUUU",
+    "sl:UU",
+    "sr:UU"
+   ],
+   "i": 2,
+   "text": "SLACK"
+  },
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:la",
+    "g2@0:ac",
+    "g3@-2:sla",
+    "g3@-1:lac",
+    "g3@0:ack",
+    "g4@-3:^sla",
+    "g4@-2:slac",
+    "g4@-1:lack",
+    "g4@0:ack$",
+    "s:l",
+    "s3:lll",
+    "s5:lllll",
+    "sl:ll",
+    "sr:ll"
+   ],
+   "i": 2,
+   "text": "slack"
+  },
+  {
+   "feats": [
+    "c:k",
+    "g2@-1:^k",
+    "g2@0:ko",
+    "g3@-2:^^k",
+    "g3@-1:^ko",
+    "g3@0:kon",
+    "g4@-3:^^^k",
+    "g4@-2:^^ko",
+    "g4@-1:^kon",
+    "g4@0:kono",
+    "s:l",
+    "s3:_ll",
+    "s5:__lll",
+    "sl:_l",
+    "sr:ll"
+   ],
+   "i": 0,
+   "text": "kononaiyoude"
+  },
+  {
+   "feats": [
+    "c:i",
+    "g2@-1:ai",
+    "g2@0:iy",
+    "g3@-2:nai",
+    "g3@-1:aiy",
+    "g3@0:iyo",
+    "g4@-3:onai",
+    "g4@-2:naiy",
+    "g4@-1:aiyo",
+    "g4@0:iyou",
+    "s:l",
+    "s3:lll",
+    "s5:lllll",
+    "sl:ll",
+    "sr:ll"
+   ],
+   "i": 6,
+   "text": "kononaiyoude"
+  },
+  {
+   "feats": [
+    "c:e",
+    "g2@-1:de",
+    "g2@0:e$",
+    "g3@-2:ude",
+    "g3@-1:de$",
+    "g3@0:e$$",
+    "g4@-3:oude",
+    "g4@-2:ude$",
+    "g4@-1:de$$",
+    "g4@0:e$$$",
+    "s:l",
+    "s3:ll_",
+    "s5:lll__",
+    "sl:ll",
+    "sr:l_"
+   ],
+   "i": 11,
+   "text": "kononaiyoude"
+  },
+  {
+   "feats": [
+    "c:-",
+    "g2@-1:e-",
+    "g2@0:-j",
+    "g3@-2:se-",
+    "g3@-1:e-j",
+    "g3@0:-ji",
+    "g4@-3:sse-",
+    "g4@-2:se-j",
+    "g4@-1:e-ji",
+    "g4@0:-ji$",
+    "s:_",
+    "s3:l_l",
+    "s5:ll_ll",
+    "sl:l_",
+    "sr:_l"
+   ],
+   "i": 5,
+   "text": "messe-ji"
+  },
+  {
+   "feats": [
+    "c:i",
+    "g2@-1:ji",
+    "g2@0:i$",
+    "g3@-2:-ji",
+    "g3@-1:ji$",
+    "g3@0:i$$",
+    "g4@-3:e-ji",
+    "g4@-2:-ji$",
+    "g4@-1:ji$$",
+    "g4@0:i$$$",
+    "s:l",
+    "s3:ll_",
+    "s5:_ll__",
+    "sl:ll",
+    "sr:l_"
+   ],
+   "i": 7,
+   "text": "messe-ji"
+  },
+  {
+   "feats": [
+    "c:a",
+    "g2@-1:^a",
+    "g2@0:ab",
+    "g3@-2:^^a",
+    "g3@-1:^ab",
+    "g3@0:ab$",
+    "g4@-3:^^^a",
+    "g4@-2:^^ab",
+    "g4@-1:^ab$",
+    "g4@0:ab$$",
+    "s:l",
+    "s3:_ll",
+    "s5:__ll_",
+    "sl:_l",
+    "sr:ll"
+   ],
+   "i": 0,
+   "text": "ab"
+  },
+  {
+   "feats": [
+    "c:b",
+    "g2@-1:ab",
+    "g2@0:b$",
+    "g3@-2:^ab",
+    "g3@-1:ab$",
+    "g3@0:b$$",
+    "g4@-3:^^ab",
+    "g4@-2:^ab$",
+    "g4@-1:ab$$",
+    "g4@0:b$$$",
+    "s:l",
+    "s3:ll_",
+    "s5:_ll__",
+    "sl:ll",
+    "sr:l_"
+   ],
+   "i": 1,
+   "text": "ab"
+  },
+  {
+   "feats": [
+    "c:b",
+    "g2@-1:ab",
+    "g2@0:bc",
+    "g3@-2:^ab",
+    "g3@-1:abc",
+    "g3@0:bc$",
+    "g4@-3:^^ab",
+    "g4@-2:^abc",
+    "g4@-1:abc$",
+    "g4@0:bc$$",
+    "s:l",
+    "s3:lll",
+    "s5:_lll_",
+    "sl:ll",
+    "sr:ll"
+   ],
+   "i": 1,
+   "text": "abc"
+  },
+  {
+   "feats": [
+    "c:h",
+    "g2@-1:th",
+    "g2@0:hu",
+    "g3@-2:ith",
+    "g3@-1:thu",
+    "g3@0:hub",
+    "g4@-3:gith",
+    "g4@-2:ithu",
+    "g4@-1:thub",
+    "g4@0:hubn",
+    "s:U",
+    "s3:lUl",
+    "s5:llUll",
+    "sl:lU",
+    "sr:Ul"
+   ],
+   "i": 3,
+   "text": "GitHubno"
+  },
+  {
+   "feats": [
+    "c:s",
+    "g2@-1:gs",
+    "g2@0:se",
+    "g3@-2:rgs",
+    "g3@-1:gse",
+    "g3@0:ser",
+    "g4@-3:orgs",
+    "g4@-2:rgse",
+    "g4@-1:gser",
+    "g4@0:serv",
+    "s:U",
+    "s3:lUl",
+    "s5:llUll",
+    "sl:lU",
+    "sr:Ul"
+   ],
+   "i": 4,
+   "text": "XorgServer"
+  }
+ ],
+ "window": 3
+}

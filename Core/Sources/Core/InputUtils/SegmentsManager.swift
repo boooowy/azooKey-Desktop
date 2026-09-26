@@ -1,6 +1,8 @@
 import Foundation
-import os
 import KanaKanjiConverterModuleWithDefaultDictionary
+#if canImport(os)
+import os
+#endif
 
 public final class SegmentsManager {
     public init(
@@ -55,7 +57,6 @@ public final class SegmentsManager {
     /// 英語と判定した区間を日本語として読み直して変換した候補 (入力全体を覆うものだけ)。
     /// 区間判定が `windou` を「wiんどう」にしたときでも「ウィンドウ」を選べるようにする
     private var japaneseReadingCandidates: [Candidate] = []
-
 
     private var selectionIndex: Int?
     private var didExperienceSegmentEdition = false
@@ -345,13 +346,7 @@ public final class SegmentsManager {
         guard self.mixedInputEnabled else {
             return false
         }
-        // かな入力や独自テーブルのときは対象外 (モデルはローマ字前提)
-        let isRoman: Bool = switch inputStyle {
-        case .roman2kana: true
-        case .mapped(id: .defaultRomanToKana): true
-        default: false
-        }
-        guard isRoman, self.composingText.isAtEndIndex, !string.isEmpty else {
+        guard Self.isRomanInputStyle(inputStyle), self.composingText.isAtEndIndex, !string.isEmpty else {
             self.mixedInput.reset()
             return false
         }
@@ -380,13 +375,23 @@ public final class SegmentsManager {
         }
         // 崩れたときに「どの打鍵で」「生入力が何だったか」を後から追えるようにする。
         // log show --predicate 'subsystem == "azooKeyMac.mixedInput"' --info
-        Self.mixedInputLogger.info("""
-            key=\(string, privacy: .public) \
-            raw=\(self.mixedInput.raw, privacy: .public) \
-            plan=\(plan.kindDescription, privacy: .public) \
-            target=\(self.composingText.convertTarget, privacy: .public)
+        Self.logMixedInput("""
+            key=\(string) \
+            raw=\(self.mixedInput.raw) \
+            plan=\(plan.kindDescription) \
+            target=\(self.composingText.convertTarget)
             """)
         return true
+    }
+
+    /// 日英混在入力の対象になる入力方式か。
+    /// かな入力や独自テーブルのときは対象外 (区間判定のモデルはローマ字前提)
+    private static func isRomanInputStyle(_ inputStyle: InputStyle) -> Bool {
+        switch inputStyle {
+        case .roman2kana: true
+        case .mapped(id: .defaultRomanToKana): true
+        default: false
+        }
     }
 
     static func milliseconds(from start: ContinuousClock.Instant, to end: ContinuousClock.Instant) -> String {
@@ -395,9 +400,20 @@ public final class SegmentsManager {
         return String(format: "%.1f", Double(components.seconds) * 1000 + Double(components.attoseconds) / 1e15)
     }
 
-    nonisolated(unsafe) static let mixedInputLogger = os.Logger(
+    #if canImport(os)
+    private static let mixedInputLogger = os.Logger(
         subsystem: "azooKeyMac.mixedInput", category: "mixedInput"
     )
+    #endif
+
+    /// 日英混在入力と変換時間のログ。os.Logger は Apple のプラットフォーム専用なので、
+    /// それ以外 (CI の Linux ビルド) では何もしない
+    static func logMixedInput(_ message: @autoclosure () -> String) {
+        #if canImport(os)
+        let text = message()
+        mixedInputLogger.info("\(text, privacy: .public)")
+        #endif
+    }
 
     @MainActor
     public func insertAtCursorPosition(_ string: String, inputStyle: InputStyle) {
@@ -515,11 +531,11 @@ public final class SegmentsManager {
             let convertStart = ContinuousClock.now
             self.updateRawCandidate()
             // 削除が重いときに、区間判定と変換のどちらが効いているかを切り分ける
-            Self.mixedInputLogger.info("""
-                delete raw=\(self.mixedInput.raw, privacy: .public) \
-                plan=\(planKind, privacy: .public) \
-                segment=\(Self.milliseconds(from: deleteStart, to: convertStart), privacy: .public)ms \
-                convert=\(Self.milliseconds(from: convertStart, to: .now), privacy: .public)ms
+            Self.logMixedInput("""
+                delete raw=\(self.mixedInput.raw) \
+                plan=\(planKind) \
+                segment=\(Self.milliseconds(from: deleteStart, to: convertStart))ms \
+                convert=\(Self.milliseconds(from: convertStart, to: .now))ms
                 """)
             return
         }
@@ -761,12 +777,12 @@ public final class SegmentsManager {
         )
         let end = ContinuousClock.now
         self.rawCandidates = result
-        Self.mixedInputLogger.info("""
-            convert n=\(self.composingText.input.count, privacy: .public) \
-            rich=\(requestRichCandidates, privacy: .public) \
-            dict=\(Self.milliseconds(from: dictStart, to: contextStart), privacy: .public)ms \
-            context=\(Self.milliseconds(from: contextStart, to: convertStart), privacy: .public)ms \
-            zenzai=\(Self.milliseconds(from: convertStart, to: end), privacy: .public)ms
+        Self.logMixedInput("""
+            convert n=\(self.composingText.input.count) \
+            rich=\(requestRichCandidates) \
+            dict=\(Self.milliseconds(from: dictStart, to: contextStart))ms \
+            context=\(Self.milliseconds(from: contextStart, to: convertStart))ms \
+            zenzai=\(Self.milliseconds(from: convertStart, to: end))ms
             """)
     }
 
@@ -832,15 +848,15 @@ public final class SegmentsManager {
     @MainActor public func prefixCandidateCommited(_ candidate: Candidate, leftSideContext: String) {
         let commitStart = ContinuousClock.now
         defer {
-            Self.mixedInputLogger.info(
-                "commit total=\(Self.milliseconds(from: commitStart, to: .now), privacy: .public)ms"
+            Self.logMixedInput(
+                "commit total=\(Self.milliseconds(from: commitStart, to: .now))ms"
             )
         }
         let learnStart = ContinuousClock.now
         self.kanaKanjiConverter.setCompletedData(candidate)
         self.kanaKanjiConverter.updateLearningData(candidate)
-        Self.mixedInputLogger.info(
-            "learn=\(Self.milliseconds(from: learnStart, to: .now), privacy: .public)ms"
+        Self.logMixedInput(
+            "learn=\(Self.milliseconds(from: learnStart, to: .now))ms"
         )
         self.composingText.prefixComplete(composingCount: candidate.composingCount)
         // 確定した分だけ composingText が短くなるので、生入力を合わせ直す

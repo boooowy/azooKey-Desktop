@@ -39,3 +39,4 @@ included:
 
 excluded:
   - Core/.build
+  - Core/Vendor # 他のリポジトリから同梱したもの。元のリポジトリの書き方に合わせる

@@ -57,29 +57,35 @@ struct StatelessMixedInput {
     static func rawInput(of input: some Sequence<ComposingText.InputElement>) -> String? {
         var restored = ""
         for element in input {
-            let character: Character
-            switch element.piece {
-            case .character(let c):
-                character = c
-            case .key(let intention, let input, _):
-                // 通常経路で入った打鍵。ー のように意図が非 ASCII なら打った文字を使う
-                character = if let intention, intention.isASCII { intention } else { input }
-            case .compositionSeparator:
-                // 生入力に対応する文字がない
+            guard let character = typedCharacter(of: element.piece) else {
                 return nil
             }
-            switch character {
-            // japanesePunctuation で置き換えたぶんを打った文字に戻す
-            case "。": restored.append(".")
-            case "、": restored.append(",")
-            case "・": restored.append("/")
-            case "ー": restored.append("-")
-            default:
-                guard character.isASCII else { return nil }
-                restored.append(character)
-            }
+            restored.append(character)
         }
         return restored
+    }
+
+    /// 入力要素1つぶんの、打った ASCII 文字。復元できなければ nil。
+    private static func typedCharacter(of piece: InputPiece) -> Character? {
+        let character: Character
+        switch piece {
+        case .character(let c):
+            character = c
+        case .key(let intention, let input, _):
+            // 通常経路で入った打鍵。ー のように意図が非 ASCII なら打った文字を使う
+            character = if let intention, intention.isASCII { intention } else { input }
+        case .compositionSeparator:
+            // 生入力に対応する文字がない
+            return nil
+        }
+        switch character {
+        // japanesePunctuation で置き換えたぶんを打った文字に戻す
+        case "。": return "."
+        case "、": return ","
+        case "・": return "/"
+        case "ー": return "-"
+        default: return character.isASCII ? character : nil
+        }
     }
 
     /// `composingText` が外から書き換えられたときに、生入力を実態に合わせ直す。
@@ -90,7 +96,9 @@ struct StatelessMixedInput {
     ///
     /// 合わせ直せなかったら false。呼び出し側はこの入力を諦めること。
     mutating func resync(with composingText: ComposingText, partial: Bool) -> Bool {
-        guard let restored = Self.rawInput(of: composingText) else { return false }
+        guard let restored = Self.rawInput(of: composingText) else {
+            return false
+        }
         guard !restored.isEmpty else {
             reset()
             return true
@@ -174,7 +182,9 @@ struct StatelessMixedInput {
     /// 文字を追加して、ComposingText の更新方法を決める。
     /// 扱えない入力なら nil を返す (呼び出し側は通常の経路に倒す)。
     mutating func plan(appending string: String, partial: Bool, japaneseStyle: InputStyle = .roman2kana) -> Plan? {
-        guard let segmenter, string.allSatisfy(\.isASCII), !string.isEmpty else { return nil }
+        guard let segmenter, string.allSatisfy(\.isASCII), !string.isEmpty else {
+            return nil
+        }
         self.japaneseStyle = japaneseStyle
         let oldMask = Self.mask(lastSpans)
         raw += string
@@ -201,7 +211,8 @@ struct StatelessMixedInput {
             let label = newMask[i]
             var j = i
             while j < newMask.count, newMask[j] == label { j += 1 }
-            let text = String(decoding: rawBytes[i ..< j], as: UTF8.self)
+            // raw は ASCII だけなので、1バイト = 1文字で必ず復号できる
+            let text = String(bytes: rawBytes[i ..< j], encoding: .utf8) ?? ""
             switch label {
             case .japanese:
                 pieces.append((Self.longVowelMarks(text), japaneseStyle))
@@ -387,7 +398,9 @@ struct StatelessMixedInput {
     /// 代償として `.` `,` `/` そのものが打てなくなる (`example.com` → `example。com`)。
     /// 半角で打ちたいときは変換候補から選ぶか、英数入力に切り替える。
     static func japaneseSymbols(_ text: String) -> String {
-        guard text.contains(where: { $0 == "." || $0 == "," || $0 == "/" }) else { return text }
+        guard text.contains(where: { $0 == "." || $0 == "," || $0 == "/" }) else {
+            return text
+        }
         return String(text.map { character in
             switch character {
             case ".": "。"

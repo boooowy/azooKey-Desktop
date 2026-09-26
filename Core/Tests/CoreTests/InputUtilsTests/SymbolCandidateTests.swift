@@ -15,7 +15,7 @@ struct SymbolCandidateProbe {
         ("。", [".", "．", "、", "・"]),
         ("、", [",", "，", "。", "・"]),
         // `/` を `・` にしている代わりに、打ったキーで出せる記号を候補に足している
-        ("・", ["／", "/", "？", "?", "･", "…"]),
+        ("・", ["／", "/", "？", "?", "･", "…"])
     ])
     func candidatesForSymbols(_ symbol: String, _ expected: [String]) {
         let converter = KanaKanjiConverter.withDefaultDictionary()

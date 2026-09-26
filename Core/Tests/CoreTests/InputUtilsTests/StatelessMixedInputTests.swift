@@ -48,7 +48,7 @@ struct StatelessMixedInputTests {
     @Test("「ん」を nn で打っても先頭の英単語に吸われない", arguments: [
         // 区間判定のモデルは innsuto-ru を [in] nsuto-ru と判定する
         ("innsuto-ru", "いんすとーる"),
-        ("innsuto-ruwosuru", "いんすとーるをする"),
+        ("innsuto-ruwosuru", "いんすとーるをする")
     ])
     func doubleNStaysJapanese(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)
@@ -56,7 +56,7 @@ struct StatelessMixedInputTests {
 
     @Test("nn の補正は英単語のあとの な行や、大文字で打った名前を崩さない", arguments: [
         ("Openninaru", "Openになる"),
-        ("Annsanhakitayo", "Annさんはきたよ"),
+        ("Annsanhakitayo", "Annさんはきたよ")
     ])
     func doubleNCorrectionKeepsEnglish(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)
@@ -83,7 +83,7 @@ struct StatelessMixedInputTests {
 
     @Test("英単語が複数あっても崩れない", arguments: [
         ("AWStoGCPnochigaiwoshiraberu", "AWSとGCPのちがいをしらべる"),
-        ("bugwofixshitekaradeploysuru", "bugをfixしてからdeployする"),
+        ("bugwofixshitekaradeploysuru", "bugをfixしてからdeployする")
     ])
     func multipleEnglishWords(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)
@@ -95,7 +95,7 @@ struct StatelessMixedInputTests {
         ("kononaiyoudeSlacknisousinsiteoite", ["Slack"]),
         ("SlackdeDMshimasu", ["Slack", "DM"]),
         ("PRnoreviewwoonegaishimasu", ["PR", "review"]),
-        ("GitHubnobranchwokaetekudasai", ["GitHub", "branch"]),
+        ("GitHubnobranchwokaetekudasai", ["GitHub", "branch"])
     ])
     func englishWordsSurvive(_ input: String, _ words: [String]) throws {
         let target = try Self.type(input).convertTarget
@@ -113,7 +113,7 @@ struct StatelessMixedInputTests {
         // issue = i + ssu + e とローマ字として読めるので日本語区間にされる
         ("kyouhaGitHubnoissuewomiteta", "きょうはGitHubのいっすえをみてた"),
         // VSCode の末尾 e が次の de と結びついて [VSCod] + ede に割れる
-        ("VSCodedeTypeScriptwokaku", "VSCodえでTypeScriptをかく"),
+        ("VSCodedeTypeScriptwokaku", "VSCodえでTypeScriptをかく")
     ])
     func knownLimitation(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)

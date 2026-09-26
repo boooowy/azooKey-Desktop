@@ -1,0 +1,4466 @@
+{
+ "cases": [
+  {
+   "partial": true,
+   "romaji": true,
+   "s": ""
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "--"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "A"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AI"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "API"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "APIn"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "APIr"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWS"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSCLF"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSCLFw"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSCLFwo"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSb"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSbe"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSk"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSku"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSn"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSs"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "AWSso"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Ab"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Agent"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Agentg"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Anthrop"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Anthropic"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Anthropicg"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Bedrock"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Bedrockd"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Bedrockde"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Ch"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ChatGPTWork"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Claud"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ClaudeCod"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ClaudeCode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Code"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "E"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Es"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Esh"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Free"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "G"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GPT"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GitHub"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GitHubCopilotCLI"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GitHubCopilotCLItoOpenCod"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GitHubCopilotCLItoOpenCode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "GitHubj"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Go"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Gold"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Gon"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "IT"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ITp"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ITpa"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Jav"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "JavaGold"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "JavaGoldt"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "LinuCr"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "LinuCre"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Lu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Lun"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Luna"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Op"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Ope"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "OpenAI"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "OpenCode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Opus"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "PR"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Replac"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Replace"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Slack"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Sol"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Solh"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "Soln"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "SoltoLu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "SoltoLun"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "SoltoLuna"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "UI"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "a"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "a-ba-hamotazu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "aB"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aapiwotadashikutsukautamenihitsuyounanoha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "abunha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "achishikigyoumuwoshienshi"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "adescription"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aga"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "agent"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "agentg"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "agyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ahabunshoyouyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ahadesukutoppuhanto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ainensaitorai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aisho"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aitenishiteidekiru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aitenishiteidekirurantaimuha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aitotokeikokuobino"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "akegataishoudesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "akettonokoukainiha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "akinaosoukanayamu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ako-dhingunadofukuzatsunasagyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "akumitatetehyoujisurutokoromadede"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ameiki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "amete"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "anarikatanokagakudaritakankakuaru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "andannnihitsuyounaimigameijisare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "angakude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "anjutsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "anshiyakugasengenseininatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "antaimuha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "anteiwokirokusuru"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "anthropic"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "ap"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "apinoyuuryouriyoushaheteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "apiryoukinha"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "approved"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "approvedw"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "appyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "arigatouwatashinomigi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "arigatouwatashinomigite"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "arinaoshi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aritakankakuaru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "asobitaoshitai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "asoshieito"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "asu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "asuretesounanode"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "atasumononosenbetsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "atenakoto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "atoushidezenmontoiteseitouritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "atsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "atterunohayouyakudehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "auketorezu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "aunto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "awanohoshutekinaataide"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "awasenofuriwake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "awokoukaishita"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "aws"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsb"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsbe"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsclf"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsclfw"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsk"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awss"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "awsso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ayama"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ayamariritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "azensedainoyakuhanbuntonari"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "azouhyoujiwoseirisurutamenomoju-rukaihatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "azu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "b"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "baitoha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "baitohai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "baitohain"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "baitotokeikokuobin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "baitotokeikokuobino"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "bedrock"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "bedrockd"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "benkyoumaeha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "beru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "betsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "betsurantaimuno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "betsurantaimunorebyu-wosengenshite"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "byounodouga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "byounodougadekaisetsushimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "byu-nodokuritsuseinitsuitenokimariwodashimasu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "c"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "cch"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "cchi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "cchinohanteiga"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "ch"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "chatgptwork"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chi-mushoyuunoyunittowoda"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chi-mushoyuunoyunittowodaremochakushudekinakatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chinohanteiga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chishikigyoumu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chishikigyoumunitaioushi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "cho"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chottokaizoudogaagattakigasuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "choujikannnoka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "choujikannnokaihatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "choujikannnoko-dhingu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "choujikannnoko-dhinguyachishikigyoumuwoshienshi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "chuushutsu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "cl"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "claim"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "claimn"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "claudeco"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "claudecod"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "claudecode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "cli"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "clig"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "codexyaclaudeco"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "codexyaclaudecod"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "codexyaclaudecode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "cond"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "conductor"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "conductorg"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "conductorga"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "conductorn"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "cs"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ctor"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "d"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dakedenaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dehanaika"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "deki-saretasekkeihanteigairu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "deni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "denodaiippowoyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "deochiru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "deruyarebyuawokidousurukotohanai"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "description"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "desu-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "desuga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dewada"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dewadaidesuga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dewomainichimawasuninnnikikundeshouka"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "dig"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "digest"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "digestd"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "docs"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dokka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "dokkadeukerukamo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "doui"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "douiu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "douiushoriwoshitaraiinokawakarimashitanode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "drock"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "e"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "e-jikuraiyonda"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "e-jiyondetakedo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eberu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ebyu-nodokuritsuseinitsuitenokimariwodashimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ebyu-wosengenshite"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "edainohangakude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "edo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ega"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "egakuwawatte"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ehonbunwo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eikakunajimusagyouwosouteisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eiroga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eiwokirokusuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ejunnnosusumekatato"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ekaisetsushimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eki-saretasekkeihanteigairu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ekutonoru-ru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "emochakushudekinakatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "emononoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "en"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enaiha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enakoto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "engennnonaihosutotobaitotannideonajikyodounomama"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "engenshiteinaichi-muha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "engensuruto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enkyoumaeha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enodaiippowoyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enofurumaitomoicchishiteirukotodehanaika"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enpougokannnochuui"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "enryakutekihoryuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eonajikyodounomama"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eraba"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "erabaseru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eru"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "es"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eshikaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eshingaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "esshonnnokontekisutogayaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "esu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "etamonodehanai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "etekudasai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "etokirokusuruto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "etsurantaimunorebyu-wosengenshite"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "etsuron"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "eukerukamo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ewadaidesuga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ewomainichimawasuninnnikikundeshouka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ewotsukau"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "f"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "fil"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "file"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "free"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "fu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "fungonohappyoude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "funnno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "fuseidekinaishi"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "g"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gaa"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gaapiwotadashikutsukautamenihitsuyounanoha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gaita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gakumitatetehyoujisurutokoromadede"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gakuwawatte"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gao"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gaopu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gauketorezu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gawanohoshutekinaataide"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gazouhyoujiwoseirisurutameno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gazouhyoujiwoseirisurutamenomoju-rukaihatsu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "gent"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gijutsushiichiji"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gijutsushini"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gijutsushiniji"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "github"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "githubcopilotclit"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "githubcopilotclitoopencod"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "githubcopilotclitoopencode"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "githubj"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "go"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "gold"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "gonimotenkaisuru"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "gpt"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "h"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ha"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "haLinuCre"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "habunshoyouyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hadesukutoppuhanto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "haka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hakase"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hakaseshingaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hako-dhingunadofukuzatsuna"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hako-dhingunadofukuzatsunasagyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hakudeki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "han"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "handannnihitsuyounaimigameijisare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hanteiwokirokusuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hapi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "happyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "haripuraini"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "haso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hattonotemaedehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hattonotemaedehanakuaiko-dhingunotemae"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hayakuowarasete"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hayakuowaraseteta"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "head"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "headi"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "headic"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "henkounozenbunha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "henkounozenbunhado"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "henokaitoutoittatairyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hidukehikakuhayowaitokoushikikeinokaisetsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hidukehikakuhayowaitokoushikikeinokaisetsugameiki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hieito"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hikaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hikakushoukai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hikkurikozu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hingaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hishikigyoumunitaioushi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ho"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "hoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "honnnokkushin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "honnnokkushinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "horiryouheutsutteirukotowoshimesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "horiwoshitaraiinokawakarimashitanode"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "houjikannnokaihatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "houjikannnoko-dhinguyachishikigyoumuwoshienshi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "houyareta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "i"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "icchinohanteiga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ideha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "idoukako-dokakimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "idukehikakuhayowaitokoushikikeinokaisetsugameiki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ie"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "igakumitatetehyoujisurutokoromadede"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "igawanohoshutekinaataide"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ijikaishitsumonhenokaitoutoittatairyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ijutsushiichiji"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ijutsushiniji"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ikaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imanopuron"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imanopuronputonikiku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imanoshira"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imanoshirabemononoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "imotenkaisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "in"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "inaosoukanayamu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "inensaitorai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "inoyuuryouriyoushaheteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "inpu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "input"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "intent"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "inukentei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iraibunha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iraibunhai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iraibunhain"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iramete"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "irokusurumaeni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iryoukinha"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "is"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ishikiwosaikai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "issu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "issuehonbunwo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "issuehonbunwogi"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "it"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "itaioushi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "itamishikiwosaikai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "itenishiteidekirurantaimuha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "itoujou"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "itp"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "itsubutsunokyoukaiwotashikametamonodehanai"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "iworkerclaim"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iwozenbuagetekudasai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "iyounoirasutowoegaita"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "j"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "jav"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "javagold"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "javagoldt"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jidoukako-doka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jidoukako-dokakimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jikanpochi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jikanpochipochishinaitoikenaippo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jikanpochipochishinaitoikenaippoidesu-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jissoureitoshu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jissoureitoshutte"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jissoureitoshuttenharipuraini"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jitsubutsunokyoukaiwotashika"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jitsubutsunokyoukaiwotashikametamonodehanai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jougennn"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jougennno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jouho"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jouhouchuushutsu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "js"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "jso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ju"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "junchou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "junnnosusumekatato"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "jutsushiichiji"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "juubunnn"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "juubunnna"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "juubunnnade"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "k"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaigainojisso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaigainojissouwooi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaigainojissouwooimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaisha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaishakudeki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kakinaosoukanayamu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanarikatanokagaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanarikatanokagakudaritakankakuaru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanren"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanrenburo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanrenburogu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kanshiyakugasengenseininatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "karano"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "karanosabu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "karanosabunha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "karayarin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "karayarinaoshi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaun"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kaunto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "keiro"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "keiroga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "keiroto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ketsuro"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ketsuron"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kirokusurumaen"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kirokusurumaeni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kitamishikiwosaikai"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "kk"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ko-dhingunotemae"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ko-hi-somu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ko-hi-somuri"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ko-hi-somurie"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "koda"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kodake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kojinnnochiisanaripojito"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kojinnnochiisanaripojitorideha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "koka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kokara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "korekara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "korekaraha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kouka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "koukai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kuraudopurakuthishona-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyohinoriyuunikikaikadokunan"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyohinoriyuunikikaikadokunanamaegatsuita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyoude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyounoshin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyounoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyousoujikugasaidaiseino"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyousoujikugasaidaiseinoudake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "kyousoujikugasaidaiseinoudakedenaku"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "l"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "lelynx"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "lelynxa"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "linuc"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "linucr"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "linucre"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "lo"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "lu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "lun"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "m"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ma"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "maegatsuita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "manopuronputonikiku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "manoshirabemononoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "me"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "meikakunajimusagyouwoso"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "meikakunajimusagyouwosouteisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "menofurumaitomoicchishiteirukotodehanaika"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "mes"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "messe-jiuindounotsuikato"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mijikaishitsumo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mijikaishitsumonhenokaitoutoittatairyou"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ml"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "mln"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mochakushudekinakatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "moderuyarebyuawokidousurukotohanai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mokuhyo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mokuhyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "mondaishuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "n"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "n'"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nahabunshoyouyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nahadesukutoppuhanto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "naiha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nawokoukaishita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nchou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ndaishuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ndannnihitsuyounaimigameijisare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ngenshiteinaichi-muha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ngonohappyoude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "niga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nigatenakoto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nimotenkaisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "niokurumaenikensasuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nitoujou"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "nk"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nkyoumaeha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nn"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nnno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "no"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nodaiippowoyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nofurumaitomoicchishiteirukotodehanaika"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noittta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nojijitsugonin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nojijitsugoningazensedainoyakuhanbuntonari"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nokenshouga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nokenshougawaga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nokori"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noshouninnniha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nouka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noukaha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noukahare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noyuuryouriyousha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "noyuuryouriyoushaheteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "ntent"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "nthropic"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nukentei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nwoyomezu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "ny"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nya"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "nyu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "o"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "o-tokigisei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ochishinaitoikenaippoidesu-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "odake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "odashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oderuha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oderuyarebyuawokidousurukotohanai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ohazusazu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ohazushimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oiawasenofuriwake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oittta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ojijitsugoningazensedainoyakuhanbuntonari"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ojinnnochiisanaripojitorideha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oju-rukaihatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okaitachi-mudakegataishoudesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okenshougawaga"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okibashoha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okibashohacha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okibashohachattonotemaedehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okibashohachattonotemaedehanakuaiko-dhingunotemae"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okkadeukerukamo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okori"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "okuhyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ondaishuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "onimotenkaisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "onnnokkushinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ononaiyouwokakuninshitekara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "onwoyomezu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ootteitaninmukenosabunha"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "op"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ope"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "openaiha"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "opencode"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oretakara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ori"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "orimatoushidezenmontoiteseitouritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oriryouheutsutteirukotowoshimesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oryu-shonna-kitekuto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oryuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oshi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "osutonozenchi-mugamakizoedeochiru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "otsuyouisuruhougafushizendeshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ottokaizoudogaagattakigasuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ougennno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ouhouchuushutsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oukai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oukei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "outatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "outobetsunokakaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ouyoujouhoukyounoshin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ouyoujouhoukyounoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "oyuuryouriyoushaheteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "p"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "pack"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "packet"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pakettonokoukainiha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pe-jikuraiyon"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pe-jikuraiyonda"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pe-jiyondeta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pe-jiyondetakedo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "pinoyuuryouriyoushaheteikyousare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "piryoukinha"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "place"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "pproved"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ppyou"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "pr"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "previe"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "preview"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "previeww"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "puro"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "purojekutonoru-ru"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "pus"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "put"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "r"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ra"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "rabaseru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "rainensaitorai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "rasutowoegaita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "raudopurakuthishona-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "re"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "reberu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "rebyu-nodokuritsuseinitsuitenokimariwodashimasu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "replace"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "runti"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "runtim"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "runtime"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryouki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryoukinha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryoumoderuha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryoumoderuhacha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ryu-shonna-kitekuto"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "s"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sa-ba-hamo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sa-ba-hamotazu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "saisho"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "san"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sanjutsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sare"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "saremashita"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "scription"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "se"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "se-jiuindounotsuikato"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sedaino"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sedainohangakude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sedainokogatamoderu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "seidekinaishi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sekiwo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sekiwoyotsuyou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sekiwoyotsuyouisuruhougafushizendeshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "senge"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sengennnonaihosutotobaitotanni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sengennnonaihosutotobaitotannideonajikyodounomama"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sengenshiteinaichi-muha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sengensuruto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "senryakuteki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "senryakutekihoryuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sesshonnnokontekisutogayaku"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "sh"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shikaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shikakushouka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shikakushoukai"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shikkuriko"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shikkurikozu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shitekara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shiyakugasengenseininatta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shoriryouheutsutteirukotowoshimesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shouya"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shouyareta"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shudouhaa"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shudouhaaki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "shudouhaakiramete"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "si"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "slack"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sobitaoshitai"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "sol"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "solh"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "soln"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "solo"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "soltolu"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "soltolun"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "soltoluna"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sono"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonohosutonozenchi-mugamakizo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonohosutonozenchi-mugamakizoedeochiru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonohosutowoyomu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonohosutowoyomui"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonohosutowoyomuin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sononaiyouwokakuni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sononaiyouwokakuninshitekara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sonwoyomezu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "soryu-shonna-kitekuto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "soshieito"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sse-jiuindounotsuikato"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "ssh"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sshonnnokontekisutogayaku"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "st"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "su"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "suehonbunwo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "suehonbunwogi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sukana"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "sumarukeirowonaoshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "suninarimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "suruhougafushizendeshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "suruto"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "sy"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "syu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "t"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "tGPTWork"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "talelynx"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "te"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "team"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tega"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "teisuru"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tejunnnosusumekatato"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tenharipuraini"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "tent"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "terunohayouyakudehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tetokirokusuruto"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "tgptwork"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "thub"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "to"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "to-tokigise"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "to-tokigisei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toatari"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "tog"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toiawasenofuriwake"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tokirokusuruto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tokuchouto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tokuchoutobe"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "toml"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tonotemaedehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tonotemaedehanakuaiko-dhingunotemae"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toretakara"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tori"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "torimatoushidezenmontoiteseitouritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toujou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "touke"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toukei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "toutatsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsukan"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsukana"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsumarukeirowon"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsumarukeirowonaoshita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsunina"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tsuninarimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ttokaizoudogaagattakigasuru"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "tts"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "tu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "u"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "udeki"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ui"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "uiyounoirasutowoegaita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ukentei"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unahabunshoyouyaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unahadesukutoppuhanto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unchou"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ungonohappyoude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unitto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unittoatari"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unittodesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "unnno"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "upda"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "updat"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "update"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "uraudopurakuthishona-"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "uretesounanode"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "urogu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "urojekutonoru-ru"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "us"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "useidekinaishi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "utobetsunokakaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "utonikiku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "utsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "uyoujouhoukyounoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "w"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wa"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wasuretesounanode"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "watasumononose"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "watasumononosenbetsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wodashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wohazusazu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wohazushimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wokaitachi-mu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wokaitachi-mudakegataishoudesu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wokoukaishita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "womainichimawasuninnnikikundeshouka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wooimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wootteitaninmukenosabunha"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "workerclaim"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "workerclaimg"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wotadashikutsukautamenihitsuyounan"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wotadashikutsukautamenihitsuyounanoha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wotsuka"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wotsukau"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "woyoukyuusurunon"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "woyoukyuusurunoni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wozenbua"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wozenbuagetekudasai"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "wri"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "writ"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "write"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "ws"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "wsclf"
+  },
+  {
+   "partial": false,
+   "romaji": false,
+   "s": "wsn"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wwohazushimashita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "wwootteitaninmukenosabunha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "xtu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "xxy"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "y"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "ya"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yamariritsu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yatterunohayouyakudehanaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yohinoriyuunikikaikadokunanamaegatsuita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yorimaeno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yorimaenoi"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yorimaenoin"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yorukatsude"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yorukatsudea"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "youde"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "youkinha"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "youno"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "younodougadekaisetsushimasu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "younoirasutowo"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "younoirasutowoegaita"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "younoshinchoku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "youtobetsunokakaku"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yuni"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yunitto"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yunittoatari"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "yunittodesu"
+  },
+  {
+   "partial": true,
+   "romaji": false,
+   "s": "z"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "zenpougokannnochuu"
+  },
+  {
+   "partial": true,
+   "romaji": true,
+   "s": "zenpougokannnochuui"
+  }
+ ],
+ "kanaKeyCount": 157,
+ "tails": [
+  "b",
+  "bb",
+  "bby",
+  "by",
+  "c",
+  "cc",
+  "cch",
+  "ch",
+  "d",
+  "dd",
+  "ddh",
+  "ddw",
+  "ddy",
+  "dh",
+  "dw",
+  "dy",
+  "f",
+  "ff",
+  "ffy",
+  "fy",
+  "g",
+  "gg",
+  "ggy",
+  "gy",
+  "h",
+  "hh",
+  "hhy",
+  "hy",
+  "j",
+  "jj",
+  "jjy",
+  "jy",
+  "k",
+  "kk",
+  "kky",
+  "ky",
+  "m",
+  "mm",
+  "mmy",
+  "my",
+  "n",
+  "ny",
+  "p",
+  "pp",
+  "ppy",
+  "py",
+  "r",
+  "rr",
+  "rry",
+  "ry",
+  "s",
+  "sh",
+  "ss",
+  "ssh",
+  "ssy",
+  "sy",
+  "t",
+  "th",
+  "ts",
+  "tt",
+  "tth",
+  "tts",
+  "ttw",
+  "tty",
+  "tw",
+  "ty",
+  "v",
+  "vv",
+  "w",
+  "ww",
+  "x",
+  "xt",
+  "xw",
+  "xx",
+  "xxt",
+  "xxw",
+  "xxy",
+  "xy",
+  "y",
+  "yy",
+  "z",
+  "zy",
+  "zz",
+  "zzy"
+ ]
+}
