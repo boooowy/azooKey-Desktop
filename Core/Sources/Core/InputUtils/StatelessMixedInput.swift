@@ -51,8 +51,12 @@ struct StatelessMixedInput {
     /// 混じっていたら nil を返す。中途半端に復元すると、それを足がかりに
     /// 区間判定が崩れて英字が残るので、**諦めるほうが安全**。
     static func rawInput(of composingText: ComposingText) -> String? {
+        rawInput(of: composingText.input)
+    }
+
+    static func rawInput(of input: some Sequence<ComposingText.InputElement>) -> String? {
         var restored = ""
-        for element in composingText.input {
+        for element in input {
             let character: Character
             switch element.piece {
             case .character(let c):
@@ -107,6 +111,38 @@ struct StatelessMixedInput {
     /// その差分がそのまま変な英字として出てくる。
     func isInSync(with composingText: ComposingText) -> Bool {
         Self.rawInput(of: composingText) == raw
+    }
+
+    /// 英語と判定した区間を日本語として読み直した ComposingText。
+    /// 読み直す区間がない、または生入力が `composingText` と食い違っていれば nil。
+    ///
+    /// 区間判定は `windou` (うぃんどう) を `[wi] ndou` と判定し、「wiんどう」にしてしまう。
+    /// こうなると変換候補にも「ウィンドウ」が出ないので、変換するときの逃げ道として使う。
+    ///
+    /// 大文字を含む英語区間は読み直さない。`Slack` のように大文字で打った語は
+    /// 英語として意図したものとみなす (`splitsDoubleN` と同じ考え方)。
+    ///
+    /// 変換 (Space) のときは末尾に文節区切りが入っている。生入力と照らし合わせるときは
+    /// 除き、読み直した側にも同じ区切りを付ける。
+    func japaneseReadingComposingText(matching composingText: ComposingText) -> ComposingText? {
+        var input = composingText.input
+        let separator = input.last?.piece == .compositionSeparator ? input.removeLast() : nil
+        guard Self.rawInput(of: input) == raw else {
+            return nil
+        }
+        let spans = lastSpans.map { span in
+            span.label == .english && !span.text.contains(where: \.isUppercase)
+                ? InputSpan(label: .japanese, text: span.text)
+                : span
+        }
+        guard spans != lastSpans else {
+            return nil
+        }
+        var reading = Self.composingText(from: spans, japaneseStyle: japaneseStyle)
+        if let separator {
+            reading.insertAtCursorPosition([separator])
+        }
+        return reading
     }
 
     mutating func reset() {

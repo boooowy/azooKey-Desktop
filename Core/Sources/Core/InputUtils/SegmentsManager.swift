@@ -52,6 +52,10 @@ public final class SegmentsManager {
         Config.ZenzaiPersonalizationLevel().value
     }
     private var rawCandidates: ConversionResult?
+    /// 英語と判定した区間を日本語として読み直して変換した候補 (入力全体を覆うものだけ)。
+    /// 区間判定が `windou` を「wiんどう」にしたときでも「ウィンドウ」を選べるようにする
+    private var japaneseReadingCandidates: [Candidate] = []
+
 
     private var selectionIndex: Int?
     private var didExperienceSegmentEdition = false
@@ -578,6 +582,24 @@ public final class SegmentsManager {
     }
 
     private var rawCandidatesList: [Candidate]? {
+        guard let list = self.conversionCandidatesList else {
+            return nil
+        }
+        return Self.insertingJapaneseReadingCandidates(self.japaneseReadingCandidates, into: list)
+    }
+
+    /// 日本語として読み直した候補を、先頭の候補のすぐ後ろに差し込む。
+    /// Space を1回押すと先頭が選ばれ、もう1回で読み直した候補に移れるようにするため。
+    static func insertingJapaneseReadingCandidates(_ readingCandidates: [Candidate], into list: [Candidate]) -> [Candidate] {
+        guard let first = list.first, !readingCandidates.isEmpty else {
+            return list
+        }
+        let inserted = readingCandidates.filter { $0.text != first.text }
+        let insertedTexts = Set(inserted.map(\.text))
+        return [first] + inserted + list.dropFirst().filter { !insertedTexts.contains($0.text) }
+    }
+
+    private var conversionCandidatesList: [Candidate]? {
         guard let rawCandidates else {
             return nil
         }
@@ -701,6 +723,7 @@ public final class SegmentsManager {
             self.backspaceTypoCorrectionLock = nil
         }
         self.resetAdditionalCandidates()
+        self.japaneseReadingCandidates = []
         // 不要
         if composingText.isEmpty {
             self.rawCandidates = nil
@@ -717,6 +740,13 @@ public final class SegmentsManager {
         let contextStart = ContinuousClock.now
         let leftSideContext = forcedLeftSideContext ?? self.getCleanLeftSideContext(maxCount: ContextLength.conversion)
         let rightSideContext = forcedRightSideContext ?? self.getCleanRightSideContext(maxCount: ContextLength.conversion)
+
+        // 変換 (Space) のときだけ。打鍵ごとに走らせると変換が倍かかる。
+        // 本来の変換より先に行う。converter は直前に変換した入力をキャッシュして
+        // 次の打鍵で使うので、最後に変換するのは本来の入力にしておく
+        if requestRichCandidates {
+            self.japaneseReadingCandidates = self.makeJapaneseReadingCandidates(leftSideContext: leftSideContext)
+        }
 
         let convertStart = ContinuousClock.now
         let result = self.kanaKanjiConverter.requestCandidates(
@@ -743,6 +773,59 @@ public final class SegmentsManager {
     @MainActor public func update(requestRichCandidates: Bool) {
         self.updateRawCandidate(requestRichCandidates: requestRichCandidates)
         self.shouldShowCandidateWindow = true
+    }
+
+    static let japaneseReadingCandidateCount = 3
+
+    /// 英語と判定した区間を日本語として読み直して変換し、入力全体を覆う候補を返す。
+    ///
+    /// 読み直した ComposingText と今の composingText は、同じ生入力を1文字ずつ
+    /// 入れたもの。全体を覆う候補なら、今の composingText を全部確定する候補として扱える。
+    @MainActor private func makeJapaneseReadingCandidates(leftSideContext: String?) -> [Candidate] {
+        guard self.mixedInputEnabled, !self.didExperienceSegmentEdition,
+              self.composingText.isAtEndIndex,
+              let reading = self.mixedInput.japaneseReadingComposingText(matching: self.composingText),
+              // 読み直しても英字が残るなら英語として打った語 (window → うぃんどw)。半端な候補は出さない
+              !reading.convertTarget.contains(where: { $0.isASCII && $0.isLetter }) else {
+            return []
+        }
+        let result = self.kanaKanjiConverter.requestCandidates(
+            reading,
+            options: options(
+                leftSideContext: leftSideContext,
+                rightSideContext: nil,
+                requestRichCandidates: false,
+                requireJapanesePrediction: .disabled,
+                requireEnglishPrediction: .disabled
+            )
+        )
+        let wholeCount: ComposingCount = .inputCount(self.composingText.input.count)
+        var candidates = result.mainResults
+            .filter { reading.isWholeComposingText(composingCount: $0.composingCount) }
+            .prefix(Self.japaneseReadingCandidateCount)
+            .map { candidate in
+                var candidate = candidate
+                candidate.composingCount = wholeCount
+                return candidate
+            }
+        // カタカナ語は辞書に無くても選べるようにする (F7 と同じ形の候補)
+        let kana = reading.convertTarget
+        if !candidates.contains(where: { $0.text == kana.toKatakana() }) {
+            candidates.append(Candidate(
+                text: kana.toKatakana(),
+                value: 0,
+                composingCount: wholeCount,
+                lastMid: 0,
+                data: [DicdataElement(
+                    word: kana.toKatakana(),
+                    ruby: kana.toKatakana(),
+                    cid: CIDData.固有名詞.cid,
+                    mid: MIDData.一般.mid,
+                    value: 0
+                )]
+            ))
+        }
+        return candidates
     }
 
     /// - note: 画面更新との整合性を保つため、この関数の実行前に左文脈を取得し、これを引数として与える
