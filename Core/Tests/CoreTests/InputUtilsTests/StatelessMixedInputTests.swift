@@ -54,6 +54,26 @@ struct StatelessMixedInputTests {
         #expect(try Self.type(input).convertTarget == expected)
     }
 
+    @Test("大文字の英単語に、隣のローマ字を含めない", arguments: [
+        // 区間判定のモデルは [OKna] no [deCommit] と判定する
+        ("dousakakuninnhaOKnanodeCommitsite", "どうさかくにんはOKなのでCommitして"),
+        ("OKnanode", "OKなので")
+    ])
+    func mixedCaseParticles(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
+    @Test("大文字と小文字の境目の補正は、英単語そのものを崩さない", arguments: [
+        // かなに変換しきれない (s)、1文字だけ (i)、直後が大文字だけの語 (re)
+        ("URLsdesu", "URLsです"),
+        ("macOSnoappude-to", "macOSのあっぷでーと"),
+        ("reCAPTCHAwotoku", "reCAPTCHAをとく"),
+        ("GitHubdePRwodasu", "GitHubでPRをだす")
+    ])
+    func mixedCaseWordsStayEnglish(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
     @Test("nn の補正は英単語のあとの な行や、大文字で打った名前を崩さない", arguments: [
         ("Openninaru", "Openになる"),
         ("Annsanhakitayo", "Annさんはきたよ")

@@ -268,7 +268,19 @@ struct StatelessMixedInput {
         return Self.composingText(from: spans, japaneseStyle: japaneseStyle)
     }
 
-    /// 区間判定。`nn` の間で英語と日本語を区切った判定だけを補正する。
+    /// 区間判定。モデルの判定を2つだけ補正する。
+    ///
+    /// - `nn` の間で英語と日本語を区切った判定 (`resegmentIfSplitsDoubleN`)
+    /// - 大文字の英単語に、隣のローマ字まで含めた判定 (`splittingMixedCaseParticles`)
+    ///
+    /// jev-test の RomajiSegmenter は Python 版と同じ答えを返すことを
+    /// golden テストで保証しているので、補正はこちら側で行う。
+    static func segment(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+        let spans = try segmentCorrectingDoubleN(raw, with: segmenter, partial: partial)
+        return splittingMixedCaseParticles(spans, partial: partial)
+    }
+
+    /// `nn` の間で英語と日本語を区切った判定を補正する。
     ///
     /// ローマ字入力では「ん」を `nn` で打つことが多いが、区間判定のモデルは
     /// `innsuto-ru` を `[in] nsuto-ru` と判定し、「ｉｎんすとーる」になる。
@@ -276,10 +288,7 @@ struct StatelessMixedInput {
     /// またがらせた判定 (`splitsDoubleN`) は、その英字の並びを k-best で判定し直し、
     /// この形を含まない最上位の案を使う。
     /// どの案もこの形なら元の判定のままにする。
-    ///
-    /// jev-test の RomajiSegmenter は Python 版と同じ答えを返すことを
-    /// golden テストで保証しているので、補正はこちら側で行う。
-    static func segment(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+    static func segmentCorrectingDoubleN(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
         let spans = try segmenter.segmentInput(raw, partial: partial)
         guard spans.indices.dropLast().contains(where: { splitsDoubleN(spans[$0], spans[$0 + 1]) }) else {
             return spans
@@ -307,6 +316,86 @@ struct StatelessMixedInput {
     }
 
     static let doubleNCandidateCount = 8
+
+    /// 大文字の英単語に、隣のローマ字まで含めた英語区間を分け直す。
+    ///
+    /// 区間判定のモデルは、大文字の英単語の前後のローマ字を英語に含めることがある。
+    ///
+    /// - `OKnanode` → `[OKna] node` (OKnaので)。大文字が2文字以上続いたあとの小文字 `na`
+    /// - `nodeCommit` → `no [deCommit]` (のdeCommit)。大文字で始まる単語の直前の小文字 `de`
+    ///
+    /// 大文字は英語として打った印なので、大文字と小文字の境目で区切り、
+    /// 小文字の側がローマ字としてかなに変換しきれるなら日本語にする。
+    /// 次のものは英語のまま残す。
+    ///
+    /// - かなに変換しきれないもの: `URLs` の `s`、`macOS` の `mac`
+    /// - 1文字だけのもの: `iPhone` の `i`、`eBay` の `e`
+    /// - 直後が大文字だけの語のもの: `reCAPTCHA` の `re`
+    ///
+    /// 打ちかけ (`partial`) の末尾は、続きでかなに変換しきれるか分からないので対象外。
+    static func splittingMixedCaseParticles(_ spans: [InputSpan], partial: Bool) -> [InputSpan] {
+        var result: [InputSpan] = []
+        for (index, span) in spans.enumerated() {
+            guard span.label == .english, span.text.contains(where: \.isUppercase) else {
+                result.append(span)
+                continue
+            }
+            let isLast = index == spans.count - 1
+            var text = Substring(span.text)
+            var pieces: [InputSpan] = []
+            // 大文字で始まる単語の直前の小文字: de|Commit
+            if let upper = text.firstIndex(where: \.isUppercase), upper != text.startIndex {
+                let prefix = text[..<upper]
+                let word = text[upper...]
+                let isCapitalizedWord = word.dropFirst().first?.isLowercase ?? false
+                if isCapitalizedWord, Self.isParticleRomaji(prefix) {
+                    pieces.append(InputSpan(label: .japanese, text: String(prefix)))
+                    text = word
+                }
+            }
+            // 大文字が2文字以上続いたあとの小文字: OK|na
+            var suffix: InputSpan?
+            if !(partial && isLast),
+               let lastUpper = text.lastIndex(where: \.isUppercase) {
+                let head = text[...lastUpper]
+                let tail = text[text.index(after: lastUpper)...]
+                let upperRun = head.reversed().prefix(while: \.isUppercase).count
+                if upperRun >= 2, Self.isParticleRomaji(tail) {
+                    suffix = InputSpan(label: .japanese, text: String(tail))
+                    text = head
+                }
+            }
+            pieces.append(InputSpan(label: .english, text: String(text)))
+            if let suffix {
+                pieces.append(suffix)
+            }
+            result += pieces
+        }
+        return Self.mergingAdjacentSpans(result)
+    }
+
+    /// 2文字以上で、ローマ字としてかなに変換しきれる小文字の並びか
+    private static func isParticleRomaji(_ text: Substring) -> Bool {
+        guard text.count >= 2, text.allSatisfy({ $0.isASCII && $0.isLowercase }) else {
+            return false
+        }
+        var composing = ComposingText()
+        composing.insertAtCursorPosition(String(text), inputStyle: .roman2kana)
+        return !composing.convertTarget.contains(where: { $0.isASCII && $0.isLetter })
+    }
+
+    /// 同じラベルが続く区間をまとめる
+    private static func mergingAdjacentSpans(_ spans: [InputSpan]) -> [InputSpan] {
+        var merged: [InputSpan] = []
+        for span in spans {
+            if let last = merged.last, last.label == span.label {
+                merged[merged.count - 1] = InputSpan(label: last.label, text: last.text + span.text)
+            } else {
+                merged.append(span)
+            }
+        }
+        return merged
+    }
 
     private static func resegmentIfSplitsDoubleN(_ run: [InputSpan], with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
         guard run.indices.dropLast().contains(where: { splitsDoubleN(run[$0], run[$0 + 1]) }) else {
