@@ -394,12 +394,7 @@ struct StatelessMixedInput {
                 position += span.text.count
             }
             let movesBoundaryReasonably = unknownEnglish.allSatisfy { range in
-                guard let end = candidateEnglish[range.start] else {
-                    return false
-                }
-                // 削る母音が直前と同じ (freee の ee) なら、英語の綴りの一部なので削らない
-                return end > range.end
-                    || (end == range.end - 1 && "aiueo".contains(characters[end]) && characters[end - 1] != characters[end])
+                candidateEnglish[range.start].map { Self.movesBoundaryReasonably(from: range.end, to: $0, in: characters) } ?? false
             }
             let englishIsKnown = spans.allSatisfy { $0.label != .english || EnglishLexicon.isKnownWord($0.text) }
             // 打ちかけの末尾の日本語は、続きでかなになるかもしれないので問わない
@@ -412,6 +407,26 @@ struct StatelessMixedInput {
             }
         }
         return run
+    }
+
+    /// 辞書にない英語の区間の終わりを `from` から `to` に動かしてよいか。
+    ///
+    /// 伸ばすのはよい。削ってよいのは1文字だけで、末尾の母音 (Maci → Mac) か、
+    /// 略語のあとの小文字 (AWSb → AWS + benkyou) に限る。それ以上削ると、辞書にない正しい語を
+    /// 辞書にある短い語まで削る (runtime → runt)。
+    private static func movesBoundaryReasonably(from end: Int, to newEnd: Int, in characters: [Character]) -> Bool {
+        guard newEnd < end else {
+            return newEnd > end
+        }
+        guard newEnd == end - 1 else {
+            return false
+        }
+        let removed = characters[newEnd]
+        // 直前と同じ母音 (freee の ee) は英語の綴りの一部なので削らない
+        let isTrailingVowel = "aiueo".contains(removed) && characters[newEnd - 1] != removed
+        let isLetterAfterAcronym = removed.isLowercase && newEnd >= 2
+            && characters[newEnd - 1].isUppercase && characters[newEnd - 2].isUppercase
+        return isTrailingVowel || isLetterAfterAcronym
     }
 
     /// 英語の区間のすぐあとに日本語の区間が続き、その英語の区間が辞書にない
@@ -453,37 +468,98 @@ struct StatelessMixedInput {
                 continue
             }
             let isLast = index == spans.count - 1
-            var text = Substring(span.text)
-            var pieces: [InputSpan] = []
-            // 大文字で始まる単語の直前の小文字: de|Commit
-            if let upper = text.firstIndex(where: \.isUppercase), upper != text.startIndex {
-                let prefix = text[..<upper]
-                let word = text[upper...]
-                let isCapitalizedWord = word.dropFirst().first?.isLowercase ?? false
-                if isCapitalizedWord, Self.isParticleRomaji(prefix) {
-                    pieces.append(InputSpan(label: .japanese, text: String(prefix)))
-                    text = word
+            let pieces = Self.splittingInnerParticles(span.text)
+            for (pieceIndex, piece) in pieces.enumerated() {
+                guard piece.label == .english else {
+                    result.append(piece)
+                    continue
                 }
+                // 打ちかけの末尾は、続きでかなに変換しきれるか分からないので対象外
+                let allowsSuffix = !(partial && isLast && pieceIndex == pieces.count - 1)
+                result += Self.splittingEdgeParticles(piece.text, allowsSuffix: allowsSuffix)
             }
-            // 大文字が2文字以上続いたあとの小文字: OK|na
-            var suffix: InputSpan?
-            if !(partial && isLast),
-               let lastUpper = text.lastIndex(where: \.isUppercase) {
-                let head = text[...lastUpper]
-                let tail = text[text.index(after: lastUpper)...]
-                let upperRun = head.reversed().prefix(while: \.isUppercase).count
-                if upperRun >= 2, Self.isParticleRomaji(tail) {
-                    suffix = InputSpan(label: .japanese, text: String(tail))
-                    text = head
-                }
-            }
-            pieces.append(InputSpan(label: .english, text: String(text)))
-            if let suffix {
-                pieces.append(suffix)
-            }
-            result += pieces
         }
         return Self.mergingAdjacentSpans(result)
+    }
+
+    /// 英単語どうしに挟まれた助詞を日本語にする: GitHub|de|PR、OK|nanode|Commit、ChatGPT|ya|Codex
+    ///
+    /// 小文字 → 大文字の境目の直前にある小文字の並びから、助詞 (`particles`) で、その左が実在の語に
+    /// なる最も短い並びを選ぶ。短い順に試すのは、`VSCodedeTypeScript` で `VSC|odede` でなく
+    /// `VSCode|de` を選ぶため。
+    ///
+    /// 助詞に限るのは、辞書 (/usr/share/dict/words) が ne や hob のような短い語まで含み、
+    /// 「左が実在の語か」だけでは `Ne|ro|AG`、`Hob|ie|Cat` のように英単語を割ってしまうため。
+    /// 英単語どうしを日本語でつなぐのは、ほぼ助詞に限られる。
+    static func splittingInnerParticles(_ text: String) -> [InputSpan] {
+        let characters = Array(text)
+        var pieces: [InputSpan] = []
+        var pieceStart = 0
+        for index in characters.indices.dropFirst() where characters[index].isUppercase && characters[index - 1].isLowercase {
+            var runStart = index
+            while runStart > pieceStart, characters[runStart - 1].isLowercase {
+                runStart -= 1
+            }
+            guard index - runStart >= 2 else {
+                continue
+            }
+            for length in 2 ... (index - runStart) {
+                let particleStart = index - length
+                let left = String(characters[pieceStart ..< particleStart])
+                let particle = characters[particleStart ..< index]
+                if !left.isEmpty, Self.particles.contains(String(particle)), EnglishLexicon.isKnownWord(left) {
+                    pieces.append(InputSpan(label: .english, text: left))
+                    pieces.append(InputSpan(label: .japanese, text: String(particle)))
+                    pieceStart = index
+                    break
+                }
+            }
+        }
+        pieces.append(InputSpan(label: .english, text: String(characters[pieceStart...])))
+        return pieces
+    }
+
+    /// 英単語どうしをつなぐ日本語の助詞 (ローマ字。ヘボン式と訓令式)。
+    /// 文法で決まった少数の語で、入力の例に合わせて増やすものではない
+    static let particles: Set<String> = [
+        "no", "to", "ya", "de", "ni", "wo", "ga", "ha", "wa", "mo", "he",
+        "kara", "made", "yori", "node", "nanode", "toka", "dake", "tte",
+        "deha", "dewa", "niha", "niwa", "demo", "nimo", "tomo", "toha", "towa"
+    ]
+
+    /// 英単語の先頭・末尾の小文字を日本語にする: de|Commit、OK|na
+    private static func splittingEdgeParticles(_ word: String, allowsSuffix: Bool) -> [InputSpan] {
+        var text = Substring(word)
+        var pieces: [InputSpan] = []
+        // 大文字で始まる単語の直前の小文字: de|Commit
+        if let upper = text.firstIndex(where: \.isUppercase), upper != text.startIndex {
+            let prefix = text[..<upper]
+            let rest = text[upper...]
+            let isCapitalizedWord = rest.dropFirst().first?.isLowercase ?? false
+            if isCapitalizedWord, Self.isParticleRomaji(prefix) {
+                pieces.append(InputSpan(label: .japanese, text: String(prefix)))
+                text = rest
+            }
+        }
+        // 大文字が2文字以上続いたあとの小文字: OK|na
+        var suffix: InputSpan?
+        if allowsSuffix, let lastUpper = text.lastIndex(where: \.isUppercase) {
+            let head = text[...lastUpper]
+            let tail = text[text.index(after: lastUpper)...]
+            let upperRun = head.reversed().prefix(while: \.isUppercase).count
+            // 最後の大文字から始まる部分が4文字以上の実在の語 (VSCode の Code) なら、略語 + 単語なので分けない
+            let capitalizedWord = String(text[lastUpper...])
+            let isWordAfterAcronym = capitalizedWord.count >= 4 && EnglishLexicon.isKnownWord(capitalizedWord)
+            if upperRun >= 2, !isWordAfterAcronym, Self.isParticleRomaji(tail) {
+                suffix = InputSpan(label: .japanese, text: String(tail))
+                text = head
+            }
+        }
+        pieces.append(InputSpan(label: .english, text: String(text)))
+        if let suffix {
+            pieces.append(suffix)
+        }
+        return pieces
     }
 
     /// 2文字以上で、ローマ字としてかなに変換しきれる小文字の並びか

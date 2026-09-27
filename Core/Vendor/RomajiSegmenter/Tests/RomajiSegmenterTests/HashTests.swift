@@ -11,7 +11,7 @@ struct HashTests {
         // golden は sklearn / numpy のバージョンに依存する（pkl がバージョン依存のため）。
         // 別バージョンで再生成されたら「正解」が黙って変わるので、ここで固定する。
         let meta = try Golden.load(MetaGolden.self, "meta")
-        #expect(meta.model == "romaji_lr_v5")
+        #expect(meta.model == "romaji_lr_v6")
         #expect(meta.sklearn == "1.9.1")
         #expect(meta.numpy == "2.5.3")
     }

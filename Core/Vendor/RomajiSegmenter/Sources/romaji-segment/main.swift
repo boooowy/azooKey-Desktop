@@ -85,7 +85,7 @@ case "regress":
         passed += ok ? 1 : 0
         print("  \(ok ? "○" : "✕") \(line)" + (ok ? "" : "\n      → \(got ?? "-")"))
     }
-    print("回帰テスト (romaji_lr_v5): \(passed)/\(cases) 件 合格")
+    print("回帰テスト (romaji_lr_v6): \(passed)/\(cases) 件 合格")
 
 case "incremental":
     // eval_incremental.py 相当

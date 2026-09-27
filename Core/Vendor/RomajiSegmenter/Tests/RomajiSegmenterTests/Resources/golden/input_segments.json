@@ -61,8 +61,8 @@
    "text": "https://example.com/aa"
   },
   {
-   "final": "[AWSto] < > [GCP]",
-   "partial": "[AWSto] < > [GCP]",
+   "final": "[AWS] to < > [GCP]",
+   "partial": "[AWS] to < > [GCP]",
    "text": "AWSto GCP"
   },
   {
@@ -116,8 +116,8 @@
    "text": "n"
   },
   {
-   "final": "nn",
-   "partial": "nn",
+   "final": "[nn]",
+   "partial": "[nn]",
    "text": "nn"
   },
   {
@@ -156,13 +156,13 @@
    "text": "AWStoGCPnochigaiwoshiraberu"
   },
   {
-   "final": "[Fig] made [prototype] wotsukutta",
-   "partial": "[Fig] made [prototype] wotsukutta",
+   "final": "[Figma] de [prototype] wotsukutta",
+   "partial": "[Figma] de [prototype] wotsukutta",
    "text": "Figmadeprototypewotsukutta"
   },
   {
-   "final": "[API] noen [dpoint] gakawatta",
-   "partial": "[API] noen [dpoint] gakawatta",
+   "final": "[API] no [endpoint] gakawatta",
+   "partial": "[API] no [endpoint] gakawatta",
    "text": "APInoendpointgakawatta"
   },
   {
@@ -176,8 +176,8 @@
    "text": "Notionnimeetingnomemowonokosu"
   },
   {
-   "final": "[VSCod] ede [TypeScript] wokaku",
-   "partial": "[VSCod] ede [TypeScript] wokaku",
+   "final": "[VSCode] de [TypeScript] wokaku",
+   "partial": "[VSCode] de [TypeScript] wokaku",
    "text": "VSCodedeTypeScriptwokaku"
   },
   {
@@ -191,8 +191,8 @@
    "text": "bugwofixshitekaradeploysuru"
   },
   {
-   "final": "[iPhon] eto [Mac] de [AirDrop] suru",
-   "partial": "[iPhon] eto [Mac] de [AirDrop] suru",
+   "final": "[iPhone] to [Mac] de [AirDrop] suru",
+   "partial": "[iPhone] to [Mac] de [AirDrop] suru",
    "text": "iPhonetoMacdeAirDropsuru"
   },
   {
@@ -201,8 +201,8 @@
    "text": "SlackdeDMshimasu"
   },
   {
-   "final": "[AWS] benkyoumaeha",
-   "partial": "[AWS] benkyoumaeha",
+   "final": "[AWSb] enkyoumaeha",
+   "partial": "[AWSb] enkyoumaeha",
    "text": "AWSbenkyoumaeha"
   },
   {
@@ -211,8 +211,8 @@
    "text": "AIgasugoi"
   },
   {
-   "final": "kinouha [GitHub] noissuewomiteta",
-   "partial": "kinouha [GitHub] noissuewomiteta",
+   "final": "kinouha [GitHub] no [issue] womiteta",
+   "partial": "kinouha [GitHub] no [issue] womiteta",
    "text": "kinouhaGitHubnoissuewomiteta"
   },
   {
@@ -416,8 +416,8 @@
    "text": "torimatoushidezenmontoiteseitouritsu"
   },
   {
-   "final": "hayakuowaraseteta [lelynx] asobitaoshitai",
-   "partial": "hayakuowaraseteta [lelynx] asobitaoshitai",
+   "final": "hayakuowarasete [talelynxa] sobitaoshitai",
+   "partial": "hayakuowarasete [talelynxa] sobitaoshitai",
    "text": "hayakuowarasetetalelynxasobitaoshitai"
   },
   {
@@ -501,8 +501,8 @@
    "text": "itpasu"
   },
   {
-   "final": "[ITpa] su",
-   "partial": "[ITpa] su",
+   "final": "[IT] pasu",
+   "partial": "[IT] pasu",
    "text": "ITpasu"
   },
   {
@@ -521,8 +521,8 @@
    "text": "inukentei"
   },
   {
-   "final": "[awss] oryu-shonna-kitekuto",
-   "partial": "[awss] oryu-shonna-kitekuto",
+   "final": "[awsso] ryu-shonna-kitekuto",
+   "partial": "[awsso] ryu-shonna-kitekuto",
    "text": "awssoryu-shonna-kitekuto"
   },
   {
@@ -536,8 +536,8 @@
    "text": "asoshieito"
   },
   {
-   "final": "gaa [ws] nitoujou",
-   "partial": "gaa [ws] nitoujou",
+   "final": "ga [aws] nitoujou",
+   "partial": "ga [aws] nitoujou",
    "text": "gaawsnitoujou"
   },
   {
@@ -616,8 +616,8 @@
    "text": "yunittodesu"
   },
   {
-   "final": "[writ] etokirokusuruto",
-   "partial": "[writ] etokirokusuruto",
+   "final": "[write] tokirokusuruto",
+   "partial": "[write] tokirokusuruto",
    "text": "writetokirokusuruto"
   },
   {
@@ -671,8 +671,8 @@
    "text": "conductornoittta"
   },
   {
-   "final": "[j] sonwoyomezu",
-   "partial": "[j] sonwoyomezu",
+   "final": "[json] woyomezu",
+   "partial": "[json] woyomezu",
    "text": "jsonwoyomezu"
   },
   {
@@ -706,8 +706,8 @@
    "text": "hanteiwokirokusuru"
   },
   {
-   "final": "to [ml] ni",
-   "partial": "to [ml] ni",
+   "final": "[toml] ni",
+   "partial": "[toml] ni",
    "text": "tomlni"
   },
   {
@@ -786,13 +786,13 @@
    "text": "moderuyarebyuawokidousurukotohanai"
   },
   {
-   "final": "issuehonbunwogi [thub] niokurumaenikensasuru",
-   "partial": "issuehonbunwogi [thub] niokurumaenikensasuru",
+   "final": "[issue] honbunwo [github] niokurumaenikensasuru",
+   "partial": "[issue] honbunwo [github] niokurumaenikensasuru",
    "text": "issuehonbunwogithubniokurumaenikensasuru"
   },
   {
-   "final": "issuehonbunwo [GitHub] niokurumaenikensasuru",
-   "partial": "issuehonbunwo [GitHub] niokurumaenikensasuru",
+   "final": "[issue] honbunwo [GitHub] niokurumaenikensasuru",
+   "partial": "[issue] honbunwo [GitHub] niokurumaenikensasuru",
    "text": "issuehonbunwoGitHubniokurumaenikensasuru"
   },
   {

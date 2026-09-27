@@ -14,7 +14,7 @@ let package = Package(
         // (Cxx 有効なモジュールは利用側にも強制するが、その逆は問題ない)
         .target(
             name: "RomajiSegmenter",
-            resources: [.copy("Resources/romaji_lr_v5.f32")]
+            resources: [.copy("Resources/romaji_lr_v6.f32")]
         ),
         .executableTarget(name: "romaji-segment", dependencies: ["RomajiSegmenter"]),
         .testTarget(

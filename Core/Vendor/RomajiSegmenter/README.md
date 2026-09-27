@@ -48,7 +48,7 @@ Segmenter(weights: w, checker: MyChecker())
 ## 生成物の作り直し
 
 ```bash
-.venv/bin/python RomajiSegmenter/Scripts/export_weights.py    # models/*.pkl → Resources/romaji_lr_v5.f32
+.venv/bin/python RomajiSegmenter/Scripts/export_weights.py    # models/*.pkl → Resources/romaji_lr_v6.f32
 .venv/bin/python RomajiSegmenter/Scripts/gen_kana_table.py    # _KANA / _TAILS → KanaTable.swift
 .venv/bin/python RomajiSegmenter/Scripts/gen_golden.py        # Python の実出力 → Tests/.../golden/
 ```

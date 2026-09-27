@@ -14,11 +14,12 @@ struct FeatureTests {
     }
 
     @Test("重みのヘッダが golden と揃っている")
-    func weightHeader() {
+    func weightHeader() throws {
+        let meta = try Golden.load(MetaGolden.self, "meta")
         #expect(Golden.weights.window == Self.golden.window)
         #expect(Golden.weights.cased == Self.golden.cased)
         #expect(Golden.weights.featureCount == 1 << 20)
-        #expect(Golden.weights.intercept == 2.5899218033917766)
+        #expect(Golden.weights.intercept == Double(meta.intercept))
     }
 
     @Test("cased=true なら 1 文字あたり 15 特徴")

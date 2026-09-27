@@ -55,11 +55,10 @@ struct StatelessMixedInputTests {
     }
 
     @Test("辞書にない英単語で区切った判定を、実在の単語になる区切りに選び直す", arguments: [
-        // 区間判定のモデルは [Maci] ppai、[Pytho] noboeru、[Vi] miine、[updat] ega と判定する
+        // 区間判定のモデルは [Maci] ppai、[Pytho] noboeru、[Vi] miine と判定することがある
         ("Macippaikatta", "Macいっぱいかった"),
         ("Pythonoboeru", "Pythonおぼえる"),
         ("Vimiine", "Vimいいね"),
-        ("updategaintent", "updateがintent"),
         ("Chromeakete", "Chromeあけて")
     ])
     func unknownEnglishResegmented(_ input: String, _ expected: String) throws {
@@ -86,7 +85,12 @@ struct StatelessMixedInputTests {
     @Test("大文字の英単語に、隣のローマ字を含めない", arguments: [
         // 区間判定のモデルは [OKna] no [deCommit] と判定する
         ("dousakakuninnhaOKnanodeCommitsite", "どうさかくにんはOKなのでCommitして"),
-        ("OKnanode", "OKなので")
+        ("OKnanode", "OKなので"),
+        // 英単語に挟まれた助詞: モデルは [GitHubdePR]、[ChatGPTyaCodex] と判定することがある
+        ("GitHubdePRwodasu", "GitHubでPRをだす"),
+        ("ChatGPTyaCodexnimo", "ChatGPTやCodexにも"),
+        // 略語のあとの1文字: [AWSb] enkyou
+        ("AWSbenkyoumaeha", "AWSべんきょうまえは")
     ])
     func mixedCaseParticles(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)
@@ -153,18 +157,14 @@ struct StatelessMixedInputTests {
         }
     }
 
-    /// モデルが英語を見逃す既知のケース。移植のバグではなく、Python 側も同じ判定をする
-    /// (regression_test.py で元から落ちている 8 件のうちの 1 つ)。
-    ///
-    /// `issue` は `i` + `ssu` + `e` とローマ字として読めてしまうため、日本語区間にされる。
-    /// 改善するならモデルの再学習 (ステップ4) の仕事。
-    @Test("既知の限界: ローマ字として読める英単語は見逃す", arguments: [
-        // issue = i + ssu + e とローマ字として読めるので日本語区間にされる
-        ("kyouhaGitHubnoissuewomiteta", "きょうはGitHubのいっすえをみてた"),
-        // VSCode の末尾 e が次の de と結びついて [VSCod] + ede に割れる
-        ("VSCodedeTypeScriptwokaku", "VSCodえでTypeScriptをかく")
+    /// 以前のモデル (v5) が英語を見逃していたケース。
+    /// `issue` は `i` + `ssu` + `e` とローマ字として読めてしまい、`VSCode` は末尾の e が次の de と
+    /// 結びついて `[VSCod] ede` に割れていた。技術用語を学習に入れたモデル (v6) で直った。
+    @Test("ローマ字としても読める英単語を英語と判定する", arguments: [
+        ("kyouhaGitHubnoissuewomiteta", "きょうはGitHubのissueをみてた"),
+        ("VSCodedeTypeScriptwokaku", "VSCodeでTypeScriptをかく")
     ])
-    func knownLimitation(_ input: String, _ expected: String) throws {
+    func englishReadableAsRomaji(_ input: String, _ expected: String) throws {
         #expect(try Self.type(input).convertTarget == expected)
     }
 

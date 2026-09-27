@@ -38,6 +38,8 @@ struct F: Decodable {
 
 struct MetaGolden: Decodable {
     let model: String
+    /// 重みのヘッダの切片 (repr の文字列)
+    let intercept: String
     let numpy: String
     let sklearn: String
     let seed: Int

@@ -32,7 +32,7 @@ public struct Weights: Sendable {
     /// ホストアプリが SwiftPM 経由でビルドされていない場合 `Bundle.module` が解決しない
     /// ことがあるため、そのときは `init(url:)` にファイルパスを渡すこと。
     public static func bundled() throws -> Weights {
-        guard let url = Bundle.module.url(forResource: "romaji_lr_v5", withExtension: "f32") else {
+        guard let url = Bundle.module.url(forResource: "romaji_lr_v6", withExtension: "f32") else {
             throw RomajiSegmenterError.weightsNotFound
         }
         return try Weights(url: url)

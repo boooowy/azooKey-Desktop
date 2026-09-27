@@ -1,5 +1,6 @@
 {
- "model": "romaji_lr_v5",
+ "intercept": "2.5631690663681654",
+ "model": "romaji_lr_v6",
  "numpy": "2.5.3",
  "seed": 20260924,
  "sklearn": "1.9.1"
