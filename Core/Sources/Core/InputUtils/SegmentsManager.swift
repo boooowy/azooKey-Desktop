@@ -1107,6 +1107,9 @@ public final class SegmentsManager {
 
     @MainActor
     public func commitMarkedText(inputState: InputState) -> String {
+        if inputState == .composing {
+            self.resolveTrailingRomanN()
+        }
         let markedText = self.getCurrentMarkedText(inputState: inputState)
         let text = markedText.reduce(into: "") {$0.append(contentsOf: $1.content)}
         if let candidate = self.candidates?.first(where: {$0.text == text}) {
@@ -1114,6 +1117,22 @@ public final class SegmentsManager {
         }
         self.stopComposition()
         return text
+    }
+
+    /// ローマ字で打った末尾の `n` を「ん」に確定させる。
+    ///
+    /// `douzin` を打って Enter で確定すると、末尾の `n` は次の文字を待っているので「同時n」になる。
+    /// Space では末尾に文節区切りが入って `n` が「ん」になるので、Enter のときも同じく区切りを入れて
+    /// 変換し直す (Google 日本語入力と同じ動き)。英語として打った `n` (Amazon など) は対象外。
+    @MainActor
+    private func resolveTrailingRomanN() {
+        guard self.composingText.isAtEndIndex,
+              self.composingText.convertTarget.last == "n",
+              let last = self.composingText.input.last,
+              last.inputStyle != .direct else {
+            return
+        }
+        self.insertCompositionSeparator(inputStyle: last.inputStyle, skipUpdate: false)
     }
 
     // サジェスト候補を設定するメソッド
