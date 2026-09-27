@@ -234,6 +234,37 @@ struct StatelessMixedInputTests {
         #expect(composing.convertTarget == "nのとおり", "この症状が出なくなったらテストの前提を見直す")
     }
 
+    @Test("英語や記号の直前の n は ん になる", arguments: [
+        ("takusanCLIkara", "たくさんCLIから"),
+        ("takusannCLIkara", "たくさんCLIから"),
+        ("kanAPI", "かんAPI"),
+        ("sanninAIwo", "さんいんAIを"),
+        ("hon.", "ほん。"),
+        // n のあとに母音が続く日本語は、な行のまま
+        ("AmazonnoPR", "AmazonのPR"),
+        ("GlennsanhaPR", "GlennさんはPR")
+    ])
+    func syllabicNBeforeEnglish(input: String, expected: String) throws {
+        let composing = try Self.type(input)
+        #expect(composing.convertTarget == expected)
+        // ん にした n も、打った文字として復元できる (次の打鍵で組み直すときに要る)
+        #expect(StatelessMixedInput.rawInput(of: composing) == input)
+    }
+
+    @Test("英語を消して末尾に戻った n は、ん から n に戻る")
+    func syllabicNRevertsOnDelete() throws {
+        var mixed = StatelessMixedInput()
+        try #require(mixed.isAvailable)
+        for character in "takusanC" {
+            _ = mixed.plan(appending: String(character), partial: true, japaneseStyle: Self.japaneseStyle)
+        }
+        guard case .rebuild(let rebuilt) = mixed.deleteBackward(partial: true) else {
+            Issue.record("ん を n に戻すには組み直しが要る")
+            return
+        }
+        #expect(rebuilt.convertTarget == "たくさn")
+    }
+
     @Test("打ちかけの子音が残る")
     func partialConsonant() throws {
         #expect(try Self.type("kyouhaiitenkides").convertTarget == "きょうはいいてんきでs")

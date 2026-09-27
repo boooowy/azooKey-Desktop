@@ -186,7 +186,8 @@ struct StatelessMixedInput {
             return nil
         }
         self.japaneseStyle = japaneseStyle
-        let oldMask = Self.mask(lastSpans)
+        let oldSpans = lastSpans
+        let oldMask = Self.mask(oldSpans)
         raw += string
         guard let spans = try? Self.segment(raw, with: segmenter, partial: partial) else {
             raw.removeLast(string.count)
@@ -195,8 +196,10 @@ struct StatelessMixedInput {
         lastSpans = spans
         let newMask = Self.mask(spans)
 
-        guard !mustRebuild, newMask.count > oldMask.count, newMask.starts(with: oldMask) else {
+        guard !mustRebuild, newMask.count > oldMask.count, newMask.starts(with: oldMask),
+              Self.resolvedNPositions(spans) == Self.resolvedNPositions(oldSpans) else {
             // 既に打ってあった文字のラベルが変わった (Slac → Slack など)、
+            // 日本語の末尾の n が、英語が続いたことで ん に決まった (takusan → takusanCLI)、
             // あるいは resync 直後で既存要素の style を信用できない
             mustRebuild = false
             rebuildCount += 1
@@ -239,6 +242,8 @@ struct StatelessMixedInput {
     mutating func deleteBackward(count: Int = 1, partial: Bool) -> DeletePlan {
         let oldMask = Self.mask(lastSpans).dropLast(min(count, raw.utf8.count))
         raw.removeLast(min(count, raw.count))
+        // 残る文字のうち、ん に確定していた n の位置
+        let oldResolvedN = Self.resolvedNPositions(lastSpans).filter { $0 <= raw.count }
         guard let segmenter, !raw.isEmpty else {
             lastSpans = []
             mustRebuild = false
@@ -247,7 +252,8 @@ struct StatelessMixedInput {
         let spans = (try? Self.segment(raw, with: segmenter, partial: partial)) ?? []
         lastSpans = spans
         let newMask = Self.mask(spans)
-        if !mustRebuild, newMask.elementsEqual(oldMask) {
+        // 英語を消して日本語の n が末尾に戻ったら (takusanC → takusan)、ん を n に戻すため組み直す
+        if !mustRebuild, newMask.elementsEqual(oldMask), Self.resolvedNPositions(spans) == oldResolvedN {
             return .deleteInPlace
         }
         mustRebuild = false
@@ -468,6 +474,7 @@ struct StatelessMixedInput {
                 continue
             }
             let isLast = index == spans.count - 1
+            let followsJapanese = index > 0 && spans[index - 1].label == .japanese
             let pieces = Self.splittingInnerParticles(span.text)
             for (pieceIndex, piece) in pieces.enumerated() {
                 guard piece.label == .english else {
@@ -476,7 +483,11 @@ struct StatelessMixedInput {
                 }
                 // 打ちかけの末尾は、続きでかなに変換しきれるか分からないので対象外
                 let allowsSuffix = !(partial && isLast && pieceIndex == pieces.count - 1)
-                result += Self.splittingEdgeParticles(piece.text, allowsSuffix: allowsSuffix)
+                result += Self.splittingEdgeParticles(
+                    piece.text,
+                    followsJapanese: followsJapanese && pieceIndex == 0,
+                    allowsSuffix: allowsSuffix
+                )
             }
         }
         return Self.mergingAdjacentSpans(result)
@@ -527,8 +538,8 @@ struct StatelessMixedInput {
         "deha", "dewa", "niha", "niwa", "demo", "nimo", "tomo", "toha", "towa"
     ]
 
-    /// 英単語の先頭・末尾の小文字を日本語にする: de|Commit、OK|na
-    private static func splittingEdgeParticles(_ word: String, allowsSuffix: Bool) -> [InputSpan] {
+    /// 英単語の先頭・末尾の小文字を日本語にする: de|Commit、OK|na、(takusa)n|CLI
+    private static func splittingEdgeParticles(_ word: String, followsJapanese: Bool, allowsSuffix: Bool) -> [InputSpan] {
         var text = Substring(word)
         var pieces: [InputSpan] = []
         // 大文字で始まる単語の直前の小文字: de|Commit
@@ -536,7 +547,10 @@ struct StatelessMixedInput {
             let prefix = text[..<upper]
             let rest = text[upper...]
             let isCapitalizedWord = rest.dropFirst().first?.isLowercase ?? false
-            if isCapitalizedWord, Self.isParticleRomaji(prefix) {
+            // 日本語のすぐあとの n / nn は、前の日本語の ん (takusann|CLI を takusa|nnCLI と判定したもの)。
+            // 大文字の略語の前でも分ける。n で始まり大文字が続く英単語はまずない
+            let isSyllabicN = followsJapanese && prefix.count <= 2 && prefix.allSatisfy { $0 == "n" }
+            if isSyllabicN || (isCapitalizedWord && Self.isParticleRomaji(prefix)) {
                 pieces.append(InputSpan(label: .japanese, text: String(prefix)))
                 text = rest
             }
@@ -637,10 +651,23 @@ struct StatelessMixedInput {
     }
 
     /// 区間の並びから ComposingText を作る。
+    ///
+    /// 日本語の区間のあとに別の区間が続き、日本語の区間が `n` 1つで終わるときは、その `n` を ん にする
+    /// (`resolvedNPositions`)。ローマ字の `n` は次の文字を見るまで ん か な行か決まらないが、英字や記号が
+    /// 続いた時点で ん に決まる。そのままだと `takusanCLI` が「たくさnCLI」になる。
+    /// 打った文字 (`n`) を `rawInput(of:)` で復元できるよう、意図を ん、入力を n としたキーで入れる。
     static func composingText(from spans: [InputSpan], japaneseStyle: InputStyle = .roman2kana) -> ComposingText {
         var composing = ComposingText()
+        var position = 0
+        let resolvedN = Self.resolvedNPositions(spans)
         for span in spans {
+            position += span.text.count
             switch span.label {
+            case .japanese where resolvedN.contains(position):
+                composing.insertAtCursorPosition(Self.longVowelMarks(String(span.text.dropLast())), inputStyle: japaneseStyle)
+                composing.insertAtCursorPosition([
+                    ComposingText.InputElement(piece: .key(intention: "ん", input: "n", modifiers: []), inputStyle: japaneseStyle)
+                ])
             case .japanese:
                 composing.insertAtCursorPosition(Self.longVowelMarks(span.text), inputStyle: japaneseStyle)
             case .english:
@@ -650,6 +677,23 @@ struct StatelessMixedInput {
             }
         }
         return composing
+    }
+
+    /// 日本語の区間の末尾の `n` を ん に決める位置 (その区間の終わりの、文字の位置)。
+    ///
+    /// 日本語の区間のあとに別の区間が続き、区間の末尾の `n` の並びが奇数個 (`n`、`nnn`) のとき。
+    /// 偶数個 (`nn`) ならローマ字の変換だけで ん になっている。
+    static func resolvedNPositions(_ spans: [InputSpan]) -> Set<Int> {
+        var positions: Set<Int> = []
+        var position = 0
+        for (index, span) in spans.enumerated() {
+            position += span.text.count
+            let trailingN = span.text.reversed().prefix(while: { $0 == "n" }).count
+            if span.label == .japanese, index + 1 < spans.count, trailingN % 2 == 1 {
+                positions.insert(position)
+            }
+        }
+        return positions
     }
 
     /// 日本語区間の `-` を長音記号 `ー` にする。
