@@ -39,7 +39,7 @@ struct StatelessMixedInput {
 
     init() {
         // 重みの読み込みに失敗してもIME全体は動かす。この機能だけ無効になる
-        self.segmenter = try? Segmenter.bundled()
+        self.segmenter = try? Segmenter(weights: Weights.bundled(), lexicon: EnglishLexicon.shared)
     }
 
     var isAvailable: Bool { segmenter != nil }

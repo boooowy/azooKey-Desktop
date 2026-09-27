@@ -6,7 +6,7 @@ import Testing
 struct SegmentationTests {
     static let segGolden = try! Golden.load(SegmentGolden.self, "segments")
     static let partialGolden = try! Golden.load(PartialGolden.self, "partial")
-    static let segmenter = Segmenter(weights: Golden.weights)
+    static let segmenter = Segmenter(weights: Golden.weights, lexicon: Lexicon.bundled())
 
     @Test("確定時の上位 3 件が Python と一致", arguments: segGolden.cases)
     func kbest(_ c: SegmentGolden.Case) throws {

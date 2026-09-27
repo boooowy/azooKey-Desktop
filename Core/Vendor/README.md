@@ -5,7 +5,7 @@
 日英混在入力の区間判定 (打った文字列のどこが日本語でどこが英語か)。
 
 - 元: [boooowy/jev-test](https://github.com/boooowy/jev-test) (private) の `RomajiSegmenter/`
-- 同梱した時点: jev-test `c2c24ba`
+- 同梱した時点: jev-test `3042633`
 - 開発とテスト (Python 版と同じ答えを返すことの golden テスト) は jev-test で行う。
   ここでは直接編集しない
 

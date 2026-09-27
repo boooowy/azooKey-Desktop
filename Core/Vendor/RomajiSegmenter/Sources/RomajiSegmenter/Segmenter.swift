@@ -29,6 +29,12 @@ public struct DecodingConfig: Sendable {
     public var switchPenalty: Double = 2.0
     public var englishBias: Double = 0.0
     public var shortEnglishPenalty: Double = 0.0
+    /// 英語区間が実在の単語 (Lexicon.isKnownWord) のときに足す値。0 で辞書を使わない (既定)。
+    /// 本当の語の先頭が実在の単語だとそこで切ってしまう (messe-ji → [mess] e-ji) ので使わない。
+    /// 試した結果は romaji_model.py の LEX_BONUS を参照
+    public var lexiconBonus: Double = 0.0
+    /// 辞書の加点を受ける最短の長さ (略語は除く)。辞書は ne、hob のような短い語まで含むため
+    public var lexiconMinLength: Int = 3
     public init() {}
 }
 
@@ -37,19 +43,23 @@ public struct Segmenter: Sendable {
     public let scorer: Scorer
     public let checker: any RomajiChecker
     public var config: DecodingConfig
+    /// 英語区間の加点に使う辞書。nil なら加点しない
+    public let lexicon: Lexicon?
 
     public init(
         weights: Weights,
         checker: any RomajiChecker = KanaTableChecker(),
-        config: DecodingConfig = DecodingConfig()
+        config: DecodingConfig = DecodingConfig(),
+        lexicon: Lexicon? = nil
     ) {
         self.scorer = Scorer(weights: weights)
         self.checker = checker
         self.config = config
+        self.lexicon = lexicon
     }
 
     public static func bundled() throws -> Segmenter {
-        Segmenter(weights: try Weights.bundled())
+        Segmenter(weights: try Weights.bundled(), lexicon: Lexicon.bundled())
     }
 
     /// 英字の並びを上位 k 通りに区切る。
@@ -111,6 +121,13 @@ public struct Segmenter: Sendable {
                     var segScore = cum[j] - cum[i]
                     if label == .english && j - i == 1 {
                         segScore -= config.shortEnglishPenalty
+                    }
+                    // 打ちかけの末尾の区間には加点しない (Doc の時点で doc として加点すると、Docker を
+                    // 打ち終えるまでに区切りが揺れる)
+                    if label == .english, !(partial && j == n), let lexicon {
+                        let meanLogit = (cumE[j] - cumE[i] - cumJ[j] + cumJ[i]) / Double(j - i)
+                        segScore += lexicon.bonus(
+                            String(decoding: ascii[i ..< j], as: UTF8.self), meanLogit: meanLogit, config: config)
                     }
                     for (slot, prevLabel) in best[i].labels.enumerated() {
                         // 同じラベルの区間は連続させない (1 つにまとめる)

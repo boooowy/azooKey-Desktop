@@ -5,7 +5,7 @@ import Testing
 @Suite("層6: 入力全体の分割 (記号を含む)")
 struct InputSegmenterTests {
     static let golden = try! Golden.load(InputSegmentGolden.self, "input_segments")
-    static let segmenter = Segmenter(weights: Golden.weights)
+    static let segmenter = Segmenter(weights: Golden.weights, lexicon: Lexicon.bundled())
 
     @Test("segment_input が Python と一致", arguments: golden.cases)
     func segmentInput(_ c: InputSegmentGolden.Case) throws {
