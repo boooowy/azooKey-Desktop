@@ -14,6 +14,8 @@ final class ReplaySession {
         var liveConversionEnabled = true
         var enablePredictiveTyping = false
         var enableTypoCorrection = false
+        /// テキスト欄に、打ち始める前から書かれている文 (実機でアプリから渡る前の文脈の代わり)
+        var leadingText = ""
     }
 
     private let server: ConverterServer
@@ -63,7 +65,7 @@ final class ReplaySession {
             enableTypoCorrection: self.options.enableTypoCorrection,
             optionDirectInputText: event.characters,
             context: ConverterTextContext(
-                leftSideContext: String(self.document.suffix(ConverterTextContext.transportCharacterLimit)),
+                leftSideContext: String((self.options.leadingText + self.document).suffix(ConverterTextContext.transportCharacterLimit)),
                 rightSideContext: nil
             ),
             activation: self.isOpen ? nil : ConverterSessionActivation(

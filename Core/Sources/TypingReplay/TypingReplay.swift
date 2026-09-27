@@ -12,7 +12,8 @@ import Foundation
 ///       --cases ../jev-test/data/cases_dev.json \
 ///       --resources "/Library/Input Methods/azooKeyMac.app/Contents/Resources" \
 ///       --out /tmp/replay [--baseline /tmp/replay-old/results.json] [--limit 50] \
-///       [--predictive-typing] [--typo-correction] [--inference-limit 7] [--learning]
+///       [--predictive-typing] [--typo-correction] [--inference-limit 7] [--learning] \
+///       [--profile システムエンジニア] [--leading-text 打ち始める前からテキスト欄にある文]
 ///
 /// 実行には Zenzai のモデルが要る (`--resources`)。学習データは一時ディレクトリに置き、
 /// 実機の学習データには触れない。学習は結果が打つ順に左右されないよう、既定では切る。
@@ -28,6 +29,8 @@ enum TypingReplay {
         /// 実機の既定値 (5)。前に書いた設定が残っていても、結果が左右されないよう明示する
         var inferenceLimit = 5
         var learning = false
+        /// Zenzai のプロフィール (設定の「プロフィール」)。既定は空
+        var profile = ""
     }
 
     @MainActor
@@ -55,12 +58,15 @@ enum TypingReplay {
         // 終わったら元に戻す
         let previousLearning = Config.Learning().value
         let previousInferenceLimit = Config.ZenzaiInferenceLimit().value
+        let previousProfile = Config.ZenzaiProfile().value
         defer {
             Config.Learning().value = previousLearning
             Config.ZenzaiInferenceLimit().value = previousInferenceLimit
+            Config.ZenzaiProfile().value = previousProfile
         }
         Config.Learning().value = arguments.learning ? .inputAndOutput : .nothing
         Config.ZenzaiInferenceLimit().value = arguments.inferenceLimit
+        Config.ZenzaiProfile().value = arguments.profile
 
         let workDirectory = FileManager.default.temporaryDirectory
             .appendingPathComponent("typing-replay-\(UUID().uuidString)", isDirectory: true)
@@ -95,6 +101,8 @@ enum TypingReplay {
             "入力訂正 \(arguments.options.enableTypoCorrection ? "ON" : "OFF")",
             "推論上限 \(Config.ZenzaiInferenceLimit().value)",
             "学習 \(arguments.learning ? "ON" : "OFF")",
+            "プロフィール \(arguments.profile.isEmpty ? "なし" : arguments.profile)",
+            "前の文 \(arguments.options.leadingText.count) 文字",
             "データ \(arguments.casesURL.lastPathComponent)"
         ].joined(separator: " / ")
 
@@ -202,7 +210,9 @@ enum TypingReplay {
         var values: [String: String] = [:]
         var flags: Set<String> = []
         var iterator = raw.makeIterator()
-        let valueNames: Set<String> = ["--cases", "--resources", "--out", "--baseline", "--limit", "--inference-limit"]
+        let valueNames: Set<String> = [
+            "--cases", "--resources", "--out", "--baseline", "--limit", "--inference-limit", "--profile", "--leading-text"
+        ]
         let flagNames: Set<String> = ["--predictive-typing", "--typo-correction", "--learning"]
         while let name = iterator.next() {
             if valueNames.contains(name) {
@@ -230,8 +240,10 @@ enum TypingReplay {
             baselineURL: values["--baseline"].map { URL(fileURLWithPath: $0) },
             limit: values["--limit"].flatMap(Int.init),
             inferenceLimit: values["--inference-limit"].flatMap(Int.init) ?? 5,
-            learning: flags.contains("--learning")
+            learning: flags.contains("--learning"),
+            profile: values["--profile"] ?? ""
         )
+        arguments.options.leadingText = values["--leading-text"] ?? ""
         arguments.options.enablePredictiveTyping = flags.contains("--predictive-typing")
         arguments.options.enableTypoCorrection = flags.contains("--typo-correction")
         return arguments
