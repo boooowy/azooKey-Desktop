@@ -55,13 +55,26 @@ products.append(
         targets: ["ConverterServer"]
     )
 )
-targets.append(
-    .executableTarget(
-        name: "ConverterServer",
+targets.append(contentsOf: [
+    // 変換サーバーの本体。XPC の受け口 (ConverterServer) と打鍵の再生ツール (typing-replay) が共有する
+    .target(
+        name: "ConverterServerCore",
         dependencies: ["Core"],
         swiftSettings: [.interoperabilityMode(.Cxx)]
+    ),
+    .executableTarget(
+        name: "ConverterServer",
+        dependencies: ["ConverterServerCore"],
+        swiftSettings: [.interoperabilityMode(.Cxx)]
+    ),
+    // 評価用の文を実機と同じ変換サーバーのコードに打鍵して、崩れたものを探す (Zenzai のモデルが要るので CI では実行しない)
+    .executableTarget(
+        name: "typing-replay",
+        dependencies: ["ConverterServerCore"],
+        path: "Sources/TypingReplay",
+        swiftSettings: [.interoperabilityMode(.Cxx)]
     )
-)
+])
 #endif
 
 let package = Package(

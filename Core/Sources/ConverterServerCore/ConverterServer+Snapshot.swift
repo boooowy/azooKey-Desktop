@@ -87,10 +87,9 @@ extension ConverterServer {
     }
 
     @MainActor
-    static func makeSegmentsManager(kanaKanjiConverter: KanaKanjiConverter) -> SegmentsManager {
+    func makeSegmentsManager(kanaKanjiConverter: KanaKanjiConverter) -> SegmentsManager {
         CustomInputTableStore.registerIfExists()
-        let containerURL = AppGroup.containerURL()
-        let applicationDirectoryURL = AppGroup.memoryDirectoryURL()
+        let applicationDirectoryURL = environment.memoryDirectoryURL
         let typoCorrectionDirectoryURL = DebugTypoCorrectionWeights.modelDirectoryURL(
             azooKeyApplicationSupportDirectoryURL: applicationDirectoryURL.deletingLastPathComponent()
         )
@@ -105,25 +104,9 @@ extension ConverterServer {
         return SegmentsManager(
             kanaKanjiConverter: kanaKanjiConverter,
             applicationDirectoryURL: applicationDirectoryURL,
-            containerURL: containerURL,
-            context: .init(useZenzai: true, resourcesDirectoryURL: appResourcesDirectoryURL())
+            containerURL: environment.containerURL,
+            context: .init(useZenzai: true, resourcesDirectoryURL: environment.resourcesDirectoryURL)
         )
-    }
-
-    static func appResourcesDirectoryURL() -> URL {
-        if let executableURL = Bundle.main.executableURL {
-            var directoryURL = executableURL.deletingLastPathComponent()
-            while directoryURL.path != "/" {
-                if directoryURL.lastPathComponent == "Contents" {
-                    return directoryURL.appendingPathComponent("Resources", isDirectory: true)
-                }
-                directoryURL.deleteLastPathComponent()
-            }
-        }
-        if let resourceURL = Bundle.main.resourceURL {
-            return resourceURL
-        }
-        return Bundle.main.bundleURL.appendingPathComponent("Contents/Resources", isDirectory: true)
     }
 
     @MainActor
