@@ -14,6 +14,9 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     /// 変換サーバーの応答を待たずに、マークテキストの末尾に出している打鍵
     private var provisionalInputEcho = ProvisionalInputEcho()
     private var activationGeneration: UInt64 = 0
+    /// 打鍵の処理時間の記録 (`KeyLatencyTrace`) に、入力先のアプリとして添える。
+    /// client への同期の問い合わせを避けるため、最前面のアプリから取る
+    private var activeApplicationIdentifier = "?"
     private var pendingConverterServerActivation: ConverterSessionActivation?
     var liveConversionEnabled: Bool {
         Config.LiveConversion().value
@@ -150,6 +153,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     override func activateServer(_ sender: Any!) {
         super.activateServer(sender)
         self.activationGeneration &+= 1
+        self.activeApplicationIdentifier = NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "?"
         self.provisionalInputEcho.reset()
         self.updateLiveConversionToggleMenuItem(newValue: self.liveConversionEnabled)
         self.updateTransformSelectedTextMenuItemEnabledState()
@@ -249,6 +253,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
 
     // swiftlint:disable:next cyclomatic_complexity
     @MainActor override func handle(_ event: NSEvent!, client sender: Any!) -> Bool {
+        let receivedAt = ContinuousClock.now
         guard let event, let client = sender as? IMKTextInput else {
             return false
         }
@@ -330,7 +335,8 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         return self.handleKeyEventWithConverterServer(
             event: event.keyEventCore,
             enableSuggestion: aiBackendEnabled,
-            optionDirectInputText: event.characters(byApplyingModifiers: event.modifierFlags.subtracting(.option))
+            optionDirectInputText: event.characters(byApplyingModifiers: event.modifierFlags.subtracting(.option)),
+            receivedAt: receivedAt
         )
     }
 
@@ -338,7 +344,8 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     private func handleKeyEventWithConverterServer(
         event: KeyEventCore,
         enableSuggestion: Bool,
-        optionDirectInputText: String? = nil
+        optionDirectInputText: String? = nil,
+        receivedAt: ContinuousClock.Instant = .now
     ) -> Bool {
         let disposition = ConverterClientEventRouter.disposition(
             event: event,
@@ -357,6 +364,13 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         }
 
         self.nextKeyEventID &+= 1
+        var trace = KeyLatencyTrace(
+            eventID: self.nextKeyEventID,
+            application: self.activeApplicationIdentifier,
+            pendingKeyEventCount: self.pendingKeyEventCount,
+            start: receivedAt
+        )
+        trace.mark("route")
         // 変換サーバーは別プロセスで、変換 (と Zenzai による予測) を終えてから応答する。
         // その往復を待たずに、打った文字をマークテキストの末尾に出しておく。
         //
@@ -372,6 +386,9 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         ) {
             self.refreshMarkedText()
         }
+        trace.mark("echo")
+        let context = self.currentConverterTextContext()
+        trace.mark("context")
         let request = ConverterKeyEventRequest(
             eventID: self.nextKeyEventID,
             event: event,
@@ -384,17 +401,22 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             enableOptionDirectFullWidthInput: Config.OptionDirectFullWidthInput().value,
             typeBackSlash: Config.TypeBackSlash().value,
             optionDirectInputText: optionDirectInputText,
-            context: self.currentConverterTextContext(),
+            context: context,
             activation: self.pendingConverterServerActivation
         )
+        trace.mark("request")
         self.pendingConverterServerActivation = nil
         self.pendingKeyEventCount += 1
         let activationGeneration = self.activationGeneration
+        // 送信 (XPC) からの時間は、応答が届いてから roundtrip として記録する
+        let sentTrace = trace
         self.converterServerClient.sendKeyEvent(request) { [weak self] response in
             Task { @MainActor in
                 guard let self else {
                     return
                 }
+                var trace = sentTrace
+                trace.mark("roundtrip")
                 self.pendingKeyEventCount = max(0, self.pendingKeyEventCount - 1)
                 guard self.activationGeneration == activationGeneration else {
                     return
@@ -411,7 +433,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                     // application へ後からイベントを戻せないため、ここでは漏らさない。
                     self.appendDebugMessage("Consumed delayed fallthrough event \(request.eventID)")
                 }
-                self.apply(response)
+                self.apply(response, trace: trace)
             }
         }
         return true
@@ -431,7 +453,8 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     }
 
     @MainActor
-    private func apply(_ response: ConverterServerResponse) {
+    private func apply(_ response: ConverterServerResponse, trace: KeyLatencyTrace? = nil) {
+        var trace = trace
         if let inputLanguage = response.inputLanguage {
             self.inputLanguage = inputLanguage
         }
@@ -442,10 +465,16 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                 self.apply(effect, client: client)
             }
         }
+        trace?.mark("effects")
         self.refreshMarkedText()
+        trace?.mark("markedText")
         self.refreshCandidateWindow()
+        trace?.mark("candidateWindow")
         self.refreshPredictionWindow()
+        trace?.mark("predictionWindow")
         self.refreshReplaceSuggestionWindow()
+        trace?.mark("replaceSuggestionWindow")
+        trace?.finish()
     }
 
     @MainActor
