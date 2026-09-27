@@ -54,6 +54,35 @@ struct StatelessMixedInputTests {
         #expect(try Self.type(input).convertTarget == expected)
     }
 
+    @Test("辞書にない英単語で区切った判定を、実在の単語になる区切りに選び直す", arguments: [
+        // 区間判定のモデルは [Maci] ppai、[Pytho] noboeru、[Vi] miine、[updat] ega と判定する
+        ("Macippaikatta", "Macいっぱいかった"),
+        ("Pythonoboeru", "Pythonおぼえる"),
+        ("Vimiine", "Vimいいね"),
+        ("updategaintent", "updateがintent"),
+        ("Chromeakete", "Chromeあけて")
+    ])
+    func unknownEnglishResegmented(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
+    @Test("辞書にない正しい語や、正しい区切りは崩さない", arguments: [
+        // 辞書にない語を、辞書にある短い語まで削らない (runt、free)
+        ("runtimenofurumai", "runtimeのふるまい"),
+        ("freeenihanai", "freeeにはない"),
+        // 複数形、略語 + 単語
+        ("Interpretersha", "Interpretersは"),
+        ("MGAAppoyobiMrs", "MGAAppおよびMrs"),
+        // 英単語のすぐあとに母音で始まる日本語
+        ("GitHubikounokeikaku", "GitHubいこうのけいかく"),
+        ("PRokurimasu", "PRおくります"),
+        ("AWSunnyou", "AWSうんよう"),
+        ("Slackiinedesune", "Slackいいねですね")
+    ])
+    func correctSegmentationsKept(_ input: String, _ expected: String) throws {
+        #expect(try Self.type(input).convertTarget == expected)
+    }
+
     @Test("大文字の英単語に、隣のローマ字を含めない", arguments: [
         // 区間判定のモデルは [OKna] no [deCommit] と判定する
         ("dousakakuninnhaOKnanodeCommitsite", "どうさかくにんはOKなのでCommitして"),

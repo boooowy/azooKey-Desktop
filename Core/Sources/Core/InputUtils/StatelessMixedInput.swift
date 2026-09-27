@@ -268,16 +268,18 @@ struct StatelessMixedInput {
         return Self.composingText(from: spans, japaneseStyle: japaneseStyle)
     }
 
-    /// 区間判定。モデルの判定を2つだけ補正する。
+    /// 区間判定。モデルの判定を3つだけ補正する。
     ///
     /// - `nn` の間で英語と日本語を区切った判定 (`resegmentIfSplitsDoubleN`)
+    /// - 実在しない英単語で区切った判定 (`resegmentingUnknownEnglish`)
     /// - 大文字の英単語に、隣のローマ字まで含めた判定 (`splittingMixedCaseParticles`)
     ///
     /// jev-test の RomajiSegmenter は Python 版と同じ答えを返すことを
     /// golden テストで保証しているので、補正はこちら側で行う。
     static func segment(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
         let spans = try segmentCorrectingDoubleN(raw, with: segmenter, partial: partial)
-        return splittingMixedCaseParticles(spans, partial: partial)
+        let resegmented = try resegmentingUnknownEnglish(spans, with: segmenter, partial: partial)
+        return splittingMixedCaseParticles(resegmented, partial: partial)
     }
 
     /// `nn` の間で英語と日本語を区切った判定を補正する。
@@ -316,6 +318,116 @@ struct StatelessMixedInput {
     }
 
     static let doubleNCandidateCount = 8
+
+    static let unknownEnglishCandidateCount = 8
+    /// モデルの評価がこれ以上悪い案は選ばない (対数尤度の差)
+    static let unknownEnglishScoreMargin = 3.0
+
+    /// 実在しない英単語で区切った判定を、k-best から選び直す。
+    ///
+    /// 区間判定のモデルは、英単語と日本語の境目を1〜2文字ずらすことが多い。
+    ///
+    /// - `writetokiroku` → `[writ] etokiroku` (writ絵と記録)
+    /// - `Dockerirete` → `[Docke] rirete`、`Macippai` → `[Maci] ppai`
+    ///
+    /// 正しい境目はたいてい k-best の2〜3番目にある。英語の区間のすぐあとに日本語の区間が続き、
+    /// その英語の区間が辞書 (`EnglishLexicon`) にないときだけ、英語の区間がすべて辞書にあり、
+    /// 日本語の区間がかなに変換しきれる案に選び直す。
+    ///
+    /// 英語の区間が辞書にある判定 (`[Zoo] mikou`、`[writ] e` の writ も辞書にある) は、
+    /// 正しい判定を崩さないよう手を出さない。辞書がない環境では何もしない。
+    static func resegmentingUnknownEnglish(_ spans: [InputSpan], with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+        guard spans.indices.dropLast().contains(where: { isUnknownEnglishBeforeJapanese(spans[$0], spans[$0 + 1]) }),
+              !EnglishLexicon.words.isEmpty else {
+            return spans
+        }
+        var result: [InputSpan] = []
+        var i = 0
+        while i < spans.count {
+            guard spans[i].label != .symbol else {
+                result.append(spans[i])
+                i += 1
+                continue
+            }
+            // 記号を挟まずに続く英語・日本語の区間は、segmentInput では1つの英字の並び
+            var j = i
+            while j < spans.count, spans[j].label != .symbol { j += 1 }
+            let run = Array(spans[i ..< j])
+            result += try Self.resegmentRunIfUnknownEnglish(run, with: segmenter, partial: partial && j == spans.count)
+            i = j
+        }
+        return result
+    }
+
+    private static func resegmentRunIfUnknownEnglish(_ run: [InputSpan], with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
+        // 辞書にない英語の区間の [始まり, 終わり) (文字の位置)
+        var unknownEnglish: [(start: Int, end: Int)] = []
+        var offset = 0
+        for (index, span) in run.enumerated() {
+            let end = offset + span.text.count
+            if index + 1 < run.count, isUnknownEnglishBeforeJapanese(span, run[index + 1]) {
+                unknownEnglish.append((offset, end))
+            }
+            offset = end
+        }
+        guard !unknownEnglish.isEmpty else {
+            return run
+        }
+        let text = run.map(\.text).joined()
+        let characters = Array(text)
+        let candidates = try segmenter.segmentKBest(text, k: unknownEnglishCandidateCount, partial: partial)
+        guard let best = candidates.first else {
+            return run
+        }
+        for candidate in candidates.dropFirst() where candidate.score >= best.score - unknownEnglishScoreMargin {
+            let spans = candidate.segments.map {
+                InputSpan(label: $0.label == .english ? .english : .japanese, text: $0.text)
+            }
+            // 辞書にない英語の区間を、伸ばすか、末尾の母音を1文字だけ削る案に限る。
+            // それ以上削ると、辞書にない正しい語 (runtime → runt) を崩す
+            var candidateEnglish: [Int: Int] = [:]
+            var position = 0
+            for span in spans {
+                if span.label == .english {
+                    candidateEnglish[position] = position + span.text.count
+                }
+                position += span.text.count
+            }
+            let movesBoundaryReasonably = unknownEnglish.allSatisfy { range in
+                guard let end = candidateEnglish[range.start] else {
+                    return false
+                }
+                // 削る母音が直前と同じ (freee の ee) なら、英語の綴りの一部なので削らない
+                return end > range.end
+                    || (end == range.end - 1 && "aiueo".contains(characters[end]) && characters[end - 1] != characters[end])
+            }
+            let englishIsKnown = spans.allSatisfy { $0.label != .english || EnglishLexicon.isKnownWord($0.text) }
+            // 打ちかけの末尾の日本語は、続きでかなになるかもしれないので問わない
+            let japaneseIsComplete = spans.enumerated().allSatisfy { index, span in
+                span.label != .japanese || (partial && index == spans.count - 1) || isCompleteRomaji(span.text)
+            }
+            let splitsDoubleN = spans.indices.dropLast().contains { Self.splitsDoubleN(spans[$0], spans[$0 + 1]) }
+            if movesBoundaryReasonably && englishIsKnown && japaneseIsComplete && !splitsDoubleN {
+                return spans
+            }
+        }
+        return run
+    }
+
+    /// 英語の区間のすぐあとに日本語の区間が続き、その英語の区間が辞書にない
+    private static func isUnknownEnglishBeforeJapanese(_ left: InputSpan, _ right: InputSpan) -> Bool {
+        left.label == .english && right.label == .japanese && !EnglishLexicon.isKnownWord(left.text)
+    }
+
+    /// ローマ字としてかなに変換しきれるか (`-` は ー とみなす)
+    private static func isCompleteRomaji(_ text: String) -> Bool {
+        guard text.allSatisfy({ ($0.isASCII && $0.isLowercase) || $0 == "-" }) else {
+            return false
+        }
+        var composing = ComposingText()
+        composing.insertAtCursorPosition(longVowelMarks(text), inputStyle: .roman2kana)
+        return !composing.convertTarget.contains(where: { $0.isASCII && $0.isLetter })
+    }
 
     /// 大文字の英単語に、隣のローマ字まで含めた英語区間を分け直す。
     ///
