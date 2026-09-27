@@ -419,6 +419,8 @@ public struct ConverterServerResponse: Codable, Sendable {
     public var inputLanguage: InputLanguage?
     public var settings: [ConverterSettingDescriptor]
     public var snapshot: ConverterSessionSnapshot
+    /// 処理時間の内訳。Server が処理のぶんを入れ、Client が通信のぶんを足す
+    public var timing: ConverterResponseTiming?
 
     public init(
         handled: Bool = true,
@@ -434,6 +436,30 @@ public struct ConverterServerResponse: Codable, Sendable {
         self.inputLanguage = inputLanguage
         self.settings = settings
         self.snapshot = snapshot
+    }
+}
+
+/// 1回のコマンドの処理時間の内訳 (ms)。IME 本体の打鍵の処理時間の記録に使う。
+public struct ConverterResponseTiming: Codable, Sendable, Equatable {
+    /// Server: XPC で受け取ってから処理を始めるまで (Server のメインスレッドの空き待ち)
+    public var serverWait: Double
+    /// Server: コマンドの復号と処理 (応答の符号化は含まない)
+    public var serverProcessing: Double
+    /// Client: XPC で送ってから応答が届くまで (serverWait と serverProcessing を含む)
+    public var xpc: Double?
+    /// Client: 応答が届いてから、復号してメインスレッドで受け取るまで
+    public var clientReceive: Double?
+
+    public init(serverWait: Double, serverProcessing: Double, xpc: Double? = nil, clientReceive: Double? = nil) {
+        self.serverWait = serverWait
+        self.serverProcessing = serverProcessing
+        self.xpc = xpc
+        self.clientReceive = clientReceive
+    }
+
+    public static func milliseconds(_ duration: Duration) -> Double {
+        let components = duration.components
+        return Double(components.seconds) * 1000 + Double(components.attoseconds) / 1e15
     }
 }
 

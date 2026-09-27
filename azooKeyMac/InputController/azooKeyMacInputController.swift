@@ -17,6 +17,8 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     /// 打鍵の処理時間の記録 (`KeyLatencyTrace`) に、入力先のアプリとして添える。
     /// client への同期の問い合わせを避けるため、最前面のアプリから取る
     private var activeApplicationIdentifier = "?"
+    /// 応答を反映する間に、カーソルの矩形の問い合わせ (`cursorLineRect`) にかかった時間
+    private var cursorQueryMilliseconds: Double = 0
     private var pendingConverterServerActivation: ConverterSessionActivation?
     var liveConversionEnabled: Bool {
         Config.LiveConversion().value
@@ -417,6 +419,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
                 }
                 var trace = sentTrace
                 trace.mark("roundtrip")
+                trace.responseTiming = response?.timing
                 self.pendingKeyEventCount = max(0, self.pendingKeyEventCount - 1)
                 guard self.activationGeneration == activationGeneration else {
                     return
@@ -455,6 +458,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     @MainActor
     private func apply(_ response: ConverterServerResponse, trace: KeyLatencyTrace? = nil) {
         var trace = trace
+        self.cursorQueryMilliseconds = 0
         if let inputLanguage = response.inputLanguage {
             self.inputLanguage = inputLanguage
         }
@@ -474,6 +478,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         trace?.mark("predictionWindow")
         self.refreshReplaceSuggestionWindow()
         trace?.mark("replaceSuggestionWindow")
+        trace?.cursorQueryMilliseconds = self.cursorQueryMilliseconds
         trace?.finish()
     }
 
@@ -574,8 +579,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     private func refreshCandidateWindow(_ candidateWindow: ConverterCandidateWindow) {
         switch candidateWindow {
         case .selecting(let candidates, let selectionIndex):
-            var rect: NSRect = .zero
-            self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+            let rect = self.cursorLineRect()
             self.candidatesViewController.showCandidateIndex = true
             self.candidatesViewController.segmentReading = self.currentConverterView?.segmentReading
             self.candidatesViewController.updateCandidatePresentations(
@@ -585,8 +589,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             )
             self.candidatesWindow.orderFront(nil)
         case .composing(let candidates, let selectionIndex):
-            var rect: NSRect = .zero
-            self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+            let rect = self.cursorLineRect()
             self.candidatesViewController.showCandidateIndex = false
             self.candidatesViewController.segmentReading = nil
             self.candidatesViewController.updateCandidatePresentations(
@@ -680,8 +683,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         self.lastPredictionCandidates = predictions.map(\.displayText)
         self.lastPredictionUpdateTime = Date().timeIntervalSince1970
 
-        var rect: NSRect = .zero
-        self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+        let rect = self.cursorLineRect()
         self.predictionViewController.updateCandidatePresentations(
             candidates,
             selectionIndex: nil,
@@ -723,8 +725,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         guard !candidates.isEmpty else {
             return
         }
-        var rect: NSRect = .zero
-        self.client().attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+        let rect = self.cursorLineRect()
         self.predictionViewController.updateCandidatePresentations(
             candidates,
             selectionIndex: nil,
@@ -763,6 +764,16 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
     @MainActor func handleSuggestionError(_ error: Error, cursorPosition: CGPoint) {
         let errorMessage = "エラーが発生しました: \(error.localizedDescription)"
         self.appendDebugMessage(errorMessage)
+    }
+
+    /// 入力中のアプリに、カーソルのある行の矩形を問い合わせる (同期の問い合わせ)。
+    /// かかった時間を `cursorQueryMilliseconds` に足し、打鍵の処理時間の記録に添える
+    private func cursorLineRect() -> NSRect {
+        let start = ContinuousClock.now
+        var rect: NSRect = .zero
+        self.client()?.attributes(forCharacterIndex: 0, lineHeightRectangle: &rect)
+        self.cursorQueryMilliseconds += ConverterResponseTiming.milliseconds(ContinuousClock.now - start)
+        return rect
     }
 
     func getCursorLocation() -> CGPoint {

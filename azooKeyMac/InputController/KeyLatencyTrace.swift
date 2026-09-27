@@ -1,3 +1,4 @@
+import Core
 import Foundation
 import os
 
@@ -19,6 +20,10 @@ struct KeyLatencyTrace {
     private let start: ContinuousClock.Instant
     private var last: ContinuousClock.Instant
     private var phases: [(name: StaticString, milliseconds: Double)] = []
+    /// 変換サーバーとの往復の内訳 (応答に入っていたもの)
+    var responseTiming: ConverterResponseTiming?
+    /// 反映の間に、入力中のアプリへカーソルの矩形を問い合わせた時間の合計 (候補・予測ウィンドウの区間に含まれる)
+    var cursorQueryMilliseconds: Double?
     private let signpostState: OSSignpostIntervalState
 
     /// - Parameters:
@@ -44,8 +49,18 @@ struct KeyLatencyTrace {
     func finish() {
         Self.signposter.endInterval("key", self.signpostState)
         let total = Self.milliseconds(ContinuousClock.now - self.start)
-        let detail = self.phases
-            .map { "\($0.name)=\(String(format: "%.2f", $0.milliseconds))" }
+        var fields = self.phases.map { ("\($0.name)", $0.milliseconds) }
+        if let cursorQuery = self.cursorQueryMilliseconds {
+            fields.append(("cursorQuery", cursorQuery))
+        }
+        if let timing = self.responseTiming {
+            fields += [("serverWait", timing.serverWait), ("serverProcessing", timing.serverProcessing)]
+            fields += [("xpc", timing.xpc), ("clientReceive", timing.clientReceive)].compactMap { name, value in
+                value.map { (name, $0) }
+            }
+        }
+        let detail = fields
+            .map { "\($0.0)=\(String(format: "%.2f", $0.1))" }
             .joined(separator: " ")
         Self.logger.debug(
             "key id=\(self.eventID, privacy: .public) app=\(self.application, privacy: .public) pending=\(self.pendingKeyEventCount, privacy: .public) total=\(String(format: "%.2f", total), privacy: .public) \(detail, privacy: .public)"

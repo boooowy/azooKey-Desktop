@@ -50,9 +50,10 @@ public final class ConverterServer: NSObject, @unchecked Sendable {
     @objc public func handleCommand(_ data: Data, with reply: @escaping @Sendable (Data?, NSString?) -> Void) {
         // キー入力の応答はユーザー操作のクリティカルパスなので、システム負荷が高い時も
         // utility/background work より先に実行される優先度で Server actor へ渡す。
+        let receivedAt = ContinuousClock.now
         Task(priority: .userInitiated) { @MainActor in
             do {
-                reply(try await self.handleCommandData(data), nil)
+                reply(try await self.handleCommandData(data, receivedAt: receivedAt), nil)
             } catch {
                 reply(nil, error.localizedDescription as NSString)
             }
@@ -61,15 +62,22 @@ public final class ConverterServer: NSObject, @unchecked Sendable {
 
     /// エンコードされたコマンドを処理し、エンコードした応答を返す。
     /// XPC の `handleCommand` と打鍵の再生ツールが、同じこの経路を通る。
+    ///
+    /// - Parameter receivedAt: XPC で受け取った時刻。処理を始めるまでの待ちを応答の `timing` に入れる
     @MainActor
-    public func handleCommandData(_ data: Data) async throws -> Data {
+    public func handleCommandData(_ data: Data, receivedAt: ContinuousClock.Instant? = nil) async throws -> Data {
         defer {
             self.learningDataCommitScheduler.postponeIfScheduled(
                 after: Self.learningDataCommitDelay
             )
         }
+        let start = ContinuousClock.now
         let command = try ConverterServerCodec.decodeCommand(from: data)
-        let response = try await self.handle(command)
+        var response = try await self.handle(command)
+        response.timing = ConverterResponseTiming(
+            serverWait: receivedAt.map { ConverterResponseTiming.milliseconds(start - $0) } ?? 0,
+            serverProcessing: ConverterResponseTiming.milliseconds(ContinuousClock.now - start)
+        )
         return try ConverterServerCodec.encode(response)
     }
 

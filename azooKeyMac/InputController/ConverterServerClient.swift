@@ -249,7 +249,9 @@ final class ConverterServerClient {
                     completion(nil)
                     return
                 }
+                let sentAt = ContinuousClock.now
                 proxy.handleCommand(data) { [weak self] responseData, errorMessage in
+                    let repliedAt = ContinuousClock.now
                     let errorDescription = errorMessage.map(String.init)
                     DispatchQueue.main.async {
                         if let errorDescription {
@@ -264,7 +266,10 @@ final class ConverterServerClient {
                             completion(nil)
                             return
                         }
-                        completion(try? ConverterServerCodec.decodeResponse(from: responseData))
+                        var response = try? ConverterServerCodec.decodeResponse(from: responseData)
+                        response?.timing?.xpc = ConverterResponseTiming.milliseconds(repliedAt - sentAt)
+                        response?.timing?.clientReceive = ConverterResponseTiming.milliseconds(ContinuousClock.now - repliedAt)
+                        completion(response)
                     }
                 }
             }
