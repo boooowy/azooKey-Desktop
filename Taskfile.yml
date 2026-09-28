@@ -39,6 +39,13 @@ tasks:
       - echo "Installing {{.TARGET_PKG}}"
       - sudo installer -pkg "{{.TARGET_PKG}}" -target /
 
+  pkg:reinstall:
+    desc: "pkg を作り、そのままインストールする (例: task pkg:reinstall -- --ignore-lint)"
+    cmds:
+      - task: pkg
+      # pkg を作り終えてから呼ぶので、いま作った pkg が一番新しいものとして入る
+      - task: pkg:install
+
   uninstall:
     desc: インストール済みの azooKey を消す (install.sh と pkg のどちらで入れたものも)
     cmds:
