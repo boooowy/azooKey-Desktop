@@ -32,7 +32,25 @@ if [ -f "${legacy_agent_path}" ]; then
     launchctl bootout "${gui_domain}" "${legacy_agent_path}" >/dev/null 2>&1 || true
     rm -f "${legacy_agent_path}"
 fi
-launchctl bootstrap "${gui_domain}" "${agent_path}"
+# bootout は止め終わる前に戻る。動いている最中に bootstrap すると
+# "Bootstrap failed: 5: Input/output error" になるので、消えるまで待つ
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+    launchctl print "${gui_domain}/${service_name}" >/dev/null 2>&1 || break
+    sleep 1
+done
+# それでも間に合わないことがあるので、何度かやり直す
+bootstrapped=false
+for _ in 1 2 3 4 5; do
+    if launchctl bootstrap "${gui_domain}" "${agent_path}"; then
+        bootstrapped=true
+        break
+    fi
+    sleep 1
+done
+if [ "${bootstrapped}" = false ]; then
+    echo "Failed to bootstrap ${service_name}" >&2
+    exit 1
+fi
 launchctl kickstart -k "${gui_domain}/${service_name}"
 launchctl print "${gui_domain}/${service_name}" >/dev/null
 
