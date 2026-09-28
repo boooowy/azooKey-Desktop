@@ -1,0 +1,94 @@
+version: "3"
+
+# よく使うコマンドのまとめ。`task` で一覧が出る。
+# 引数は `task <名前> -- <引数>` で渡す (例: task test -- StatelessMixedInputTests)。
+# 中身は既存のスクリプトを呼ぶだけなので、Task が無くても各スクリプトを直接実行できる。
+
+vars:
+  SERVICE_NAME: dev.boooowy.inputmethod.azooKeyMac.ConverterServer
+
+tasks:
+  default:
+    desc: タスクの一覧を出す
+    silent: true
+    cmds:
+      - task --list
+
+  # インストール
+
+  install:
+    desc: "Xcode でビルドしてこの Mac にインストールする (例: task install -- --ignore-lint)"
+    cmds:
+      - ./install.sh {{.CLI_ARGS}}
+
+  pkg:
+    desc: "配布用の pkg を build/ に作る。公証なし (例: task pkg -- --ignore-lint)"
+    cmds:
+      - ./Tools/build_dev_pkg.sh {{.CLI_ARGS}}
+
+  pkg:install:
+    desc: "build/ の一番新しい pkg をターミナルからインストールする (例: task pkg:install PKG=path/to.pkg)"
+    vars:
+      LATEST_PKG:
+        sh: ls -t build/azooKey-dev-*.pkg 2>/dev/null | head -n 1
+      TARGET_PKG: "{{.PKG | default .LATEST_PKG}}"
+    preconditions:
+      - sh: test -n "{{.TARGET_PKG}}" && test -f "{{.TARGET_PKG}}"
+        msg: "pkg が見つかりません。先に task pkg を実行するか、PKG=path/to.pkg で指定してください"
+    cmds:
+      - echo "Installing {{.TARGET_PKG}}"
+      - sudo installer -pkg "{{.TARGET_PKG}}" -target /
+
+  uninstall:
+    desc: インストール済みの azooKey を消す (install.sh と pkg のどちらで入れたものも)
+    cmds:
+      - ./Tools/uninstall_azookey.sh
+
+  restart:
+    desc: 動いている azooKey を止め、変換サーバーを再起動する。新しい版がすぐ反映されないとき用
+    cmds:
+      # 入力メソッドは次に入力するとき macOS が起動し直す
+      - pkill -x azooKeyMac || true
+      - launchctl kickstart -k "gui/$(id -u)/{{.SERVICE_NAME}}"
+
+  logs:
+    desc: 変換サーバーのログを流し続けて見る (Ctrl+C で終了)
+    cmds:
+      - tail -F "/tmp/{{.SERVICE_NAME}}.stdout.log" "/tmp/{{.SERVICE_NAME}}.stderr.log"
+
+  # 開発
+
+  test:
+    desc: "Core のテストを実行する。引数は --filter に渡す (例: task test -- StatelessMixedInputTests)"
+    cmds:
+      - swift test --package-path Core{{if .CLI_ARGS}} --filter '{{.CLI_ARGS}}'{{end}}
+
+  lint:
+    desc: SwiftLint を CI と同じ設定で実行する
+    cmds:
+      - swiftlint --quiet --strict
+
+  lint:fix:
+    desc: SwiftLint で自動で直せる違反を直す
+    cmds:
+      - swiftlint --fix --format
+
+  build:
+    desc: 署名なしで Release ビルドし、コンパイルが通るかだけ確かめる (CI と同じ)
+    cmds:
+      - >-
+        xcodebuild
+        -project azooKeyMac.xcodeproj
+        -scheme azooKeyMac
+        -configuration Release
+        -destination 'generic/platform=macOS'
+        CODE_SIGNING_ALLOWED=NO
+        CODE_SIGNING_REQUIRED=NO
+        CODE_SIGN_IDENTITY=""
+
+  replay:
+    desc: "評価用の文を変換サーバーのコードに打鍵する再生ツールを実行する (引数は TypingReplay.swift を参照)"
+    cmds:
+      # 既定の build system だと Zenzai の Metal 初期化で abort するので native を使う
+      - swift build -c release --package-path Core --product typing-replay --build-system native
+      - Core/.build/release/typing-replay {{.CLI_ARGS}}

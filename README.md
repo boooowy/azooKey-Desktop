@@ -128,6 +128,20 @@ pkg で上書きインストールすると、動いている azooKey が止ま�
 ./Tools/uninstall_azookey.sh
 ```
 
+### Task でまとめて実行する
+
+よく使うコマンドは [Task](https://taskfile.dev) にまとめてあります。`task` と打つと一覧が出ます。
+
+```bash
+brew install go-task
+task                    # 一覧を出す
+task pkg                # 配布用の pkg を作る
+task pkg:install        # 作った pkg をターミナルからインストールする
+task test -- StatelessMixedInputTests   # テストを絞って実行する
+```
+
+中身は上のスクリプトを呼んでいるだけなので、Task が無くても各スクリプトを直接実行できます。
+
 ### 開発時のトラブルシューティング
 
 `install.sh`でビルドが成功しない場合、以下をご確認ください。
