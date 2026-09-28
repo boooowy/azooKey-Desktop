@@ -112,6 +112,22 @@ ls -lh azooKeyMac/Resources/zenz-v3.1-small-gguf/ggml-model-Q5_K_M.gguf
 
 開発中はazooKeyのプロセスをkillすることで最新版を反映することが出来ます。また、必要に応じて入力ソースからazooKeyを削除して再度追加する、macOSからログアウトして再ログインするなど、リセットが必要になる場合があります。
 
+#### 4. 試してもらうための pkg を作る（任意）
+
+Xcode の署名設定のまま、他の人に渡せる `.pkg` を作れます。Developer ID の証明書や公証は不要です。
+
+```bash
+./Tools/build_dev_pkg.sh
+```
+
+`build/azooKey-dev-<日付>-<コミット>.pkg` ができます。公証していないため、受け取った人は初回だけシステム設定で開くのを許可する必要があります。受け取る人向けの手順は [docs/dev-pkg-install.md](docs/dev-pkg-install.md) にあります。
+
+pkg で上書きインストールすると、動いている azooKey が止まるので、ログアウトしなくても新しい版になります。インストール済みの azooKey をきれいに消したいときは、次を実行してください。install.sh と pkg のどちらで入れたものも消せます。
+
+```bash
+./Tools/uninstall_azookey.sh
+```
+
 ### 開発時のトラブルシューティング
 
 `install.sh`でビルドが成功しない場合、以下をご確認ください。
