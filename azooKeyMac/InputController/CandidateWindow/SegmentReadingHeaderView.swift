@@ -112,7 +112,7 @@ final class SegmentReadingHeaderView: NSView {
         let configuration = NSImage.SymbolConfiguration(pointSize: Self.hintFontSize, weight: .medium)
         let symbols: [NSView] = ["shift", "arrow.left.and.right"].compactMap { name in
             guard let image = NSImage(systemSymbolName: name, accessibilityDescription: nil)?
-                .withSymbolConfiguration(configuration) else {
+                    .withSymbolConfiguration(configuration) else {
                 return nil
             }
             let imageView = NSImageView(image: image)

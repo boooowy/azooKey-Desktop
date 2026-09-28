@@ -36,13 +36,13 @@ struct StatelessMixedInputTests {
     func englishStaysLiteral() throws {
         // 英語区間の 2 文字目以降が roman2kana に落ちると Slack が Sぁck になる
         #expect(try Self.type("kononaiyoudeSlacknisousinsiteoite").convertTarget
-                == "このないようでSlackにそうしんしておいて")
+                    == "このないようでSlackにそうしんしておいて")
     }
 
     @Test("記号は日本語区間の直後だけ 。、 になる")
     func punctuation() throws {
         #expect(try Self.type("kononaiyoudeSlacknisousinsiteoite.").convertTarget
-                == "このないようでSlackにそうしんしておいて。")
+                    == "このないようでSlackにそうしんしておいて。")
     }
 
     @Test("「ん」を nn で打っても先頭の英単語に吸われない", arguments: [
