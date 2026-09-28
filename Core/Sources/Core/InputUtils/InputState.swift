@@ -18,7 +18,8 @@ public enum InputState: Sendable, Hashable {
         inputLanguage: InputLanguage,
         liveConversionEnabled: Bool,
         enableDebugWindow: Bool,
-        enableSuggestion: Bool
+        enableSuggestion: Bool,
+        lastSpanIsEnglish: Bool = false
     ) -> (ClientAction, ClientActionCallback) {
         if event.modifierFlags.contains(.command) {
             return (.fallthrough, .fallthrough)
@@ -149,6 +150,9 @@ public enum InputState: Sendable, Hashable {
                 return (.stopComposition, .transition(.none))
             case .space:
                 if inputLanguage == .english {
+                    return (.appendToMarkedText(" "), .fallthrough)
+                } else if lastSpanIsEnglish || event.modifierFlags.contains(.shift) {
+                    // 英単語の区切り。Shift+Space は区間判定を外したときの逃げ道
                     return (.appendToMarkedText(" "), .fallthrough)
                 } else if liveConversionEnabled {
                     return (.enterCandidateSelectionMode, .transition(.selecting))

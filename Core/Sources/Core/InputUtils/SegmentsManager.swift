@@ -657,6 +657,17 @@ public final class SegmentsManager {
         self.composingText.convertTarget
     }
 
+    /// Space を変換ではなく半角スペースの入力にするか。
+    ///
+    /// カーソル直前を英語と判定しているとき。英単語の区切りを打てるようにする。
+    /// 日本語の直後にスペースを打つことはまずないので、それ以外は今までどおり変換にする
+    public var spaceInsertsLiteralSpace: Bool {
+        self.mixedInputEnabled
+            && self.composingText.isAtEndIndex
+            && self.mixedInput.isInSync(with: self.composingText)
+            && self.mixedInput.endsWithEnglish
+    }
+
     public var isEmpty: Bool {
         self.composingText.isEmpty
     }

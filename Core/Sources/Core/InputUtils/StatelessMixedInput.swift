@@ -19,7 +19,7 @@ struct StatelessMixedInput {
     /// 打った生の ASCII (変換前)
     private(set) var raw: String = ""
     /// 直前の区間判定の結果。ラベルが変わったかの判定に使う
-    private var lastSpans: [InputSpan] = []
+    private(set) var lastSpans: [InputSpan] = []
     /// 組み直した回数 (ちらつきの指標)
     private(set) var rebuildCount: Int = 0
     /// 次の打鍵で必ず組み直すか。
@@ -44,6 +44,8 @@ struct StatelessMixedInput {
 
     var isAvailable: Bool { segmenter != nil }
     var isEmpty: Bool { raw.isEmpty }
+    /// 末尾の区間を英語と判定しているか
+    var endsWithEnglish: Bool { lastSpans.last?.label == .english }
 
     /// `composingText` の入力要素から、打った ASCII を復元する。
     ///
@@ -274,18 +276,121 @@ struct StatelessMixedInput {
         return Self.composingText(from: spans, japaneseStyle: japaneseStyle)
     }
 
-    /// 区間判定。モデルの判定を3つだけ補正する。
+    /// 区間判定。モデルの判定を5つだけ補正する。
     ///
     /// - `nn` の間で英語と日本語を区切った判定 (`resegmentIfSplitsDoubleN`)
     /// - 実在しない英単語で区切った判定 (`resegmentingUnknownEnglish`)
     /// - 大文字の英単語に、隣のローマ字まで含めた判定 (`splittingMixedCaseParticles`)
+    /// - 日本語にくっついた小文字の助詞を英語にした判定 (`absorbingParticlesIntoJapanese`)
+    /// - 英語とスペースで並んだ英単語を日本語にした判定 (`joiningEnglishAcrossSpaces`)
     ///
     /// jev-test の RomajiSegmenter は Python 版と同じ答えを返すことを
     /// golden テストで保証しているので、補正はこちら側で行う。
     static func segment(_ raw: String, with segmenter: Segmenter, partial: Bool) throws -> [InputSpan] {
         let spans = try segmentCorrectingDoubleN(raw, with: segmenter, partial: partial)
         let resegmented = try resegmentingUnknownEnglish(spans, with: segmenter, partial: partial)
-        return splittingMixedCaseParticles(resegmented, partial: partial)
+        let split = splittingMixedCaseParticles(resegmented, partial: partial)
+        return joiningEnglishAcrossSpaces(absorbingParticlesIntoJapanese(split))
+    }
+
+    /// 日本語の区間にスペースを挟まずくっついた、小文字の助詞だけの英語の区間を日本語にする。
+    ///
+    /// `defo-ruto` (デフォルト) は `[de] fo-ruto` と判定される。`de` はシステムの辞書に
+    /// あるので `resegmentingUnknownEnglish` では直らず、「deふぉーると」になってしまう。
+    /// 助詞と同じ綴りの小文字がローマ字にくっついていて、英語のつもりということはまずない。
+    ///
+    /// 英語でもよく使う `englishParticles` (to、no など) は対象にしない。
+    static func absorbingParticlesIntoJapanese(_ spans: [InputSpan]) -> [InputSpan] {
+        func isJapanese(_ index: Int) -> Bool {
+            spans.indices.contains(index) && spans[index].label == .japanese
+        }
+        var changed = false
+        let absorbed = spans.enumerated().map { index, span in
+            guard span.label == .english,
+                  Self.particles.contains(span.text), !Self.englishParticles.contains(span.text),
+                  isJapanese(index - 1) || isJapanese(index + 1) else {
+                return span
+            }
+            changed = true
+            return InputSpan(label: .japanese, text: span.text)
+        }
+        return changed ? mergingAdjacentSpans(absorbed) : spans
+    }
+
+    /// 英語の隣にスペース1つで並んだ英単語を、日本語と判定していたら英語にする。
+    ///
+    /// 区間判定はスペースで切った英字の並びを1つずつ、前後を見ずに判定する。
+    /// `Thank you for help` の `you` はローマ字 (よう) としても読めるので日本語になり、
+    /// 変換で「用」になってしまう。日本語の文で単語の間にスペースを打つことはまずないので、
+    /// スペースで英語とつながった実在の英単語は英語とみなす。
+    ///
+    /// - 並び全体が日本語の区間1つで、小文字だけの実在の語 (`EnglishLexicon`) だけが対象
+    /// - 助詞 (`particles`) は英語にしない (`Slack de meeting` の de は で)。ただし英語でもよく使う
+    ///   `englishParticles` は、左が英語で右が英語 (か英語にできる語) のときだけ英語にする
+    ///   (`want to go` の to は英語、`Slack no` は の)
+    /// - 1文字の語は `a` だけ (打ちかけの `Slack d` を英語にしない)
+    /// - 英語にした語がさらに隣を英語にするので、変わらなくなるまで繰り返す
+    static func joiningEnglishAcrossSpaces(_ spans: [InputSpan]) -> [InputSpan] {
+        guard spans.contains(where: { $0.label == .symbol && $0.text == " " }), !EnglishLexicon.words.isEmpty else {
+            return spans
+        }
+        // 記号を挟まずに続く区間 (英字の並び) と、記号の区間に分ける
+        var items: [[InputSpan]] = []
+        for span in spans {
+            if span.label != .symbol, let last = items.last?.last, last.label != .symbol {
+                items[items.count - 1].append(span)
+            } else {
+                items.append([span])
+            }
+        }
+        func isRun(_ index: Int) -> Bool {
+            items.indices.contains(index) && items[index].first?.label != .symbol
+        }
+        /// スペース1つを挟んで隣にある英字の並び
+        func linkedRun(_ index: Int, step: Int) -> [InputSpan]? {
+            let separator = index + step
+            let neighbor = index + 2 * step
+            guard items.indices.contains(separator), items[separator] == [InputSpan(label: .symbol, text: " ")],
+                  isRun(neighbor) else {
+                return nil
+            }
+            return items[neighbor]
+        }
+        /// 英語にしてよい実在の英単語 (助詞は `englishParticles` だけ)。助詞かどうかも返す
+        func joinableWord(_ run: [InputSpan]?) -> (text: String, isParticle: Bool)? {
+            guard let run, run.count == 1, let span = run.first, span.label == .japanese,
+                  !span.text.contains(where: \.isUppercase),
+                  span.text.count >= 2 || span.text == "a",
+                  !Self.particles.contains(span.text) || Self.englishParticles.contains(span.text),
+                  EnglishLexicon.isKnownWord(span.text) else {
+                return nil
+            }
+            return (span.text, Self.particles.contains(span.text))
+        }
+        var changed = true
+        while changed {
+            changed = false
+            for index in items.indices where isRun(index) {
+                guard let word = joinableWord(items[index]) else {
+                    continue
+                }
+                let left = linkedRun(index, step: -1)
+                let right = linkedRun(index, step: 1)
+                let leftIsEnglish = left?.last?.label == .english
+                let rightIsEnglish = right?.first?.label == .english
+                let joins = if word.isParticle {
+                    // 右がまだ日本語でも、英語にできる語なら英語が続くとみなす (want to go の go)
+                    leftIsEnglish && (rightIsEnglish || joinableWord(right).map { !$0.isParticle } == true)
+                } else {
+                    leftIsEnglish || rightIsEnglish
+                }
+                if joins {
+                    items[index] = [InputSpan(label: .english, text: word.text)]
+                    changed = true
+                }
+            }
+        }
+        return mergingAdjacentSpans(items.flatMap { $0 })
     }
 
     /// `nn` の間で英語と日本語を区切った判定を補正する。
@@ -532,6 +637,9 @@ struct StatelessMixedInput {
 
     /// 英単語どうしをつなぐ日本語の助詞 (ローマ字。ヘボン式と訓令式)。
     /// 文法で決まった少数の語で、入力の例に合わせて増やすものではない
+    /// 助詞のうち、英語でもよく使う語。英語に挟まれていれば英語とみなす (`joiningEnglishAcrossSpaces`)
+    static let englishParticles: Set<String> = ["to", "no", "he", "made"]
+
     static let particles: Set<String> = [
         "no", "to", "ya", "de", "ni", "wo", "ga", "ha", "wa", "mo", "he",
         "kara", "made", "yori", "node", "nanode", "toka", "dake", "tte",

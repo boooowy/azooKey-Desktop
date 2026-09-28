@@ -10,6 +10,13 @@ private let spaceEvent = KeyEventCore(
     keyCode: 49
 )
 
+private let shiftSpaceEvent = KeyEventCore(
+    modifierFlags: [.shift],
+    characters: " ",
+    charactersIgnoringModifiers: " ",
+    keyCode: 49
+)
+
 @Suite("InputState space key behavior in composing state")
 struct InputStateSpaceTests {
     @Test func spaceInEnglishComposingAppendsSpace() {
@@ -78,6 +85,55 @@ struct InputStateSpaceTests {
         }
         guard case .transition(.previewing) = callback else {
             Issue.record("Expected transition(.previewing), got \(callback)")
+            return
+        }
+    }
+
+    @Test func spaceAfterEnglishSpanInJapaneseComposingAppendsSpace() {
+        let (action, _) = InputState.composing.event(
+            eventCore: spaceEvent,
+            userAction: .space(prefersFullWidthWhenInput: false),
+            inputLanguage: .japanese,
+            liveConversionEnabled: true,
+            enableDebugWindow: false,
+            enableSuggestion: false,
+            lastSpanIsEnglish: true
+        )
+        guard case .appendToMarkedText(let text) = action else {
+            Issue.record("Expected appendToMarkedText, got \(action)")
+            return
+        }
+        #expect(text == " ")
+    }
+
+    @Test func shiftSpaceInJapaneseComposingAppendsSpace() {
+        let (action, _) = InputState.composing.event(
+            eventCore: shiftSpaceEvent,
+            userAction: .space(prefersFullWidthWhenInput: true),
+            inputLanguage: .japanese,
+            liveConversionEnabled: true,
+            enableDebugWindow: false,
+            enableSuggestion: false
+        )
+        guard case .appendToMarkedText(let text) = action else {
+            Issue.record("Expected appendToMarkedText, got \(action)")
+            return
+        }
+        #expect(text == " ")
+    }
+
+    @Test func shiftSpaceInSelectingStillSelectsPreviousCandidate() {
+        let (action, _) = InputState.selecting.event(
+            eventCore: shiftSpaceEvent,
+            userAction: .space(prefersFullWidthWhenInput: true),
+            inputLanguage: .japanese,
+            liveConversionEnabled: true,
+            enableDebugWindow: false,
+            enableSuggestion: false,
+            lastSpanIsEnglish: true
+        )
+        guard case .selectPrevCandidate = action else {
+            Issue.record("Expected selectPrevCandidate, got \(action)")
             return
         }
     }

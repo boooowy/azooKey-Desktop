@@ -67,7 +67,8 @@ extension ConverterServer {
             inputLanguage: session.inputLanguage,
             liveConversionEnabled: request.liveConversionEnabled,
             enableDebugWindow: request.enableDebugWindow,
-            enableSuggestion: request.enableSuggestion
+            enableSuggestion: request.enableSuggestion,
+            lastSpanIsEnglish: session.manager.spaceInsertsLiteralSpace
         )
 
         var effects: [ConverterClientEffect] = []
