@@ -1,6 +1,7 @@
 import Cocoa
 import Core
 import InputMethodKit
+import os
 
 @objc(azooKeyMacInputController)
 class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // swiftlint:disable:this type_name
@@ -53,6 +54,22 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
 
     func appendDebugMessage(_ message: String) {
         NSLog("azooKeyMac: %@", message)
+    }
+
+    /// 入力中の文字が意図せず確定される件の調査用。アプリから確定・切り替えが来たことと、
+    /// キーをアプリへ渡したことを記録する。打った文字は記録しない。見るときは、次を流しながら打つ。
+    ///
+    ///     log stream --level info --style compact \
+    ///       --predicate 'subsystem == "dev.boooowy.inputmethod.azooKeyMac" && category == "lifecycle"'
+    private static let lifecycleLogger = Logger(subsystem: "dev.boooowy.inputmethod.azooKeyMac", category: "lifecycle")
+
+    private func logLifecycle(_ event: String) {
+        Self.lifecycleLogger.info("""
+            \(event, privacy: .public) \
+            app=\(self.activeApplicationIdentifier, privacy: .public) \
+            state=\(String(describing: self.inputState), privacy: .public) \
+            pending=\(self.pendingKeyEventCount, privacy: .public)
+            """)
     }
 
     private static func makeCandidateWindow(contentViewController: NSViewController) -> NSWindow {
@@ -156,6 +173,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
         super.activateServer(sender)
         self.activationGeneration &+= 1
         self.activeApplicationIdentifier = NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "?"
+        self.logLifecycle("activateServer")
         self.provisionalInputEcho.reset()
         self.updateLiveConversionToggleMenuItem(newValue: self.liveConversionEnabled)
         self.updateTransformSelectedTextMenuItemEnabledState()
@@ -184,6 +202,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
 
     @MainActor
     override func deactivateServer(_ sender: Any!) {
+        self.logLifecycle("deactivateServer")
         self.activationGeneration &+= 1
         self.provisionalInputEcho.reset()
         self.pendingConverterServerActivation = nil
@@ -199,6 +218,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
 
     @MainActor
     override func commitComposition(_ sender: Any!) {
+        self.logLifecycle("commitComposition")
         let activationGeneration = self.activationGeneration
         self.converterServerClient.sendIfSessionOpen({ _ in .composition(.commit) }, completion: { [weak self] response in
             Task { @MainActor in
@@ -362,6 +382,7 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             )
         )
         guard disposition == .sendToServer else {
+            self.logLifecycle("fallthroughToApplication keyCode=\(event.keyCode)")
             return false
         }
 
@@ -386,6 +407,13 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             acknowledgedInputState: self.inputState,
             pendingKeyEventCount: self.pendingKeyEventCount
         ) {
+            self.refreshMarkedText()
+        } else if self.hasMarkedText() {
+            // 文字を足さないキー (Backspace など) でも、今のマークテキストをその場で出し直す。
+            // Chrome のアドレスバーは、キーを押している間に IME が setMarkedText / insertText を
+            // 呼ばないと「IME は処理しなかった」とみなしてキーを自分で処理し、マークテキストを
+            // 確定してしまう (components/remote_cocoa/app_shim/bridged_content_view.mm の keyDown:)。
+            // 内容は応答が届いてから正しいものに置き換わる
             self.refreshMarkedText()
         }
         trace.mark("echo")
@@ -827,6 +855,12 @@ class azooKeyMacInputController: IMKInputController, NSMenuItemValidation { // s
             selectionRange: selectionRange,
             replacementRange: NSRange(location: NSNotFound, length: 0)
         )
+    }
+
+    /// 画面にマークテキストを出しているか (応答待ちの打鍵を含む)
+    private func hasMarkedText() -> Bool {
+        !self.provisionalInputEcho.suffix.isEmpty
+            || self.currentMarkedText().elements.contains { !$0.content.isEmpty }
     }
 
     private func currentMarkedText() -> ConverterMarkedText {
