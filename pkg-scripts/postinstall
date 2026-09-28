@@ -3,7 +3,7 @@ set -eu
 
 service_name="dev.boooowy.inputmethod.azooKeyMac.ConverterServer"
 app_path="/Library/Input Methods/azooKeyMac.app"
-server_path="${app_path}/Contents/MacOS/ConverterServer"
+server_path="${app_path}/Contents/Helpers/ConverterServer/ConverterServer"
 agent_dir="/Library/LaunchAgents"
 agent_path="${agent_dir}/${service_name}.plist"
 script_dir="$(cd "$(dirname "$0")" && pwd)"
@@ -35,5 +35,9 @@ fi
 launchctl bootstrap "${gui_domain}" "${agent_path}"
 launchctl kickstart -k "${gui_domain}/${service_name}"
 launchctl print "${gui_domain}/${service_name}" >/dev/null
+
+# 動いている入力メソッドは古いバイナリのまま残るので止める。
+# 次に入力するとき macOS が新しい版を起動するため、上書きならログアウトは要らない (install.sh と同じ)
+pkill -x azooKeyMac >/dev/null 2>&1 || true
 
 echo "Installed and started ${service_name}"
