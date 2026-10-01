@@ -103,5 +103,64 @@ struct JapaneseReadingCandidatesTests {
         )
         #expect(merged.map(\.text) == ["wiんどう", "ウィンドウ", "wiんどー"])
     }
+
+    @Test("履歴学習で覚えた読み直し候補は、先頭の候補より前に出す")
+    func learnedReadingCandidateComesFirst() {
+        func candidate(_ text: String, learned: Bool) -> Candidate {
+            var element = DicdataElement(word: text, ruby: text, cid: 0, mid: 0, value: 0)
+            if learned {
+                element.metadata = .isLearned
+            }
+            return Candidate(text: text, value: 0, composingCount: .inputCount(1), lastMid: 0, data: [element])
+        }
+        let list = [candidate("defおると", learned: false), candidate("defオルト", learned: false)]
+        let merged = SegmentsManager.insertingJapaneseReadingCandidates(
+            [candidate("デフォると", learned: false), candidate("デフォルト", learned: true)],
+            into: list
+        )
+        #expect(merged.map(\.text) == ["デフォルト", "defおると", "デフォると", "defオルト"])
+
+        // 先頭の候補も覚えているなら、今までどおり先頭を優先する
+        let learnedFirst = SegmentsManager.insertingJapaneseReadingCandidates(
+            [candidate("デフォルト", learned: true)],
+            into: [candidate("defおると", learned: true)]
+        )
+        #expect(learnedFirst.map(\.text) == ["defおると", "デフォルト"])
+    }
+
+    @Test("deforuto で デフォルト を選ぶと、次からは先頭に出る")
+    func learnedDefault() throws {
+        let directory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let manager = SegmentsManager(
+            kanaKanjiConverter: .withDefaultDictionary(),
+            applicationDirectoryURL: directory,
+            containerURL: nil,
+            context: .init(useZenzai: false)
+        )
+        func convert() -> [Candidate] {
+            for character in "deforuto" {
+                manager.insertAtCursorPosition(String(character), inputStyle: Self.japaneseStyle)
+            }
+            manager.insertCompositionSeparator(inputStyle: Self.japaneseStyle, skipUpdate: true)
+            manager.update(requestRichCandidates: true)
+            guard case .selecting(let candidates, _) = manager.getCurrentCandidateWindow(inputState: .selecting) else {
+                return []
+            }
+            return candidates
+        }
+
+        let before = convert().map(\.text)
+        let index = try #require(before.firstIndex(of: "デフォルト"), "\(before.prefix(10))")
+        #expect(index != 0)
+        manager.requestSelectingRow(index)
+        manager.prefixCandidateCommited(try #require(manager.selectedCandidate), leftSideContext: "")
+        manager.stopComposition()
+
+        let after = convert().map(\.text)
+        #expect(after.first == "デフォルト", "\(after.prefix(10))")
+    }
 }
 #endif

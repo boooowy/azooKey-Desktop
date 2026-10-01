@@ -606,13 +606,27 @@ public final class SegmentsManager {
 
     /// 日本語として読み直した候補を、先頭の候補のすぐ後ろに差し込む。
     /// Space を1回押すと先頭が選ばれ、もう1回で読み直した候補に移れるようにするため。
+    ///
+    /// ただし、読み直した候補を履歴学習で覚えていて、先頭の候補は覚えていないなら、
+    /// 読み直した候補を先頭にする。`deforuto` は `def` が英語と判定されて「defおると」が
+    /// 先頭になるので、何度「デフォルト」を選んでも2番目のままになってしまう。
     static func insertingJapaneseReadingCandidates(_ readingCandidates: [Candidate], into list: [Candidate]) -> [Candidate] {
         guard let first = list.first, !readingCandidates.isEmpty else {
             return list
         }
         let inserted = readingCandidates.filter { $0.text != first.text }
         let insertedTexts = Set(inserted.map(\.text))
-        return [first] + inserted + list.dropFirst().filter { !insertedTexts.contains($0.text) }
+        let rest = list.dropFirst().filter { !insertedTexts.contains($0.text) }
+        guard !Self.isLearned(first) else {
+            return [first] + inserted + rest
+        }
+        let learned = inserted.filter(Self.isLearned)
+        let notLearned = inserted.filter { !Self.isLearned($0) }
+        return learned + [first] + notLearned + rest
+    }
+
+    private static func isLearned(_ candidate: Candidate) -> Bool {
+        candidate.data.contains { $0.metadata.contains(.isLearned) }
     }
 
     private var conversionCandidatesList: [Candidate]? {
